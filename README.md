@@ -2,6 +2,35 @@
 
 A hands-on Network & Systems Administration and Cybersecurity homelab built to develop and demonstrate practical experience with enterprise networking, virtualization, Linux administration, monitoring, security, automation, and self-hosted infrastructure.
 
+## 📚 Project Documentation
+
+Explore the major projects in this homelab:
+
+| Project | Description |
+|---------|-------------|
+| [Proxmox VE Cluster](virtualization/proxmox/) | Three-node virtualization cluster using Proxmox VE, KVM/QEMU, LXC, Corosync, shared infrastructure, and backup management. |
+| [OPNsense & VLAN Architecture](network/opnsense-vlan-architecture/) | Segmented network architecture using OPNsense, VLANs, firewall policies, and managed switching. |
+| [Pi-hole DNS](network/pihole-dns/) | Centralized DNS filtering and network-wide DNS administration using Pi-hole. |
+| [Prometheus & Grafana Monitoring](monitoring/prometheus-grafana/) | Centralized metrics, dashboards, infrastructure monitoring, and planned exception-based reporting. |
+| [Network Architecture](network/diagrams/) | High-level diagrams documenting the physical, virtual, and network architecture of the homelab. |
+
+### Projects in Development
+
+Future documentation will cover:
+
+- Automated exception-based homelab health reporting
+- Grafana Loki centralized logging
+- Backup and disaster recovery
+- Tailscale secure remote administration
+- Windows Server and Active Directory lab
+- Cybersecurity monitoring and detection
+- Raspberry Pi security projects
+- IoT security lab
+- RFID access-control and security testing
+- Honeypot deployment
+- 3D-printed micro-cluster rack mounting
+- Self-hosted infrastructure and services
+
 ## 🖥️ Current Infrastructure
 
 My homelab is built around a three-node Proxmox VE cluster:
