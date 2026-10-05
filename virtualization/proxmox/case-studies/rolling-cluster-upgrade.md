@@ -3,9 +3,13 @@
 ## Executive Summary
 
 This case study documents a rolling maintenance and upgrade procedure performed on my three-node Proxmox VE homelab cluster.
+
 The objective was to update the Proxmox hosts while maintaining cluster quorum, protecting hosted workloads, minimizing service interruption, and verifying recovery options before making potentially disruptive changes.
+
 During the maintenance process, I discovered that two important containers were not included in the scheduled backup job. Rather than proceeding with the upgrade, I stopped the maintenance process, created and verified manual backups, and then continued with the rolling upgrade.
+
 Two nodes were successfully upgraded from an older Proxmox kernel to `7.0.14-20-pve`. The final node, which hosts critical routing, DNS, and remote-access infrastructure, was intentionally deferred because I was administering the environment remotely and could not guarantee recovery access if the node failed to restart.
+
 This project demonstrates practical experience with Proxmox VE administration, Linux package management, cluster quorum, backup validation, risk assessment, change management, and post-maintenance verification.
 
 ---
