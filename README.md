@@ -14,22 +14,28 @@ Explore the major projects in this homelab:
 | [Prometheus & Grafana Monitoring](monitoring/prometheus-grafana/) | Centralized metrics, dashboards, infrastructure monitoring, and planned exception-based reporting. |
 | [Network Architecture](network/diagrams/) | High-level diagrams documenting the physical, virtual, and network architecture of the homelab. |
 | [Three-Tier Proxmox Micro-PC Rack](hardware/micro-pc-rack/) | Completed custom 3D-printed three-node rack holder, M4 assembly, and physical infrastructure integration. |
+| [Rack Shelf & Node Installation](hardware/rack-shelf-installation/) | Completed 12-24 rack hardware compatibility troubleshooting, shelf installation, and three-node physical integration. |
+| [Graphy — Grafana Monitoring Kiosk](monitoring/graphy-grafana-kiosk/) | Completed Raspberry Pi 4 Chromium/labwc Grafana playlist kiosk on trusted VLAN 20. |
+| [Vaultwarden Password Audit](security/vaultwarden-password-audit/) | Completed PowerShell security hygiene audit of 573 login entries with aggregate findings and safe reporting. |
 
-### Projects in Development
+### Completed Project Highlights
 
-Future documentation will cover:
+- **Physical rack integration:** Three-node micro-PC holder, rack shelves, M4 hardware, and installation — completed October 2026.
+- **Graphy monitoring kiosk:** Raspberry Pi 4 displaying rotating Grafana dashboards — completed October 3, 2026.
+- **Vaultwarden password audit:** PowerShell script and CSV analysis of 573 login entries — completed October 2026. The audit identified issues; it did not automatically remediate passwords.
 
-- Automated exception-based homelab health reporting
-- Grafana Loki centralized logging
-- Backup and disaster recovery
-- Tailscale secure remote administration
-- Windows Server and Active Directory lab
-- Cybersecurity monitoring and detection
-- Raspberry Pi security projects
-- IoT security lab
-- RFID access-control and security testing
-- Honeypot deployment
-- Self-hosted infrastructure and services
+### Paused / Future Work
+
+The following are **paused**, not implemented or completed portfolio claims:
+
+- Exception-based homelab health reporting and Grafana Loki centralized logging
+- Backup and disaster-recovery improvements
+- Windows Server / Active Directory lab
+- Expanded cybersecurity monitoring and detection
+- Additional network segmentation, redundancy, and infrastructure improvements
+- Other self-hosted services under consideration
+
+Removed projects (including RFID and Raspberry Pi hardware-security experiments) are not part of the current development backlog.
 
 ## 🖥️ Current Infrastructure
 
@@ -92,9 +98,6 @@ Security projects include or are planned around:
 - Centralized logging
 - IDS/IPS
 - SIEM
-- Honeypots
-- IoT security testing
-- RFID access-control security
 - Security monitoring and alerting
 
 All offensive/security-testing projects are performed in controlled lab environments against systems I own or am authorized to test.
@@ -111,11 +114,16 @@ This repository will document projects including:
 - Automated Proxmox backups
 - Homelab health reporting
 - Windows Server / Active Directory lab
-- Raspberry Pi security projects
 - Self-hosted services
 - [Completed three-tier 3D-printed rack hardware](hardware/micro-pc-rack/)
+- [Completed rack shelf and node installation](hardware/rack-shelf-installation/)
+- [Completed Graphy monitoring kiosk](monitoring/graphy-grafana-kiosk/)
+- [Completed Vaultwarden PowerShell password audit](security/vaultwarden-password-audit/)
 
 ## 📁 Repository Structure
+
+Completed project write-ups are organized under `hardware/`, `monitoring/`, and `security/`, alongside the existing `network/`, `virtualization/`, and `troubleshooting/` documentation.
+
 
 Each project will have its own documentation covering:
 
