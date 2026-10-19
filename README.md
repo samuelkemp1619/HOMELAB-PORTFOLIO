@@ -13,6 +13,7 @@ Explore the major projects in this homelab:
 | [Pi-hole DNS](network/pihole-dns/) | Centralized DNS filtering and network-wide DNS administration using Pi-hole. |
 | [Prometheus & Grafana Monitoring](monitoring/prometheus-grafana/) | Centralized metrics, dashboards, infrastructure monitoring, and planned exception-based reporting. |
 | [Network Architecture](network/diagrams/) | High-level diagrams documenting the physical, virtual, and network architecture of the homelab. |
+| [Three-Tier Proxmox Micro-PC Rack](hardware/micro-pc-rack/) | Completed custom 3D-printed three-node rack holder, M4 assembly, and physical infrastructure integration. |
 
 ### Projects in Development
 
@@ -28,7 +29,6 @@ Future documentation will cover:
 - IoT security lab
 - RFID access-control and security testing
 - Honeypot deployment
-- 3D-printed micro-cluster rack mounting
 - Self-hosted infrastructure and services
 
 ## 🖥️ Current Infrastructure
@@ -113,7 +113,7 @@ This repository will document projects including:
 - Windows Server / Active Directory lab
 - Raspberry Pi security projects
 - Self-hosted services
-- 3D-printed rack hardware
+- [Completed three-tier 3D-printed rack hardware](hardware/micro-pc-rack/)
 
 ## 📁 Repository Structure
 
