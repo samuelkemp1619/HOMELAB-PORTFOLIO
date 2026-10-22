@@ -8,7 +8,7 @@ Explore the major projects in this homelab:
 
 | Project | Description |
 |---------|-------------|
-| [Proxmox VE Cluster](virtualization/proxmox/) | Three-node virtualization cluster using Proxmox VE, KVM/QEMU, LXC, Corosync, shared infrastructure, and backup management. |
+| [Proxmox VE Cluster](virtualization/proxmox/) | Four-node virtualization cluster using Proxmox VE, KVM/QEMU, LXC, Corosync, shared infrastructure, and backup management. |
 | [OPNsense & VLAN Architecture](network/opnsense-vlan-architecture/) | Segmented network architecture using OPNsense, VLANs, firewall policies, and managed switching. |
 | [Pi-hole DNS](network/pihole-dns/) | Centralized DNS filtering and network-wide DNS administration using Pi-hole. |
 | [Prometheus & Grafana Monitoring](monitoring/prometheus-grafana/) | Centralized metrics, dashboards, infrastructure monitoring, and planned exception-based reporting. |
@@ -16,6 +16,7 @@ Explore the major projects in this homelab:
 | [Three-Tier Proxmox Micro-PC Rack](hardware/micro-pc-rack/) | Completed custom 3D-printed three-node rack holder, M4 assembly, and physical infrastructure integration. |
 | [Rack Shelf & Node Installation](hardware/rack-shelf-installation/) | Completed 12-24 rack hardware compatibility troubleshooting, shelf installation, and three-node physical integration. |
 | [Graphy — Grafana Monitoring Kiosk](monitoring/graphy-grafana-kiosk/) | Completed Raspberry Pi 4 Chromium/labwc Grafana playlist kiosk on trusted VLAN 20. |
+| [AI-Operations Proxmox Monitoring](automation/ai-operations-proxmox-monitoring/) | Four-node monitoring, AI health reporting, and tested alert routing; Pushover delivery pending. |
 | [Vaultwarden Password Audit](security/vaultwarden-password-audit/) | Completed PowerShell security hygiene audit of 573 login entries with aggregate findings and safe reporting. |
 
 ### Completed Project Highlights
@@ -39,13 +40,14 @@ Removed projects (including RFID and Raspberry Pi hardware-security experiments)
 
 ## 🖥️ Current Infrastructure
 
-My homelab is built around a three-node Proxmox VE cluster:
+My homelab is built around a four-node Proxmox VE cluster:
 
 | Node | Hardware | Role |
 |------|----------|------|
 | HomeProx | Dell OptiPlex 7020 Micro | Proxmox VE / Primary Infrastructure |
 | HomeProx2 | HP Elite Mini 600 G9 | Proxmox VE / Application Host |
-| HomeProx3 | HP Elite Mini 600 G9 | Proxmox VE / Monitoring Host |
+| HomeProx3 | HP Elite Mini 600 G9 | Proxmox VE / Container Host |
+| HomeProx4 | Dell PowerEdge R640 | Proxmox VE / Windows Server and AI-Operations Host |
 
 ### Core Technologies
 
@@ -106,7 +108,7 @@ All offensive/security-testing projects are performed in controlled lab environm
 
 This repository will document projects including:
 
-- Three-node Proxmox cluster
+- Four-node Proxmox cluster
 - OPNsense virtual firewall/router
 - Pi-hole DNS filtering
 - Prometheus and Grafana monitoring
@@ -118,6 +120,7 @@ This repository will document projects including:
 - [Completed three-tier 3D-printed rack hardware](hardware/micro-pc-rack/)
 - [Completed rack shelf and node installation](hardware/rack-shelf-installation/)
 - [Completed Graphy monitoring kiosk](monitoring/graphy-grafana-kiosk/)
+- [AI-Operations monitoring and alert automation](automation/ai-operations-proxmox-monitoring/)
 - [Completed Vaultwarden PowerShell password audit](security/vaultwarden-password-audit/)
 
 ## 📁 Repository Structure
