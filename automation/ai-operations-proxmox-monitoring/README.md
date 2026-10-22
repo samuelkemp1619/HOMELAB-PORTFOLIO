@@ -1,3 +1,3 @@
 # AI-Operations Proxmox Monitoring
 
-Monitoring workflow implemented and manually tested in October 2026. Automated notifications are pending validation.
+Four-node cluster monitoring through n8n and AI Agent. Nine guests tracked. Healthy and simulated critical routing verified. Pushover delivery and hourly activation pending.
