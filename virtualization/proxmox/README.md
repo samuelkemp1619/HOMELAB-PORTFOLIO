@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project documents the design, deployment, and administration of my three-node Proxmox VE cluster.
+This project documents the design, deployment, and administration of my four-node Proxmox VE cluster.
 
 The cluster provides the virtualization platform for my homelab and hosts networking, DNS, monitoring, game-server, and other infrastructure services.
 
@@ -12,7 +12,8 @@ The cluster provides the virtualization platform for my homelab and hosts networ
 |------|----------|--------------|
 | HomeProx | Dell OptiPlex 7020 Micro | Primary Infrastructure |
 | HomeProx2 | HP Elite Mini 600 G9 | Application Host |
-| HomeProx3 | HP Elite Mini 600 G9 | Monitoring Host |
+| HomeProx3 | HP Elite Mini 600 G9 | Container Host |
+| HomeProx4 | Dell PowerEdge R640 | Windows Server and AI-Operations Host |
 
 ## Technologies
 
@@ -33,21 +34,21 @@ The cluster provides the virtualization platform for my homelab and hosts networ
 - Pi-hole DNS filtering
 
 ### HomeProx2
-- AMP game-server management
-- Minecraft server
-- NFS backup storage
+- AMP game-server management (CT 102)
+- Dashy, Prometheus and Grafana monitoring stack (CT 103)
 
 ### HomeProx3
-- Prometheus
-- Grafana
-- Dashy
-- Monitoring services
+- Vaultwarden (CT 104)
+
+### HomeProx4
+- Windows Server 2025 (VM 400)
+- AI-Operations monitoring and automation (VM 410)
 
 ## Cluster Design
 
-The three Proxmox nodes operate as a single cluster using Corosync for cluster communication and quorum.
+The four Proxmox nodes operate as a single cluster using Corosync for cluster communication and quorum.
 
-The cluster uses three voting nodes, allowing quorum to remain available when a single node is offline for maintenance.
+The cluster has four voting nodes. Quorum requires three votes; loss of one node can be tolerated while retaining quorum.
 
 ## Networking
 
@@ -74,7 +75,7 @@ Backup monitoring and expanded coverage are ongoing projects, including:
 
 The environment is monitored using Prometheus and Grafana.
 
-Monitoring includes infrastructure availability and performance, with future plans for centralized logging and exception-based health reporting.
+Monitoring includes infrastructure availability and performance, with AI-assisted exception detection and alert routing implemented in n8n. Pushover delivery testing and scheduled activation remain pending. Centralized logging remains future work.
 
 ## Administration
 
