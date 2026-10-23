@@ -108,3 +108,29 @@ Before future full synchronization or major configuration changes:
 - Consider a dedicated DNS VIP or another design only if needed and compatible with the network architecture.
 - Monitor Nebula Sync scheduled runs and verify synchronization remains healthy.
 - Document recovery from a failed or unwanted full synchronization.
+
+## DNS Bypass Enforcement (Paused)
+
+OPNsense rules were added on LAN, TRUSTED, IOT, and GUEST to make the Pi-hole instances the permitted conventional DNS resolvers and to block common direct-DNS bypass paths.
+
+### Configured rules
+
+- Each interface has an allow rule for the `PiHole_DNS` alias, covering both `192.168.10.2` and `192.168.10.3` on TCP/UDP port 53.
+- Each interface has a block rule for other IPv4 TCP/UDP traffic to destination port 53.
+- Each interface has a block rule for IPv4 TCP traffic to destination port 853 (DNS-over-TLS).
+- On IOT and GUEST, the Pi-hole allow rule remains above the internal-network block, preserving the required DNS exception while retaining network isolation.
+- On LAN, an upstream exception was added for the Pi-hole servers to reach the configured Cloudflare upstreams in the `PiHole_Upstreams` alias on port 53.
+
+### Validation performed
+
+- From a Windows client on LAN, direct queries to both Pi-hole addresses returned valid `google.com` records.
+- A direct DNS query to `8.8.8.8` timed out, consistent with the external DNS block.
+- A TCP connection test to `1.1.1.1:853` failed, consistent with DNS-over-TLS being unreachable from that client. The result alone does not prove which device blocked the connection.
+- OPNsense LAN IPv6 configuration was checked and set to `None`; the tested Windows Ethernet adapter had no non-link-local IPv6 address or IPv6 DNS server configured.
+
+### Remaining validation and limitations
+
+- The firewall rules on TRUSTED, IOT, and GUEST have been configured, but client-side enforcement tests are pending because no test device was connected to those networks during this session.
+- DNS-over-HTTPS (DoH) on TCP port 443 has not been addressed. Blocking ports 53 and 853 does not prevent every encrypted-DNS method.
+- IPv6 settings on the other client networks and clients have not been fully audited.
+- The project was paused after configuring the rules and verifying their order. Do not describe network-wide bypass prevention as fully tested or complete.
