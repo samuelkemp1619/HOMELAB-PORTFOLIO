@@ -155,3 +155,29 @@ Changes were performed incrementally to minimize downtime and maintain administr
 - Test OPNsense disaster recovery
 - Evaluate automated gateway failover
 - Implement exception-based health reporting
+
+## DNS Bypass Enforcement (Paused)
+
+A staged DNS-enforcement change set was configured on the LAN, TRUSTED, IOT, and GUEST interfaces.
+
+- An allow rule on each interface permits TCP/UDP DNS on port 53 to the `PiHole_DNS` alias, covering both Pi-hole instances.
+- A following block rule denies other IPv4 TCP/UDP traffic to destination port 53.
+- A following block rule denies IPv4 TCP traffic to destination port 853, commonly used for DNS-over-TLS.
+- IOT and GUEST retain their internal-network restrictions, with the Pi-hole DNS exception placed before those restrictions.
+- A `PiHole_Upstreams` alias contains Cloudflare DNS addresses `1.1.1.1` and `1.0.0.1`; an upstream allow exception was added on LAN for the Pi-hole servers.
+
+### Test results
+
+From a Windows client on LAN:
+
+- Direct DNS queries to both Pi-hole addresses succeeded.
+- A direct query to `8.8.8.8` timed out, consistent with the port 53 block.
+- A TCP connection test to `1.1.1.1:853` failed, consistent with DNS-over-TLS being unreachable from that client. This test alone does not establish which device blocked the connection.
+
+The tested Windows Ethernet adapter had no IPv6 DNS server or non-link-local IPv6 address, and the OPNsense LAN IPv6 configuration type was set to `None`.
+
+### Current status and limits
+
+This work is **paused and partially validated**, not complete network-wide proof of DNS enforcement. Rules are configured and their order was reviewed, but there were no client devices available to test TRUSTED, IOT, or GUEST enforcement. DNS-over-HTTPS on port 443 has not been addressed, and IPv6 settings on the other client networks have not been fully audited.
+
+Blocking ports 53 and 853 alone does not prevent all encrypted DNS. Further work should be tested incrementally to avoid disrupting legitimate connectivity or local name resolution.
