@@ -10,17 +10,18 @@ Explore the major projects in this homelab:
 |---------|-------------|
 | [Proxmox VE Cluster](virtualization/proxmox/) | Four-node virtualization cluster using Proxmox VE, KVM/QEMU, LXC, Corosync, shared infrastructure, and backup management. |
 | [OPNsense & VLAN Architecture](network/opnsense-vlan-architecture/) | Segmented network architecture using OPNsense, VLANs, firewall policies, and managed switching. |
-| [Pi-hole DNS](network/pihole-dns/) | Centralized DNS filtering and network-wide DNS administration using Pi-hole. |
+| [Pi-hole DNS](network/pihole-dns/) | Redundant two-instance Pi-hole v6 DNS filtering deployment, with OPNsense DHCP distribution and hourly primary-to-secondary configuration synchronization using Nebula Sync. Automatic client failover remains under validation. |
 | [Prometheus & Grafana Monitoring](monitoring/prometheus-grafana/) | Centralized metrics, dashboards, infrastructure monitoring, and planned exception-based reporting. |
 | [Network Architecture](network/diagrams/) | High-level diagrams documenting the physical, virtual, and network architecture of the homelab. |
 | [Three-Tier Proxmox Micro-PC Rack](hardware/micro-pc-rack/) | Completed custom 3D-printed three-node rack holder, M4 assembly, and physical infrastructure integration. |
 | [Rack Shelf & Node Installation](hardware/rack-shelf-installation/) | Completed 12-24 rack hardware compatibility troubleshooting, shelf installation, and three-node physical integration. |
 | [Graphy — Grafana Monitoring Kiosk](monitoring/graphy-grafana-kiosk/) | Completed Raspberry Pi 4 Chromium/labwc Grafana playlist kiosk on trusted VLAN 20. |
-| [AI-Operations Proxmox Monitoring](automation/ai-operations-proxmox-monitoring/) | Four-node monitoring, AI health reporting, and tested alert routing; Pushover delivery pending. |
+| [AI-Operations Proxmox Monitoring](automation/ai-operations-proxmox-monitoring/) | Four-node monitoring, AI health reporting, and tested alert routing; Pushover delivery validated, scheduled activation pending. |
 | [Vaultwarden Password Audit](security/vaultwarden-password-audit/) | Completed PowerShell security hygiene audit of 573 login entries with aggregate findings and safe reporting. |
 
 ### Completed Project Highlights
 
+- **Redundant Pi-hole DNS:** Deployed primary and secondary Pi-hole v6.7.1 instances on separate Proxmox hosts, configured OPNsense DHCP to advertise both DNS addresses across four networks, and deployed hourly Nebula Sync from the primary to the secondary. Both instances independently pass DNS resolution and blocking tests. Automatic client failover remains unverified.
 - **Physical rack integration:** Three-node micro-PC holder, rack shelves, M4 hardware, and installation — completed October 2026.
 - **Graphy monitoring kiosk:** Raspberry Pi 4 displaying rotating Grafana dashboards — completed October 3, 2026.
 - **Vaultwarden password audit:** PowerShell script and CSV analysis of 573 login entries — completed October 2026. The audit identified issues; it did not automatically remediate passwords.
@@ -54,7 +55,7 @@ My homelab is built around a four-node Proxmox VE cluster:
 - Proxmox VE
 - OPNsense
 - VLAN segmentation
-- Pi-hole DNS
+- Redundant Pi-hole DNS and Nebula Sync
 - Prometheus
 - Grafana
 - Tailscale
@@ -71,7 +72,7 @@ Projects include:
 
 - VLAN design and segmentation
 - Firewall policy
-- DNS filtering
+- DNS filtering and redundancy
 - Remote administration
 - Network monitoring
 - Proxmox cluster networking
@@ -110,7 +111,7 @@ This repository will document projects including:
 
 - Four-node Proxmox cluster
 - OPNsense virtual firewall/router
-- Pi-hole DNS filtering
+- [Pi-hole DNS filtering and redundancy](network/pihole-dns/)
 - Prometheus and Grafana monitoring
 - Tailscale remote administration
 - Automated Proxmox backups
@@ -126,7 +127,6 @@ This repository will document projects including:
 ## 📁 Repository Structure
 
 Completed project write-ups are organized under `hardware/`, `monitoring/`, and `security/`, alongside the existing `network/`, `virtualization/`, and `troubleshooting/` documentation.
-
 
 Each project will have its own documentation covering:
 
