@@ -34,13 +34,6 @@ Graphy is a **display endpoint**, not a replacement for the monitoring servers.
 
 Linux configuration, Raspberry Pi administration, monitoring visualization, browser kiosk deployment, Wi-Fi/VLAN integration, and systems troubleshooting.
 
-## October 25, 2026 Hardware Check
-
-- Confirmed Debian 13 (Trixie), release 13.7.
-- Verified a 29.5 GiB microSD device with a 512 MiB firmware partition and 29 GiB root partition.
-- Observed a 47.2°C temperature reading during inspection.
-- Current cooling is a passive heatsink; no fan installation or other cooling modification is claimed.
-
 ## Notes
 
 Screenshots and sanitized configuration examples can be added later. This project is complete; separate centralized logging and exception-based reporting work remains paused.
