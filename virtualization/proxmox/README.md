@@ -58,6 +58,14 @@ Current network segmentation includes dedicated management and trusted networks,
 
 Routing and firewall policy are handled by OPNsense.
 
+## October 2026 Cluster Maintenance
+
+- Confirmed four-node quorum and documented VM/LXC placement across hosts.
+- Migrated CT 103 (Dashy, Prometheus, Grafana and related exporters) to HomeProx2 and verified network and dashboard access afterward.
+- Configured two scheduled `vzdump` jobs on off-node `infra-backups` storage: a 03:00 snapshot job for VM 100 and CT 101, and a 03:30 stop-mode job for CTs 102, 103 and 104.
+- Both jobs use ZSTD compression and retention of 3 last, 7 daily, 4 weekly and 3 monthly backups. Successful recent backup tasks were observed; this is not a claim of a completed restore test.
+- Windows Server 2025 VM 400 is installed and activated; further directory-services configuration is paused.
+
 ## Backup Strategy
 
 Proxmox `vzdump` is used to create compressed VM and LXC backups.
