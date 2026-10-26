@@ -16,15 +16,23 @@ Explore the major projects in this homelab:
 | [Three-Tier Proxmox Micro-PC Rack](hardware/micro-pc-rack/) | Completed custom 3D-printed three-node rack holder, M4 assembly, and physical infrastructure integration. |
 | [Rack Shelf & Node Installation](hardware/rack-shelf-installation/) | Completed 12-24 rack hardware compatibility troubleshooting, shelf installation, and three-node physical integration. |
 | [Graphy — Grafana Monitoring Kiosk](monitoring/graphy-grafana-kiosk/) | Completed Raspberry Pi 4 Chromium/labwc Grafana playlist kiosk on trusted VLAN 20. |
-| [AI-Operations Proxmox Monitoring](automation/ai-operations-proxmox-monitoring/) | Four-node monitoring, AI health reporting, and tested alert routing; Pushover delivery validated, scheduled activation pending. |
+| [AI-Operations Proxmox Monitoring](automation/ai-operations-proxmox-monitoring/) | Four-node monitoring, AI health reporting and tested alert routing; scheduled workflow remains unpublished. |
 | [Vaultwarden Password Audit](security/vaultwarden-password-audit/) | Completed PowerShell security hygiene audit of 573 login entries with aggregate findings and safe reporting. |
 
 ### Completed Project Highlights
 
 - **Redundant Pi-hole DNS:** Deployed primary and secondary Pi-hole v6.7.1 instances on separate Proxmox hosts, configured OPNsense DHCP to advertise both DNS addresses across four networks, and deployed hourly Nebula Sync from the primary to the secondary. Both instances independently pass DNS resolution and blocking tests. Automatic client failover remains unverified.
-- **DNS bypass enforcement — configuration phase:** Added ordered OPNsense rules on LAN, TRUSTED, IOT, and GUEST to permit DNS to both Pi-hole instances and block direct IPv4 DNS on port 53 and DNS-over-TLS on TCP port 853. LAN testing confirmed both Pi-holes resolve queries and a direct query to `8.8.8.8` times out. Enforcement from TRUSTED, IOT, and GUEST has not been client-tested; DNS-over-HTTPS protections are not configured or validated. This work is paused pending further testing.\n- **Physical rack integration:** Three-node micro-PC holder, rack shelves, M4 hardware, and installation — completed October 2026.
+- **DNS bypass enforcement — configuration phase:** Added ordered OPNsense rules on LAN, TRUSTED, IOT, and GUEST to permit DNS to both Pi-hole instances and block direct IPv4 DNS on port 53 and DNS-over-TLS on TCP port 853. LAN testing confirmed both Pi-holes resolve queries and a direct query to `8.8.8.8` times out. Enforcement from TRUSTED, IOT, and GUEST has not been client-tested; DNS-over-HTTPS protections are not configured or validated. This work is paused pending further testing.
+- **Physical rack integration:** Three-node micro-PC holder, rack shelves, M4 hardware, and installation — completed October 2026.
 - **Graphy monitoring kiosk:** Raspberry Pi 4 displaying rotating Grafana dashboards — completed October 3, 2026.
 - **Vaultwarden password audit:** PowerShell script and CSV analysis of 573 login entries — completed October 2026. The audit identified issues; it did not automatically remediate passwords.
+
+### Latest Maintenance and Validation (October 2026)
+
+- **DNS policy validation:** Verified direct DNS queries to an external resolver are blocked in the tested LAN path, and observed a failed TCP connection to `1.1.1.1:853` during DNS-over-TLS testing. A failed connection alone does not establish that every network and client is covered; additional validation remains paused.
+- **Graphy hardware inspection:** Confirmed the Raspberry Pi 4 kiosk runs Debian 13 (Trixie), uses a 32 GB-class microSD card, and reported a 47.2°C operating temperature during inspection. Cooling currently consists of a heatsink; no active cooling upgrade has been completed.
+- **AI-Operations workflow:** The hourly n8n schedule and alert-routing logic were configured and tested, but the original workflow remains unpublished. Pushover configuration and tests should not be confused with live scheduled alerting.
+- **Infrastructure documentation:** Retained the completed physical rack integration and backup scheduling work. Projects awaiting additional implementation remain explicitly marked as paused.
 
 ### Paused / Future Work
 
