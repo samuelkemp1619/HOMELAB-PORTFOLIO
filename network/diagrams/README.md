@@ -1,104 +1,73 @@
 # Homelab Network Architecture
 
-This directory contains architecture diagrams documenting the design of my homelab network.
+**Updated:** October 26, 2026
 
-> Diagrams are simplified for portfolio use and intentionally omit sensitive configuration details.
+This is a **logical topology**, not a verified port-by-port cable map. It documents network segmentation, cluster placement, and service relationships. Physical uplinks and upstream WAN details are intentionally simplified. Dotted arrows indicate logical dependencies rather than physical cabling.
 
-## Current High-Level Architecture
+## Current Logical Network Diagram
 
 ```mermaid
 flowchart TB
-    Internet((Internet))
-
-    Internet --> FW["OPNsense<br/>Firewall & Router"]
-
-    FW --> SW["Managed Ethernet Switch"]
-
-    SW --> MGMT["Management VLAN"]
-    SW --> TRUST["Trusted VLAN"]
-    SW --> FUTURE["Additional Segmented Networks"]
-
-    MGMT --> CLUSTER["3-Node Proxmox VE Cluster"]
-
-    CLUSTER --> HP1["HomeProx<br/>Primary Infrastructure"]
-    CLUSTER --> HP2["HomeProx2<br/>Application Host"]
-    CLUSTER --> HP3["HomeProx3<br/>Monitoring Host"]
-
-    HP1 --> DNS["Pi-hole<br/>DNS Filtering"]
-
-    HP2 --> AMP["AMP / Minecraft"]
-    HP2 --> BACKUP["Backup Storage"]
-
-    HP3 --> PROM["Prometheus"]
-    HP3 --> GRAF["Grafana"]
-    HP3 --> DASH["Dashy"]
-
-    REMOTE["Remote Administration<br/>Tailscale"] -.-> MGMT
-
-    DISPLAY["Raspberry Pi<br/>Monitoring Display"] -.-> GRAF
+    WAN((Internet)) --> EDGE["WAN / upstream gateway"]
+    EDGE --> FW["OPNsense virtual firewall / router<br/>HomeProx • VM 100"]
+    FW --> SWITCH["Managed switching<br/>VLAN-aware infrastructure"]
+    SWITCH --> V10["VLAN 10 • Management"]
+    SWITCH --> V20["VLAN 20 • Trusted"]
+    SWITCH --> V30["VLAN 30 • IoT"]
+    SWITCH --> V40["VLAN 40 • Guest"]
+    V10 --> CLUSTER["Proxmox VE • four-node cluster"]
+    CLUSTER --> P1["HomeProx<br/>Dell OptiPlex Micro"]
+    CLUSTER --> P2["HomeProx2<br/>HP Elite Mini"]
+    CLUSTER --> P3["HomeProx3<br/>HP Elite Mini"]
+    CLUSTER --> P4["HomeProx4<br/>Dell PowerEdge R640"]
+    P1 --> DNS1["CT 101 • Primary Pi-hole"]
+    P2 --> APP["CT 102 • AMP"]
+    P2 --> OBS["CT 103 • Dashy / Prometheus / Grafana<br/>Nebula Sync"]
+    P3 --> VAULT["CT 104 • Vaultwarden"]
+    P3 --> DNS2["CT 105 • Secondary Pi-hole"]
+    P4 --> WIN["VM 400 • Windows Server 2025"]
+    P4 --> AI["AI-Operations / n8n<br/>scheduled alerting paused"]
+    DNS1 <-. "config sync" .-> DNS2
+    FW -. "DHCP advertises both resolvers" .-> DNS1
+    FW -. "DHCP advertises both resolvers" .-> DNS2
+    V20 --> GRAPHY["Graphy • Raspberry Pi 4<br/>Grafana kiosk"]
+    GRAPHY -. "dashboard display" .-> OBS
+    REMOTE["Remote administration • Tailscale"] -. "encrypted access" .-> CLUSTER
+    CLUSTER -. "scheduled backups" .-> BACKUP["Off-node backup storage"]
+    classDef core fill:#183153,color:#fff,stroke:#4c8ad5
+    classDef network fill:#e5f0ff,color:#17365d,stroke:#77a5d6
+    classDef service fill:#e9f7f1,color:#174d36,stroke:#71b49a
+    class FW,CLUSTER core
+    class SWITCH,V10,V20,V30,V40 network
+    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI service
 ```
 
-## Network Design Goals
+[Open standalone Mermaid source](homelab-network.mmd)
 
-The network architecture is designed around:
+## Segmentation and routing
 
-- Segmentation between infrastructure and client networks
-- Centralized routing and firewall policy
-- Dedicated infrastructure management
-- Secure remote administration
-- Centralized DNS filtering
-- Infrastructure monitoring
-- Expandability for future server, IoT, and security-lab networks
-- Reduced exposure of administrative services
+| Network | Purpose | Documentation status |
+|---|---|---|
+| VLAN 10 | Infrastructure management | In use |
+| VLAN 20 | Trusted clients, including Graphy | In use |
+| VLAN 30 | IoT segment | Configured; DNS enforcement client validation pending |
+| VLAN 40 | Guest segment | Configured; DNS enforcement client validation pending |
 
-## Virtualization
+OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but automatic client failover is **not verified**. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
 
-The core infrastructure is hosted on a three-node Proxmox VE cluster.
+## Four-node virtualization cluster
 
-Virtualized services include:
+- **HomeProx:** OPNsense VM 100 and primary Pi-hole CT 101.
+- **HomeProx2:** AMP CT 102 and monitoring/application stack CT 103 (Dashy, Prometheus, Grafana, exporters, Nebula Sync).
+- **HomeProx3:** Vaultwarden CT 104 and secondary Pi-hole CT 105.
+- **HomeProx4:** Windows Server 2025 VM 400 and AI-Operations tooling.
 
-- OPNsense
-- Pi-hole
-- AMP / Minecraft
-- Prometheus
-- Grafana
-- Dashy
+Proxmox scheduled backups use off-node storage. The n8n alert workflow has been configured and manually tested, but scheduled production execution remains unpublished/paused.
 
-Additional workloads can be deployed without requiring dedicated physical systems for every service.
+## Access and monitoring
 
-## Network Segmentation
+Tailscale enables remote administrative access. Graphy is a Raspberry Pi 4 kiosk on the trusted network displaying Grafana dashboards; it is a display endpoint, not a monitoring server.
 
-The environment currently separates management infrastructure from trusted client traffic.
+## Scope and limitations
 
-Additional segmentation is planned for:
-
-- Servers
-- IoT devices
-- Security-testing environments
-- Guest/untrusted devices
-- Self-hosted services
-
-Firewall policy controls communication between network segments.
-
-## Remote Administration
-
-Tailscale provides encrypted remote administrative access without exposing Proxmox or other management interfaces directly to the public Internet.
-
-## Monitoring
-
-Prometheus collects infrastructure metrics while Grafana provides visualization.
-
-A dedicated Raspberry Pi provides a persistent physical monitoring display.
-
-Future observability improvements include centralized logging, anomaly detection, and exception-based email health reports.
-
-## Future Diagrams
-
-Additional diagrams will document:
-
-- VLAN topology
-- Proxmox cluster architecture
-- Monitoring and logging architecture
-- Backup architecture
-- Remote-access architecture
-- Security-lab architecture
+This diagram does **not** assert verified switch-port assignments, redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. It intentionally omits private IPs, credentials, and firewall rule details. No hardware inspection details are included.
