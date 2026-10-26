@@ -27,10 +27,9 @@ Explore the major projects in this homelab:
 - **Graphy monitoring kiosk:** Raspberry Pi 4 displaying rotating Grafana dashboards — completed October 3, 2026.
 - **Vaultwarden password audit:** PowerShell script and CSV analysis of 573 login entries — completed October 2026. The audit identified issues; it did not automatically remediate passwords.
 
-### Latest Maintenance and Validation (October 2026)
+### Latest Network and Automation Validation (October 2026)
 
 - **DNS policy validation:** Verified direct DNS queries to an external resolver are blocked in the tested LAN path, and observed a failed TCP connection to `1.1.1.1:853` during DNS-over-TLS testing. A failed connection alone does not establish that every network and client is covered; additional validation remains paused.
-- **Graphy hardware inspection:** Confirmed the Raspberry Pi 4 kiosk runs Debian 13 (Trixie), uses a 32 GB-class microSD card, and reported a 47.2°C operating temperature during inspection. Cooling currently consists of a heatsink; no active cooling upgrade has been completed.
 - **AI-Operations workflow:** The hourly n8n schedule and alert-routing logic were configured and tested, but the original workflow remains unpublished. Pushover configuration and tests should not be confused with live scheduled alerting.
 - **Infrastructure documentation:** Retained the completed physical rack integration and backup scheduling work. Projects awaiting additional implementation remain explicitly marked as paused.
 
