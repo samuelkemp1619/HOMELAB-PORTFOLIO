@@ -1,6 +1,6 @@
 # Homelab Network Architecture
 
-**Updated:** October 26, 2026
+**Updated:** October 30, 2026
 
 This is a **logical topology**, not a verified port-by-port cable map. It documents network segmentation, cluster placement, and service relationships. Physical uplinks and upstream WAN details are intentionally simplified. Dotted arrows indicate logical dependencies rather than physical cabling.
 
@@ -45,6 +45,62 @@ flowchart TB
 
 [Open standalone Mermaid source](homelab-network.mmd)
 
+
+
+## Physical Hardware Layout
+
+The following diagram inventories the physical platforms separately from the virtual service topology above.
+
+```mermaid
+flowchart TB
+    subgraph RACK["Physical rack / infrastructure"]
+        SHELVES["19-inch rack • VEVOR 1U shelves"]
+        HOLDER["Custom 3D-printed three-tier holder"]
+        H3["Top: HomeProx3 • HP Elite Mini 600 G9<br/>Intel Core i5-12500T (previously reported)"]
+        H2["Middle: HomeProx2 • HP Elite Mini 600 G9"]
+        H1["Bottom: HomeProx • Dell OptiPlex 7020 Micro"]
+        R640["HomeProx4 • Dell PowerEdge R640<br/>2× Xeon Silver 4110 • ~754 GiB RAM reported"]
+        SHELVES --> HOLDER
+        HOLDER --> H3
+        HOLDER --> H2
+        HOLDER --> H1
+    end
+    subgraph NETWORK_HW["Physical network equipment"]
+        ROUTER["TP-Link Archer AX1800 / AC1800 router"]
+        SWITCH_HW["TP-Link TL-SG108E v6.0 managed switch"]
+        ROUTER --- SWITCH_HW
+    end
+    subgraph OTHER_HW["Other physical homelab equipment"]
+        PI4["Graphy • Raspberry Pi 4 Model B<br/>8 GB • Grafana kiosk"]
+        PRINTER["Creality Ender-3 V3 KE<br/>Fabrication equipment"]
+    end
+    SWITCH_HW -. "logical network connectivity" .-> RACK
+    SWITCH_HW -. "logical network connectivity" .-> PI4
+    classDef platform fill:#e5f0ff,color:#17365d,stroke:#77a5d6
+    class H1,H2,H3,R640,ROUTER,SWITCH_HW,PI4,PRINTER platform
+```
+
+
+
+## Physical Hardware Inventory
+
+This inventory documents **known, currently used** homelab hardware. Hardware specifications not confirmed from current records are deliberately left unspecified. The inventory is distinct from the logical network diagram; connections below do not assert verified switch-port assignments.
+
+| Node / device | Physical hardware | Known details / current use |
+|---|---|---|
+| **HomeProx** | Dell OptiPlex Micro 7020 | Proxmox node; bottom tier of the custom three-tier holder; primary Pi-hole CT101 and OPNsense VM100 |
+| **HomeProx2** | HP Elite Mini 600 G9 | Proxmox node; middle tier; AMP CT102 and monitoring stack CT103; provides current off-node backup storage via NFS on its root filesystem |
+| **HomeProx3** | HP Elite Mini 600 G9 | Proxmox node; top tier; Intel Core i5-12500T previously reported; secondary Pi-hole CT105 and Vaultwarden CT104 |
+| **HomeProx4** | Dell PowerEdge R640 | Rack server; dual Intel Xeon Silver 4110 processors; approximately 754 GiB usable RAM previously reported; Samsung 870 EVO 500 GB SSD used for AI storage; Windows Server and AI-Operations VMs |
+| **Router / Wi-Fi** | TP-Link Archer AX1800 / AC1800 | Physical network router / access point; OPNsense routing and firewalling also run virtually in the Proxmox environment |
+| **Managed switch** | TP-Link TL-SG108E v6.0 | 8-port VLAN-capable physical switch |
+| **Monitoring kiosk** | Raspberry Pi 4 Model B Rev 1.5 | 8 GB RAM; Graphy Grafana kiosk on trusted VLAN 20; Debian 13 (last reported) |
+| **Rack** | 19-inch rack with VEVOR 1U vented cantilever shelves | 10-inch-deep shelves; 12-24 threaded rack mounting hardware and washers |
+| **Micro-PC organizer** | Custom 3D-printed three-tier holder | Holds HomeProx, HomeProx2 and HomeProx3; M4 bolts and heat-set inserts |
+| **3D printer** | Creality Ender-3 V3 KE | Used to fabricate the custom holder and other lab components; fabrication equipment, not a confirmed VLAN endpoint |
+
+A separate **Netgear GS105 switch** has been discussed for a future re-cabling project but is **not shown as installed**. A planned additional SSD for HomeProx4 backup migration is likewise **not recorded as installed**.
+
 ## Segmentation and routing
 
 | Network | Purpose | Documentation status |
@@ -54,7 +110,7 @@ flowchart TB
 | VLAN 30 | IoT segment; Smart devices grouped beneath VLAN 30 in the logical diagram | Configured; DNS enforcement client validation pending |
 | VLAN 40 | Guest segment | Configured; DNS enforcement client validation pending |
 
-OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but automatic client failover is **not verified**. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
+OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but HomeProx Linux resolver fallback has passed a simulated unavailable-primary test; Windows and other client failover remain unverified. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
 
 The **Smart devices** node is a logical grouping for IoT endpoints, not a verified device inventory or claim that specific devices have joined VLAN 30.
 
