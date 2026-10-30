@@ -10,7 +10,7 @@ Explore the major projects in this homelab:
 |---------|-------------|
 | [Proxmox VE Cluster](virtualization/proxmox/) | Four-node virtualization cluster using Proxmox VE, KVM/QEMU, LXC, Corosync, shared infrastructure, and backup management. |
 | [OPNsense & VLAN Architecture](network/opnsense-vlan-architecture/) | Segmented network architecture using OPNsense, VLANs, firewall policies, managed switching, and staged DNS-bypass enforcement. |
-| [Pi-hole DNS](network/pihole-dns/) | Redundant two-instance Pi-hole v6 DNS filtering deployment, with OPNsense DHCP distribution and hourly primary-to-secondary configuration synchronization using Nebula Sync. DNS-bypass rules are configured across four networks; client validation and DoH controls remain outstanding. Automatic client failover remains unverified. |
+| [Pi-hole DNS](network/pihole-dns/) | Redundant two-instance Pi-hole v6 DNS filtering deployment, with OPNsense DHCP distribution and hourly primary-to-secondary configuration synchronization using Nebula Sync. DNS-bypass rules are configured across four networks; client validation and DoH controls remain outstanding. Linux resolver failover passed a controlled isolated test; Windows and other client failover remain unverified. |
 | [Prometheus & Grafana Monitoring](monitoring/prometheus-grafana/) | Centralized metrics, dashboards, infrastructure monitoring, and planned exception-based reporting. |
 | [Network Architecture](network/diagrams/) | High-level diagrams documenting the physical, virtual, and network architecture of the homelab. |
 | [Three-Tier Proxmox Micro-PC Rack](hardware/micro-pc-rack/) | Completed custom 3D-printed three-node rack holder, M4 assembly, and physical infrastructure integration. |
@@ -21,13 +21,16 @@ Explore the major projects in this homelab:
 
 ### Completed Project Highlights
 
-- **Redundant Pi-hole DNS:** Deployed primary and secondary Pi-hole v6.7.1 instances on separate Proxmox hosts, configured OPNsense DHCP to advertise both DNS addresses across four networks, and deployed hourly Nebula Sync from the primary to the secondary. Both instances independently pass DNS resolution and blocking tests. Automatic client failover remains unverified.
+- **Redundant Pi-hole DNS:** Deployed primary and secondary Pi-hole v6.7.1 instances on separate Proxmox hosts, configured OPNsense DHCP to advertise both DNS addresses across four networks, and deployed hourly Nebula Sync from the primary to the secondary. Both instances independently pass DNS resolution and blocking tests. Linux resolver failover passed; other client behavior remains unverified.
 - **DNS bypass enforcement — configuration phase:** Added ordered OPNsense rules on LAN, TRUSTED, IOT, and GUEST to permit DNS to both Pi-hole instances and block direct IPv4 DNS on port 53 and DNS-over-TLS on TCP port 853. LAN testing confirmed both Pi-holes resolve queries and a direct query to `8.8.8.8` times out. Enforcement from TRUSTED, IOT, and GUEST has not been client-tested; DNS-over-HTTPS protections are not configured or validated. This work is paused pending further testing.
 - **Physical rack integration:** Three-node micro-PC holder, rack shelves, M4 hardware, and installation — completed October 2026.
 - **Graphy monitoring kiosk:** Raspberry Pi 4 displaying rotating Grafana dashboards — completed October 3, 2026.
 - **Vaultwarden password audit:** PowerShell script and CSV analysis of 573 login entries — completed October 2026. The audit identified issues; it did not automatically remediate passwords.
 
 ### Latest Network and Automation Validation (October 2026)
+
+- **Pi-hole redundancy validation (October 30):** Both Pi-hole servers resolved public and internal DNS names; four Proxmox nodes list both resolvers; gravity domain sets (2,135,103 rows each) and enabled adlist configurations matched. An isolated HomeProx resolver test using an unreachable first server (`192.0.2.1`) and secondary Pi-hole (`192.168.10.3`) resolved `example.com`. The mount-namespace test inadvertently changed the host's `/etc/resolv.conf`; the original primary/secondary configuration was restored and both direct DNS lookups and system resolution passed afterward. This verifies Linux resolver fallback under the tested conditions, not automatic failover for all DHCP clients.
+
 
 - **DNS policy validation:** Verified direct DNS queries to an external resolver are blocked in the tested LAN path, and observed a failed TCP connection to `1.1.1.1:853` during DNS-over-TLS testing. A failed connection alone does not establish that every network and client is covered; additional validation remains paused.
 - **AI-Operations workflow:** The hourly n8n schedule and alert-routing logic were configured and tested, but the original workflow remains unpublished. Pushover configuration and tests should not be confused with live scheduled alerting.
