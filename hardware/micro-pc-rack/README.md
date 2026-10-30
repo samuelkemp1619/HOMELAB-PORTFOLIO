@@ -29,6 +29,14 @@ Designed, iteratively prototyped, 3D printed, and assembled a freestanding three
 - Disk: Samsung SSD 970 EVO Plus 1 TB NVMe (931.5 GiB reported by `lsblk`)
 - Network: Realtek RTL8111/8168-family PCIe Gigabit Ethernet
 
+## HomeProx2 hardware verification (October 30, 2026)
+
+- System SMBIOS: HP Elite Mini 600 G9 Desktop PC
+- CPU: Intel Core i5-12500T, 6 physical cores / 12 threads
+- RAM: 2 × 16 GB Micron DDR5-5600 modules, configured at 4800 MT/s (approximately 31 GiB usable reported by Linux)
+- Disk: Samsung PM9A1 NVMe 512 GB (476.9 GiB reported by `lsblk`)
+- Network: Intel Ethernet Connection (17) I219-LM, Gigabit Ethernet
+
 ## Objectives
 
 - Consolidate three compact Proxmox nodes into a maintainable rack arrangement.
