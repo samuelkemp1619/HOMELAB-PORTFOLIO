@@ -1,5 +1,13 @@
 # Homelab Monitoring — Prometheus, Grafana & Dashy
 
+## Dashboard Overview
+
+![Illustrative Proxmox monitoring dashboard composite](Proxmox%20Monitoring%20Dashboard%20Overview.png)
+
+*Illustrative composite reconstructed from multiple Grafana dashboard screenshots. It shows the types of metrics tracked—including node health, CPU, memory, disk, VM/LXC status, network traffic, storage, and backup coverage—but is not a pixel-exact capture or a verified source of metric values. Some labels and values may differ from the original monitoring data.*
+
+**Publication note:** The uploaded image contains internal node aliases/names and workload identifiers. Treat these as potentially identifying infrastructure details; replace them with generic labels before using the image as a fully sanitized portfolio visual.
+
 ## Overview
 
 This project documents the centralized monitoring environment used to observe the health and availability of my homelab infrastructure.
