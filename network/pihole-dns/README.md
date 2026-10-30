@@ -2,6 +2,10 @@
 
 **Validation scope:** Two Pi-hole instances are deployed. Selected Linux resolver fallback was tested; automatic failover across all clients and complete DNS-bypass/DoH enforcement have not been verified.
 
+## Detailed Case Study
+
+[**DNS Redundancy, Synchronization, and Client Failover Testing**](case-studies/dns-redundancy-and-failover.md) — Architecture, validation evidence, Linux and Windows fallback tests, and outstanding enforcement gaps.
+
 ## Overview
 
 This project documents a redundant, two-instance Pi-hole DNS filtering deployment for the Proxmox homelab. The design keeps DNS filtering available on a second Proxmox host and uses Nebula Sync to replicate supported Pi-hole configuration from the primary to the secondary.
