@@ -15,6 +15,7 @@ flowchart TB
     SWITCH --> V20["VLAN 20 • Trusted"]
     SWITCH --> V30["VLAN 30 • IoT"]
     SWITCH --> V40["VLAN 40 • Guest"]
+    V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
     CLUSTER --> P1["HomeProx<br/>Dell OptiPlex Micro"]
     CLUSTER --> P2["HomeProx2<br/>HP Elite Mini"]
@@ -39,7 +40,7 @@ flowchart TB
     classDef service fill:#e9f7f1,color:#174d36,stroke:#71b49a
     class FW,CLUSTER core
     class SWITCH,V10,V20,V30,V40 network
-    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI service
+    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI,SMART service
 ```
 
 [Open standalone Mermaid source](homelab-network.mmd)
@@ -50,10 +51,12 @@ flowchart TB
 |---|---|---|
 | VLAN 10 | Infrastructure management | In use |
 | VLAN 20 | Trusted clients, including Graphy | In use |
-| VLAN 30 | IoT segment | Configured; DNS enforcement client validation pending |
+| VLAN 30 | IoT segment; Smart devices grouped beneath VLAN 30 in the logical diagram | Configured; DNS enforcement client validation pending |
 | VLAN 40 | Guest segment | Configured; DNS enforcement client validation pending |
 
 OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but automatic client failover is **not verified**. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
+
+The **Smart devices** node is a logical grouping for IoT endpoints, not a verified device inventory or claim that specific devices have joined VLAN 30.
 
 ## Four-node virtualization cluster
 
