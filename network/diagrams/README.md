@@ -17,7 +17,7 @@ flowchart TB
     SWITCH --> V40["VLAN 40 • Guest"]
     V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
-    CLUSTER --> P1["HomeProx<br/>Dell OptiPlex Micro"]
+    CLUSTER --> P1["HomeProx<br/>Dell OptiPlex 3000 (SMBIOS)"]
     CLUSTER --> P2["HomeProx2<br/>HP Elite Mini"]
     CLUSTER --> P3["HomeProx3<br/>HP Elite Mini"]
     CLUSTER --> P4["HomeProx4<br/>Dell PowerEdge R640"]
@@ -58,7 +58,7 @@ flowchart TB
         HOLDER["Custom 3D-printed three-tier holder"]
         H3["Top: HomeProx3 • HP Elite Mini 600 G9<br/>Intel Core i5-12500T (previously reported)"]
         H2["Middle: HomeProx2 • HP Elite Mini 600 G9"]
-        H1["Bottom: HomeProx • Dell OptiPlex 7020 Micro"]
+        H1["Bottom: HomeProx • Dell OptiPlex 3000 (SMBIOS)"]
         R640["HomeProx4 • Dell PowerEdge R640<br/>2× Xeon Silver 4110 • ~754 GiB RAM reported"]
         SHELVES --> HOLDER
         HOLDER --> H3
@@ -82,11 +82,13 @@ flowchart TB
 
 ## Physical Hardware Inventory
 
+**Model correction:** The latest `dmidecode` output from HomeProx identifies it as **Dell OptiPlex 3000**, not the earlier documented 7020 Micro. Chassis form factor remains to be confirmed separately.
+
 This inventory documents **known, currently used** homelab hardware. Hardware specifications not confirmed from current records are deliberately left unspecified. The inventory is distinct from the logical network diagram; connections below do not assert verified switch-port assignments.
 
 | Node / device | Physical hardware | Known details / current use |
 |---|---|---|
-| **HomeProx** | Dell OptiPlex Micro 7020 | Proxmox node; bottom tier of the custom three-tier holder; primary Pi-hole CT101 and OPNsense VM100 |
+| **HomeProx** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
 | **HomeProx2** | HP Elite Mini 600 G9 | Proxmox node; middle tier; AMP CT102 and monitoring stack CT103; provides current off-node backup storage via NFS on its root filesystem |
 | **HomeProx3** | HP Elite Mini 600 G9 | Proxmox node; top tier; Intel Core i5-12500T previously reported; secondary Pi-hole CT105 and Vaultwarden CT104 |
 | **HomeProx4** | Dell PowerEdge R640 | Rack server; dual Intel Xeon Silver 4110 processors; approximately 754 GiB usable RAM previously reported; Samsung 870 EVO 500 GB SSD used for AI storage; Windows Server and AI-Operations VMs |
