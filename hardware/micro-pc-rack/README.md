@@ -11,9 +11,9 @@ Designed, iteratively prototyped, 3D printed, and assembled a freestanding three
 
 | Tier | Node | Computer |
 |---|---|---|
-| Top | HomeProx3 | HP Elite Mini 600 G9 |
-| Middle | HomeProx2 | HP Elite Mini 600 G9 |
-| Bottom | HomeProx | Dell OptiPlex 3000 (SMBIOS-reported; chassis variant pending confirmation) |
+| Top | Node C | HP Elite Mini 600 G9 |
+| Middle | Node B | HP Elite Mini 600 G9 |
+| Bottom | Node A | Dell OptiPlex 3000 (SMBIOS-reported; chassis variant pending confirmation) |
 
 - **CAD:** OpenSCAD; printable STL parts
 - **3D printer:** Creality Ender-3 V3 KE
@@ -21,7 +21,7 @@ Designed, iteratively prototyped, 3D printed, and assembled a freestanding three
 - **Mounting:** Freestanding holder on a VEVOR 1U rack shelf
 - **Design:** Open front and rear, fixed horizontal supports
 
-## HomeProx hardware verification (October 30, 2026)
+## Node A hardware verification (October 30, 2026)
 
 - System SMBIOS: Dell Inc. / OptiPlex 3000 (supersedes the earlier 7020 Micro identification; form factor not independently confirmed)
 - CPU: Intel Core i5-12500T, 6 physical cores / 12 threads
@@ -29,7 +29,7 @@ Designed, iteratively prototyped, 3D printed, and assembled a freestanding three
 - Disk: Samsung SSD 970 EVO Plus 1 TB NVMe (931.5 GiB reported by `lsblk`)
 - Network: Realtek RTL8111/8168-family PCIe Gigabit Ethernet
 
-## HomeProx2 hardware verification (October 30, 2026)
+## Node B hardware verification (October 30, 2026)
 
 - System SMBIOS: HP Elite Mini 600 G9 Desktop PC
 - CPU: Intel Core i5-12500T, 6 physical cores / 12 threads
@@ -37,7 +37,7 @@ Designed, iteratively prototyped, 3D printed, and assembled a freestanding three
 - Disk: Samsung PM9A1 NVMe 512 GB (476.9 GiB reported by `lsblk`)
 - Network: Intel Ethernet Connection (17) I219-LM, Gigabit Ethernet
 
-## HomeProx3 hardware verification (October 30, 2026)
+## Node C hardware verification (October 30, 2026)
 
 - System SMBIOS: HP Elite Mini 600 G9 Desktop PC
 - CPU: Intel Core i5-12500T, 6 physical cores / 12 threads
