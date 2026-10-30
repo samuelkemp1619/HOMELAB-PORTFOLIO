@@ -66,9 +66,7 @@ flowchart TB
         HOLDER --> H1
     end
     subgraph NETWORK_HW["Physical network equipment"]
-        ROUTER["TP-Link Archer AX1800 / AC1800 router"]
         SWITCH_HW["TP-Link TL-SG108E v6.0 managed switch"]
-        ROUTER --- SWITCH_HW
     end
     subgraph OTHER_HW["Other physical homelab equipment"]
         PI4["Graphy • Raspberry Pi 4 Model B<br/>8 GB • Grafana kiosk"]
@@ -77,7 +75,7 @@ flowchart TB
     SWITCH_HW -. "logical network connectivity" .-> RACK
     SWITCH_HW -. "logical network connectivity" .-> PI4
     classDef platform fill:#e5f0ff,color:#17365d,stroke:#77a5d6
-    class H1,H2,H3,R640,ROUTER,SWITCH_HW,PI4,PRINTER platform
+    class H1,H2,H3,R640,SWITCH_HW,PI4,PRINTER platform
 ```
 
 
@@ -92,7 +90,6 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 | **HomeProx2** | HP Elite Mini 600 G9 | Proxmox node; middle tier; AMP CT102 and monitoring stack CT103; provides current off-node backup storage via NFS on its root filesystem |
 | **HomeProx3** | HP Elite Mini 600 G9 | Proxmox node; top tier; Intel Core i5-12500T previously reported; secondary Pi-hole CT105 and Vaultwarden CT104 |
 | **HomeProx4** | Dell PowerEdge R640 | Rack server; dual Intel Xeon Silver 4110 processors; approximately 754 GiB usable RAM previously reported; Samsung 870 EVO 500 GB SSD used for AI storage; Windows Server and AI-Operations VMs |
-| **Router / Wi-Fi** | TP-Link Archer AX1800 / AC1800 | Physical network router / access point; OPNsense routing and firewalling also run virtually in the Proxmox environment |
 | **Managed switch** | TP-Link TL-SG108E v6.0 | 8-port VLAN-capable physical switch |
 | **Monitoring kiosk** | Raspberry Pi 4 Model B Rev 1.5 | 8 GB RAM; Graphy Grafana kiosk on trusted VLAN 20; Debian 13 (last reported) |
 | **Rack** | 19-inch rack with VEVOR 1U vented cantilever shelves | 10-inch-deep shelves; 12-24 threaded rack mounting hardware and washers |
