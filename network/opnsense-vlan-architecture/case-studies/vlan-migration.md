@@ -32,13 +32,13 @@ The environment consists of a three-node Proxmox VE cluster connected through a 
 | Proxmox VE | Virtualization platform |
 | Managed Switch | Layer 2 VLAN switching |
 | Pi-hole | DNS filtering |
-| HomeProx | Proxmox cluster node |
-| HomeProx2 | Proxmox cluster node |
-| HomeProx3 | Proxmox cluster node |
+| Node A | Proxmox cluster node |
+| Node B | Proxmox cluster node |
+| Node C | Proxmox cluster node |
 
 The physical cluster consists of:
 
-- Dell OptiPlex 7020 Micro
+- Dell OptiPlex 3000 (SMBIOS-reported)
 - Two HP Elite Mini 600 G9 systems
 
 ---
@@ -233,7 +233,7 @@ The resulting management design became:
         --------------------------------
         |              |               |
         v              v               v
-    HomeProx       HomeProx2       HomeProx3
+    Node A       Node B       Node C
 ```
 
 OPNsense provides the gateway for this network.
