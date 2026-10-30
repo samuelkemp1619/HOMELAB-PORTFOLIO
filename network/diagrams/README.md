@@ -56,7 +56,7 @@ flowchart TB
     subgraph RACK["Physical rack / infrastructure"]
         SHELVES["19-inch rack • VEVOR 1U shelves"]
         HOLDER["Custom 3D-printed three-tier holder"]
-        H3["Top: HomeProx3 • HP Elite Mini 600 G9<br/>Intel Core i5-12500T (previously reported)"]
+        H3["Top: HomeProx3 • HP Elite Mini 600 G9<br/>i5-12500T • 16 GB DDR5 • 500 GB NVMe"]
         H2["Middle: HomeProx2 • HP Elite Mini 600 G9<br/>i5-12500T • 32 GB DDR5 • 512 GB NVMe"]
         H1["Bottom: HomeProx • Dell OptiPlex 3000 (SMBIOS)"]
         R640["HomeProx4 • Dell PowerEdge R640<br/>2× Xeon Silver 4110 • ~754 GiB RAM reported"]
@@ -90,7 +90,7 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 |---|---|---|
 | **HomeProx** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
 | **HomeProx2** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
-| **HomeProx3** | HP Elite Mini 600 G9 | Proxmox node; top tier; Intel Core i5-12500T previously reported; secondary Pi-hole CT105 and Vaultwarden CT104 |
+| **HomeProx3** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
 | **HomeProx4** | Dell PowerEdge R640 | Rack server; dual Intel Xeon Silver 4110 processors; approximately 754 GiB usable RAM previously reported; Samsung 870 EVO 500 GB SSD used for AI storage; Windows Server and AI-Operations VMs |
 | **Managed switch** | TP-Link TL-SG108E v6.0 | 8-port VLAN-capable physical switch |
 | **Monitoring kiosk** | Raspberry Pi 4 Model B Rev 1.5 | 8 GB RAM; Graphy Grafana kiosk on trusted VLAN 20; Debian 13 (last reported) |
