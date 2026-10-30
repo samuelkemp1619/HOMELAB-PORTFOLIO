@@ -12,12 +12,6 @@ This is a status tracker, not a claim that paused projects have been resumed. En
 - [x] Proxmox backup jobs configured and successful task logs reviewed; restore testing remains separate.
 - [x] Tailscale remote access verified on laptop and phone.
 
-## In Progress
-- [ ] Python Gmail Manager (CT106): continue safeguarded classification of both accounts, 10 messages per account per scheduled run; verify progress and eventual completion. Delete label only for unwanted messages, no Trash action; preserve flags and protected messages.
-
-## Planning / Pending Parts
-- [ ] Raspberry Pi 4 cyberdeck: finalize budget parts, 7-inch display, battery, removable keyboard, clamshell enclosure and 3D-printable layout. Pi 4 8 GB with Debian 13 identified; not assembled.
-
 ## Paused — Resume Only When Requested
 - [ ] AI-Operations n8n Proxmox alerting: hourly schedule and alert logic tested, original workflow unpublished; Pushover work pending.
 - [ ] Minecraft Java public server: WAN/public IPv4 and public access verification.
@@ -36,4 +30,3 @@ This is a status tracker, not a claim that paused projects have been resumed. En
 ## Exclusions / Notes
 - Do not list hardware inspections in portfolio documentation.
 - Removed RFID / Raspberry Pi hardware-security projects are not current backlog items.
-- Do not mark password findings remediated, automated alerts live, DNS enforcement universally validated, or Gmail inbox processing complete without verification.
