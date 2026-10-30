@@ -12,6 +12,8 @@ Designed, deployed, and administer a four-node Proxmox VE environment supporting
 
 [**Power-Loss Recovery and Troubleshooting Incident**](case-studies/power-loss-recovery-incident.md) — Chronological incident timeline, observed failures, supported root-cause findings, corrective actions, and recovery-test gaps.
 
+[**Backup Coverage and Isolated Restore Validation Runbook**](projects/backup-restore-validation.md) — Inventory audit, isolated restore procedure, and pending recovery tests.
+
 ## Architecture
 
 | Public node alias | Hardware | Workload focus |
