@@ -1,5 +1,7 @@
 # Case Study: Rolling Proxmox VE Cluster Upgrade
 
+> **Historical case study:** This three-node maintenance sequence describes the environment at the time. The current cluster has four nodes; earlier workload placement and deferred steps are historical, not current inventory.
+
 ## Executive Summary
 
 This case study documents a rolling maintenance and upgrade procedure performed on my three-node Proxmox VE homelab cluster.
@@ -20,9 +22,9 @@ The homelab consists of a three-node Proxmox VE cluster.
 
 | Node | Hardware | Primary Workloads |
 |------|----------|-------------------|
-| HomeProx | Dell OptiPlex 7020 Micro | OPNsense, Pi-hole, remote-access infrastructure |
-| HomeProx2 | HP Elite Mini 600 G9 | AMP / Minecraft, NFS backup storage |
-| HomeProx3 | HP Elite Mini 600 G9 | Prometheus, Grafana, Dashy |
+| Node A | Dell OptiPlex 3000 (SMBIOS-reported) | OPNsense, Pi-hole, remote-access infrastructure |
+| Node B | HP Elite Mini 600 G9 | AMP / Minecraft, NFS backup storage |
+| Node C | HP Elite Mini 600 G9 | Prometheus, Grafana, Dashy |
 
 The cluster uses Corosync for cluster communication and consists of three voting nodes.
 
@@ -77,9 +79,9 @@ This confirmed that one node could safely be removed from service while the othe
 
 ---
 
-# Phase 1 — HomeProx2
+# Phase 1 — Node B
 
-HomeProx2 was selected as the first upgrade target.
+Node B was selected as the first upgrade target.
 
 The node hosted:
 
@@ -125,11 +127,11 @@ nfs: infra-backups
         path /mnt/pve/infra-backups
         server [backup-server]
         content backup
-        nodes HomeProx
+        nodes Node A
         prune-backups keep-all=1
 ```
 
-This revealed that the shared backup storage was intentionally available to the primary HomeProx node rather than directly exposed as backup storage on every cluster node.
+This revealed that the shared backup storage was intentionally available to the primary Node A node rather than directly exposed as backup storage on every cluster node.
 
 I then inspected the scheduled `vzdump` job.
 
@@ -210,7 +212,7 @@ The backup was therefore confirmed successful before maintenance continued.
 
 ---
 
-## HomeProx2 Upgrade
+## Node B Upgrade
 
 The distribution upgrade was then performed:
 
@@ -243,9 +245,9 @@ The system was still running the previous kernel because a reboot had not yet oc
 
 ---
 
-## HomeProx2 Reboot and Kernel Validation
+## Node B Reboot and Kernel Validation
 
-HomeProx2 was rebooted.
+Node B was rebooted.
 
 After reconnecting, the running kernel was checked:
 
@@ -259,7 +261,7 @@ Result:
 7.0.14-20-pve
 ```
 
-This confirmed that HomeProx2 successfully booted into the new kernel.
+This confirmed that Node B successfully booted into the new kernel.
 
 ---
 
@@ -285,7 +287,7 @@ All three nodes were present.
 
 This confirmed:
 
-- HomeProx2 successfully rejoined Corosync.
+- Node B successfully rejoined Corosync.
 - Cluster communication was operational.
 - Full quorum had been restored.
 
@@ -315,13 +317,13 @@ apt list --upgradable
 
 No packages were returned.
 
-HomeProx2 maintenance was considered complete.
+Node B maintenance was considered complete.
 
 ---
 
-# Phase 2 — HomeProx3
+# Phase 2 — Node C
 
-HomeProx3 was upgraded next.
+Node C was upgraded next.
 
 This node hosts the monitoring environment, including:
 
@@ -377,7 +379,7 @@ This provided a verified recovery point before modifying the host.
 
 ---
 
-## HomeProx3 Upgrade Simulation
+## Node C Upgrade Simulation
 
 The upgrade was simulated:
 
@@ -395,7 +397,7 @@ No packages were scheduled for removal.
 
 ---
 
-## HomeProx3 Upgrade
+## Node C Upgrade
 
 The distribution upgrade was performed:
 
@@ -414,11 +416,11 @@ proxmox-kernel-7.0: 7.0.14-20
 proxmox-kernel-7.0.14-20-pve-signed: 7.0.14-20
 ```
 
-HomeProx3 was then rebooted.
+Node C was then rebooted.
 
 ---
 
-## HomeProx3 Post-Upgrade Validation
+## Node C Post-Upgrade Validation
 
 After reboot:
 
@@ -462,22 +464,22 @@ apt list --upgradable
 
 returned no remaining packages.
 
-HomeProx3 maintenance was therefore considered complete.
+Node C maintenance was therefore considered complete.
 
 ---
 
-# Phase 3 — HomeProx Risk Assessment
+# Phase 3 — Node A Risk Assessment
 
 The final node required additional consideration.
 
-HomeProx hosts several services that are critical to the operation and remote administration of the network:
+Node A hosts several services that are critical to the operation and remote administration of the network:
 
 - Active OPNsense router/firewall
 - Pi-hole DNS
 - Tailscale subnet router
 - Primary infrastructure services
 
-Unlike the other two nodes, rebooting HomeProx could interrupt the network itself.
+Unlike the other two nodes, rebooting Node A could interrupt the network itself.
 
 ---
 
@@ -507,7 +509,7 @@ The latest backups had been created earlier the same day.
 
 ## Upgrade Simulation
 
-HomeProx was also evaluated using:
+Node A was also evaluated using:
 
 ```bash
 apt-get -s dist-upgrade
@@ -529,7 +531,7 @@ However, package safety was not the only consideration.
 
 At the time of the maintenance, I was not physically at the homelab location.
 
-HomeProx provides:
+Node A provides:
 
 - Network routing
 - Firewall services
@@ -539,7 +541,7 @@ HomeProx provides:
 
 Although additional OPNsense virtual machines existed on other Proxmox nodes, they were not operating as a verified automatic failover system.
 
-If HomeProx failed to boot correctly after the upgrade, I could potentially lose:
+If Node A failed to boot correctly after the upgrade, I could potentially lose:
 
 - Internet routing
 - Internal DNS
@@ -591,7 +593,7 @@ A future improvement is to ensure all important workloads have automated off-nod
 
 ## 3. Router Dependency
 
-The maintenance process highlighted the network's dependency on the active OPNsense VM hosted by HomeProx.
+The maintenance process highlighted the network's dependency on the active OPNsense VM hosted by Node A.
 
 Standby OPNsense VMs exist, but automatic failover has not yet been validated.
 
@@ -713,7 +715,7 @@ Only proceed after the current node has been completely validated.
 
 Two of the three Proxmox nodes were successfully upgraded using a rolling maintenance strategy.
 
-### HomeProx2
+### Node B
 
 - Proxmox packages updated
 - New kernel installed
@@ -723,7 +725,7 @@ Two of the three Proxmox nodes were successfully upgraded using a rolling mainte
 - AMP container returned to service
 - No remaining package updates
 
-### HomeProx3
+### Node C
 
 - Proxmox packages updated
 - New kernel installed
@@ -733,7 +735,7 @@ Two of the three Proxmox nodes were successfully upgraded using a rolling mainte
 - Monitoring container returned to service
 - No remaining package updates
 
-### HomeProx
+### Node A
 
 - Critical backups verified
 - Upgrade simulation completed successfully
@@ -829,8 +831,8 @@ This project demonstrates practical experience with:
 
 **Partially Complete**
 
-HomeProx2 and HomeProx3 have been successfully upgraded and validated.
+Node B and Node C have been successfully upgraded and validated.
 
-The final HomeProx upgrade is intentionally pending until physical access is available because the node hosts the active network gateway, DNS service, and remote-access infrastructure.
+The final Node A upgrade is intentionally pending until physical access is available because the node hosts the active network gateway, DNS service, and remote-access infrastructure.
 
 This case study will be updated after the final node maintenance is completed.
