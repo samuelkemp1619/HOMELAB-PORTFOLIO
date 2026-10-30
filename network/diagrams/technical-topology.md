@@ -20,19 +20,19 @@ flowchart TB
 
     subgraph CLUSTER["3-Node Proxmox VE Cluster"]
 
-        subgraph HP1["HomeProx — Dell OptiPlex 7020 Micro"]
+        subgraph HP1["Node A — Dell OptiPlex 3000 (SMBIOS-reported)"]
             OPNSENSE["OPNsense VM<br/>Active Router / Firewall"]
             PIHOLE["Pi-hole LXC<br/>DNS Filtering"]
             TSR["Tailscale<br/>Subnet Router"]
         end
 
-        subgraph HP2["HomeProx2 — HP Elite Mini 600 G9"]
+        subgraph HP2["Node B — HP Elite Mini 600 G9"]
             AMP["AMP / Minecraft LXC"]
             BACKUP["NFS Backup Storage"]
             OPNSENSE2["Standby OPNsense VM<br/>Not Automatic Failover"]
         end
 
-        subgraph HP3["HomeProx3 — HP Elite Mini 600 G9"]
+        subgraph HP3["Node C — HP Elite Mini 600 G9"]
             MON["Monitoring LXC"]
             PROM["Prometheus"]
             GRAF["Grafana"]
@@ -101,9 +101,9 @@ The core environment consists of three mini-PC Proxmox nodes connected to a mana
 
 | Node | Hardware | Primary Role |
 |---|---|---|
-| HomeProx | Dell OptiPlex 7020 Micro | Core network infrastructure |
-| HomeProx2 | HP Elite Mini 600 G9 | Applications and backup services |
-| HomeProx3 | HP Elite Mini 600 G9 | Monitoring and observability |
+| Node A | Dell OptiPlex 3000 (SMBIOS-reported) | Core network infrastructure |
+| Node B | HP Elite Mini 600 G9 | Applications and backup services |
+| Node C | HP Elite Mini 600 G9 | Monitoring and observability |
 
 The nodes form a three-member Proxmox VE cluster using Corosync.
 
@@ -192,7 +192,7 @@ This provides centralized DNS policy and visibility into DNS activity.
 
 # Monitoring Architecture
 
-A dedicated LXC container on HomeProx3 hosts the primary monitoring environment.
+A dedicated LXC container on Node C hosts the primary monitoring environment.
 
 The monitoring stack includes:
 
@@ -212,7 +212,7 @@ A Raspberry Pi is used as a dedicated physical kiosk for displaying monitoring i
 
 Tailscale provides secure remote administrative connectivity.
 
-HomeProx operates as a subnet router for the management network.
+Node A operates as a subnet router for the management network.
 
 The general remote-access path is:
 
@@ -223,7 +223,7 @@ Remote Laptop / Mobile Device
        Tailscale
             |
             v
-   HomeProx Subnet Router
+   Node A Subnet Router
             |
             v
      Management VLAN
@@ -238,7 +238,7 @@ This allows authorized remote devices to reach internal management services with
 
 # Backup Architecture
 
-HomeProx2 provides NFS-based backup storage for infrastructure backups.
+Node B provides NFS-based backup storage for infrastructure backups.
 
 Proxmox `vzdump` is used to create compressed VM and LXC recovery archives.
 
@@ -276,7 +276,7 @@ Several critical infrastructure services are virtualized.
 
 This provides flexibility but also creates dependencies.
 
-For example, HomeProx currently hosts:
+For example, Node A currently hosts:
 
 - Active OPNsense
 - Pi-hole
