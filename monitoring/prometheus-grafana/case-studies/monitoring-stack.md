@@ -14,7 +14,7 @@ The current implementation provides the foundation for future centralized loggin
 
 # Environment
 
-The monitoring environment runs as a dedicated LXC container within a three-node Proxmox VE cluster.
+The monitoring environment runs as a dedicated LXC container within a four-node Proxmox VE cluster.
 
 | Component | Role |
 |---|---|
@@ -25,7 +25,7 @@ The monitoring environment runs as a dedicated LXC container within a three-node
 | Dashy | Centralized service dashboard |
 | Raspberry Pi | Dedicated monitoring display |
 
-The monitoring container is hosted on HomeProx3.
+The monitoring container is hosted on Node B.
 
 Separating monitoring into its own container allows the monitoring environment to be independently:
 
@@ -64,7 +64,7 @@ The objective was therefore to create a centralized monitoring platform capable 
 
 # Solution
 
-A dedicated monitoring container was deployed on HomeProx3.
+A dedicated monitoring container is deployed on Node B.
 
 The logical architecture is:
 
@@ -358,7 +358,7 @@ Potential checks include:
 
 The monitoring environment itself demonstrated why infrastructure monitoring and operational validation are important.
 
-During a rolling Proxmox upgrade, the backup configuration was reviewed before the HomeProx3 host was modified.
+During a rolling Proxmox upgrade, the backup configuration was reviewed before the Node C host was modified.
 
 The monitoring container was discovered to be missing from the scheduled backup job.
 
@@ -384,7 +384,7 @@ This identified automated backup coverage as an area requiring improvement.
 
 # Post-Maintenance Validation
 
-After HomeProx3 was upgraded and rebooted, several checks were performed.
+After Node C was upgraded and rebooted, several checks were performed.
 
 The active Proxmox kernel was verified:
 
