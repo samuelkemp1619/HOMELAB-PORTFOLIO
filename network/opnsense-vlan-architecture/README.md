@@ -1,5 +1,7 @@
 # OPNsense & VLAN Network Architecture
 
+**Status:** VLAN and firewall architecture deployed; some cross-VLAN DNS-bypass policy tests and DoH controls remain pending.
+
 ## Overview
 
 This project documents the redesign of my homelab network around OPNsense, VLAN segmentation, and a dedicated management network.
