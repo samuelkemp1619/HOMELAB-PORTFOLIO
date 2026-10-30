@@ -33,6 +33,10 @@ A practical portfolio of **network administration, systems engineering, cybersec
 - [Power-Loss Recovery and Troubleshooting Incident](virtualization/proxmox/case-studies/power-loss-recovery-incident.md)
 - [Redundant Pi-hole DNS and Failover Testing](network/pihole-dns/case-studies/dns-redundancy-and-failover.md)
 
+## Recovery Validation Plan
+
+[Proxmox Backup Coverage and Isolated Restore Validation](virtualization/proxmox/projects/backup-restore-validation.md) — Documented test plan and evidence log. **Restore testing has not yet been performed.**
+
 ## Selected Accomplishments
 
 ### Segmented network and DNS resilience
