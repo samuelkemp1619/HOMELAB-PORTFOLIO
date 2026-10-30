@@ -17,6 +17,8 @@ Explore the major projects in this homelab:
 | [Rack Shelf & Node Installation](hardware/rack-shelf-installation/) | Completed 12-24 rack hardware compatibility troubleshooting, shelf installation, and three-node physical integration. |
 | [Graphy — Grafana Monitoring Kiosk](monitoring/graphy-grafana-kiosk/) | Completed Raspberry Pi 4 Chromium/labwc Grafana playlist kiosk on trusted VLAN 20. |
 | [AI-Operations Proxmox Monitoring](automation/ai-operations-proxmox-monitoring/) | Four-node monitoring, AI health reporting and tested alert routing; scheduled workflow remains unpublished. |
+| [Python Gmail Manager](automation/python-gmail-manager/) | Debian 13 LXC Python Gmail classification and labeling workflow; two accounts authorized, safeguards and audit logging tested, processing ongoing. |
+| [Raspberry Pi 4 Cyberdeck](hardware/raspberry-pi-cyberdeck/) | Planned clamshell portable computer with 7-inch display, removable keyboard and battery; parts/layout not finalized. |
 | [Vaultwarden Password Audit](security/vaultwarden-password-audit/) | Completed PowerShell security hygiene audit of 573 login entries with aggregate findings and safe reporting. |
 
 ### Completed Project Highlights
@@ -32,6 +34,12 @@ Explore the major projects in this homelab:
 - **DNS policy validation:** Verified direct DNS queries to an external resolver are blocked in the tested LAN path, and observed a failed TCP connection to `1.1.1.1:853` during DNS-over-TLS testing. A failed connection alone does not establish that every network and client is covered; additional validation remains paused.
 - **AI-Operations workflow:** The hourly n8n schedule and alert-routing logic were configured and tested, but the original workflow remains unpublished. Pushover configuration and tests should not be confused with live scheduled alerting.
 - **Infrastructure documentation:** Retained the completed physical rack integration and backup scheduling work. Projects awaiting additional implementation remain explicitly marked as paused.
+
+### Project Tracking (October 30, 2026)
+
+- **Python Gmail Manager (CT106):** Active incremental processing. Latest confirmed configuration is 10 messages per account per scheduled run (20 total); this is not evidence that either inbox has been fully processed. Unread/starred/important flags and protected mail are preserved; unwanted messages receive the Delete label rather than being moved to Trash.
+- **Cyberdeck:** Raspberry Pi 4 (8 GB) running Debian 13 identified as the base computer. Clamshell enclosure, 7-inch display, removable keyboard and internal battery are still in planning; procurement and assembly are not complete.
+- **Physical integration:** The three-tier holder, rack shelves, installed nodes and associated cable management are complete.
 
 ### Paused / Future Work
 
