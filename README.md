@@ -27,6 +27,12 @@ A practical portfolio of **network administration, systems engineering, cybersec
 | [Vaultwarden password audit](security/vaultwarden-password-audit/) | PowerShell, security hygiene analysis, reporting | Audit completed; findings not automatically remediated |
 | [AI-Operations monitoring prototype](automation/ai-operations-proxmox-monitoring/) | Workflow design, alert classification, notification testing | Prototype tested; scheduled workflow unpublished and paused |
 
+## Featured Technical Case Studies
+
+- [Four-Node Proxmox Cluster Operations and Recovery](virtualization/proxmox/case-studies/four-node-cluster-operations.md)
+- [Power-Loss Recovery and Troubleshooting Incident](virtualization/proxmox/case-studies/power-loss-recovery-incident.md)
+- [Redundant Pi-hole DNS and Failover Testing](network/pihole-dns/case-studies/dns-redundancy-and-failover.md)
+
 ## Selected Accomplishments
 
 ### Segmented network and DNS resilience
