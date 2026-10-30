@@ -4,6 +4,14 @@ A practical portfolio of **network administration, systems engineering, cybersec
 
 > **Documentation approach:** Implemented features, validated behavior, and future work are distinguished throughout. Network addresses, device-specific identifiers, and credentials are omitted or masked in public examples.
 
+## Homelab Architecture Overview
+
+![Illustrative four-node Proxmox homelab architecture](Homelab%20Architecture_%20Proxmox%20Cluster%20Overview.png)
+
+*Illustrative architecture overview of the four-node Proxmox VE environment, including hosted services, monitoring, network segmentation, remote access, and backup workflows. Logical connections and some hardware/service annotations are schematic and should not be treated as independently verified topology or configuration.*
+
+[View full-size architecture diagram](Homelab%20Architecture_%20Proxmox%20Cluster%20Overview.png)
+
 ## Featured Projects
 
 | Project | Demonstrated skills | Status |
