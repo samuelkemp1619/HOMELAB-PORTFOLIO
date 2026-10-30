@@ -9,7 +9,7 @@ This is a **logical topology**, not a verified port-by-port cable map. It docume
 ```mermaid
 flowchart TB
     WAN((Internet)) --> EDGE["WAN / upstream gateway"]
-    EDGE --> FW["OPNsense virtual firewall / router<br/>HomeProx • VM 100"]
+    EDGE --> FW["OPNsense virtual firewall / router<br/>Node A • VM 100"]
     FW --> SWITCH["Managed switching<br/>VLAN-aware infrastructure"]
     SWITCH --> V10["VLAN 10 • Management"]
     SWITCH --> V20["VLAN 20 • Trusted"]
@@ -17,10 +17,10 @@ flowchart TB
     SWITCH --> V40["VLAN 40 • Guest"]
     V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
-    CLUSTER --> P1["HomeProx<br/>Dell OptiPlex 3000 (SMBIOS)"]
-    CLUSTER --> P2["HomeProx2<br/>HP Elite Mini 600 G9"]
-    CLUSTER --> P3["HomeProx3<br/>HP Elite Mini"]
-    CLUSTER --> P4["HomeProx4<br/>Dell PowerEdge R640"]
+    CLUSTER --> P1["Node A<br/>Dell OptiPlex 3000 (SMBIOS)"]
+    CLUSTER --> P2["Node B<br/>HP Elite Mini 600 G9"]
+    CLUSTER --> P3["Node C<br/>HP Elite Mini"]
+    CLUSTER --> P4["Node D<br/>Dell PowerEdge R640"]
     P1 --> DNS1["CT 101 • Primary Pi-hole"]
     P2 --> APP["CT 102 • AMP"]
     P2 --> OBS["CT 103 • Dashy / Prometheus / Grafana<br/>Nebula Sync"]
@@ -58,10 +58,10 @@ flowchart TB
     GW["Default gateway • 192.168.10.XXX<br/>Physical uplink/port not verified"]
     SW["TP-Link TL-SG108E v6.0<br/>Management: 192.168.10.XXX<br/>7 × 1Gbps links up; port 4 down"]
     GW -. "upstream physical path unverified" .-> SW
-    SW --- H1["HomeProx • Dell OptiPlex 3000<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
-    SW --- H2["HomeProx2 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
-    SW --- H3["HomeProx3 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
-    SW --- H4["HomeProx4 • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW --- H1["Node A • Dell OptiPlex 3000<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW --- H2["Node B • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW --- H3["Node C • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW --- H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW --- POE["PoE injector<br/>Switch-facing port unverified"]
     POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>192.168.20.XXX • VLAN 20 management"]
     AP -. "Wi-Fi • SSIDs/VLAN mappings pending" .-> WIFI["Wireless clients / networks<br/>SSID details unverified"]
@@ -91,12 +91,12 @@ These are the switch's **configured** VLAN memberships, not proof of each connec
 
 | Node | Active physical NIC | MAC | Link | Management configuration |
 |---|---|---|---|---|
-| HomeProx | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
-| HomeProx2 | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
-| HomeProx3 | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
-| HomeProx4 | `nic1` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0` • `192.168.10.XXX/24` |
+| Node A | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
+| Node B | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
+| Node C | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
+| Node D | `nic1` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0` • `192.168.10.XXX/24` |
 
-HomeProx, HomeProx2 and HomeProx3 have VLAN-aware `vmbr0` bridges. HomeProx4's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. HomeProx4 is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to the switch **through a PoE injector**; its management address is reachable from HomeProx, but SSIDs remain pending credential recovery. A 15-second LLDP capture on HomeProx observed no advertisements, so exact switch ports cannot be assigned reliably from remote evidence.
+Node A, Node B and Node C have VLAN-aware `vmbr0` bridges. Node D's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. Node D is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to the switch **through a PoE injector**; its management address is reachable from Node A, but SSIDs remain pending credential recovery. A 15-second LLDP capture on Node A observed no advertisements, so exact switch ports cannot be assigned reliably from remote evidence.
 
 ## Physical Hardware Layout
 
@@ -107,10 +107,10 @@ flowchart TB
     subgraph RACK["Physical rack / infrastructure"]
         SHELVES["19-inch rack • VEVOR 1U shelves"]
         HOLDER["Custom 3D-printed three-tier holder"]
-        H3["Top: HomeProx3 • HP Elite Mini 600 G9<br/>i5-12500T • 16 GB DDR5 • 500 GB NVMe"]
-        H2["Middle: HomeProx2 • HP Elite Mini 600 G9<br/>i5-12500T • 32 GB DDR5 • 512 GB NVMe"]
-        H1["Bottom: HomeProx • Dell OptiPlex 3000 (SMBIOS)"]
-        R640["HomeProx4 • Dell PowerEdge R640<br/>2× Xeon Silver 4110 • 768 GB RAM<br/>2× Samsung 870 EVO 500 GB SSD"]
+        H3["Top: Node C • HP Elite Mini 600 G9<br/>i5-12500T • 16 GB DDR5 • 500 GB NVMe"]
+        H2["Middle: Node B • HP Elite Mini 600 G9<br/>i5-12500T • 32 GB DDR5 • 512 GB NVMe"]
+        H1["Bottom: Node A • Dell OptiPlex 3000 (SMBIOS)"]
+        R640["Node D • Dell PowerEdge R640<br/>2× Xeon Silver 4110 • 768 GB RAM<br/>2× Samsung 870 EVO 500 GB SSD"]
         SHELVES --> HOLDER
         HOLDER --> H3
         HOLDER --> H2
@@ -137,22 +137,22 @@ flowchart TB
 
 ## Physical Hardware Inventory
 
-**Model correction:** The latest `dmidecode` output from HomeProx identifies it as **Dell OptiPlex 3000**, not the earlier documented 7020 Micro. Chassis form factor remains to be confirmed separately.
+**Model correction:** The latest `dmidecode` output from Node A identifies it as **Dell OptiPlex 3000**, not the earlier documented 7020 Micro. Chassis form factor remains to be confirmed separately.
 
 This inventory documents **known, currently used** homelab hardware. Hardware specifications not confirmed from current records are deliberately left unspecified. The inventory is distinct from the logical network diagram; connections below do not assert verified switch-port assignments.
 
 | Node / device | Physical hardware | Known details / current use |
 |---|---|---|
-| **HomeProx** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
-| **HomeProx2** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
-| **HomeProx3** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
-| **HomeProx4** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server and AI-Operations VMs |
-| **Managed switch** | TP-Link TL-SG108E v6.0 | HomeLab_Switch; 192.168.10.XXX; seven active 1Gbps links; port 4 down; VLAN/PVID table above |
+| **Node A** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
+| **Node B** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
+| **Node C** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
+| **Node D** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server and AI-Operations VMs |
+| **Managed switch** | TP-Link TL-SG108E v6.0 | Managed Switch; 192.168.10.XXX; seven active 1Gbps links; port 4 down; VLAN/PVID table above |
 | **Wireless access point** | Grandstream GWN7660E | 192.168.20.XXX (VLAN 20); connected to TL-SG108E through a PoE injector; SSIDs and switch port pending verification |
 | **PoE injector** | Model unverified | Inline between managed switch and GWN7660E access point |
 | **Monitoring kiosk** | Raspberry Pi 4 Model B Rev 1.5 | 8 GB RAM; Graphy Grafana kiosk on trusted VLAN 20; Debian 13 (last reported) |
 | **Rack** | 19-inch rack with VEVOR 1U vented cantilever shelves | 10-inch-deep shelves; 12-24 threaded rack mounting hardware and washers |
-| **Micro-PC organizer** | Custom 3D-printed three-tier holder | Holds HomeProx, HomeProx2 and HomeProx3; M4 bolts and heat-set inserts |
+| **Micro-PC organizer** | Custom 3D-printed three-tier holder | Holds Node A, Node B and Node C; M4 bolts and heat-set inserts |
 | **3D printer** | Creality Ender-3 V3 KE | Used to fabricate the custom holder and other lab components; fabrication equipment, not a confirmed VLAN endpoint |
 
 A separate **Netgear GS105 switch** has been discussed for a future re-cabling project but is **not shown as installed**. The proposed backup-storage migration remains pending; the two currently detected Samsung 870 EVO SSDs do not establish that a dedicated backup disk has been provisioned.
@@ -166,16 +166,16 @@ A separate **Netgear GS105 switch** has been discussed for a future re-cabling p
 | VLAN 30 | IoT segment; Smart devices grouped beneath VLAN 30 in the logical diagram | Configured; DNS enforcement client validation pending |
 | VLAN 40 | Guest segment | Configured; DNS enforcement client validation pending |
 
-OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but HomeProx Linux resolver fallback has passed a simulated unavailable-primary test; Windows and other client failover remain unverified. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
+OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but Node A Linux resolver fallback has passed a simulated unavailable-primary test; Windows and other client failover remain unverified. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
 
 The **Smart devices** node is a logical grouping for IoT endpoints, not a verified device inventory or claim that specific devices have joined VLAN 30.
 
 ## Four-node virtualization cluster
 
-- **HomeProx:** OPNsense VM 100 and primary Pi-hole CT 101.
-- **HomeProx2:** AMP CT 102 and monitoring/application stack CT 103 (Dashy, Prometheus, Grafana, exporters, Nebula Sync).
-- **HomeProx3:** Vaultwarden CT 104 and secondary Pi-hole CT 105.
-- **HomeProx4:** Windows Server 2025 VM 400 and AI-Operations tooling.
+- **Node A:** OPNsense VM 100 and primary Pi-hole CT 101.
+- **Node B:** AMP CT 102 and monitoring/application stack CT 103 (Dashy, Prometheus, Grafana, exporters, Nebula Sync).
+- **Node C:** Vaultwarden CT 104 and secondary Pi-hole CT 105.
+- **Node D:** Windows Server 2025 VM 400 and AI-Operations tooling.
 
 Proxmox scheduled backups use off-node storage. The n8n alert workflow has been configured and manually tested, but scheduled production execution remains unpublished/paused.
 
