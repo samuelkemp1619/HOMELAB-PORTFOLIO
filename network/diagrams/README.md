@@ -47,6 +47,55 @@ flowchart TB
 
 
 
+## Physical Network Topology (verified October 30, 2026)
+
+Physical links below are confirmed at the **device level**, but exact TL-SG108E port assignments remain **unverified**. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Upstream gateway cabling and the AP's SSID-to-VLAN mapping remain unverified.
+
+```mermaid
+flowchart TB
+    GW["Default gateway • 192.168.10.1<br/>Physical uplink/port not verified"]
+    SW["HomeLab_Switch • TP-Link TL-SG108E v6.0<br/>Management: 192.168.10.5<br/>7 × 1Gbps links up; port 4 down"]
+    GW -. "upstream physical path unverified" .-> SW
+    SW --- H1["HomeProx • Dell OptiPlex 3000<br/>nic0 • 1Gbps full duplex<br/>192.168.10.11"]
+    SW --- H2["HomeProx2 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.12"]
+    SW --- H3["HomeProx3 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.13"]
+    SW --- H4["HomeProx4 • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.14"]
+    SW --- POE["PoE injector<br/>Switch-facing port unverified"]
+    POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>192.168.20.98 • VLAN 20 management"]
+    AP -. "Wi-Fi • SSIDs/VLAN mappings pending" .-> WIFI["Wireless clients / networks<br/>SSID details unverified"]
+    H1 -. "OPNsense VM100 • virtual gateway" .-> GW
+    classDef device fill:#e5f0ff,color:#17365d,stroke:#77a5d6
+    class SW,H1,H2,H3,H4,POE,AP device
+```
+
+### Managed switch: port state and VLAN configuration
+
+**Switch:** TP-Link TL-SG108E v6.0, device name `HomeLab_Switch`, management IP `192.168.10.5`, MAC `0C:EF:15:05:DA:07`, firmware `1.0.0 Build 20230218 Rel.50633`. 802.1Q VLAN is enabled. All eight ports are administratively enabled, configured for auto-negotiation with flow control off. Connected ports currently negotiate 1000 Mbps full duplex.
+
+| Port | Observed link | PVID | Untagged VLAN | Tagged VLANs | Connected device |
+|---|---|---|---|---|---|
+| 1 | 1Gbps full | 100 | 100 | — | Unverified |
+| 2 | 1Gbps full | 10 | 10 | — | Unverified |
+| 3 | 1Gbps full | 10 | 10 | — | Unverified |
+| 4 | Down | 20 | 20 | — | None detected |
+| 5 | 1Gbps full | 20 | 20 | 30, 40 | Unverified |
+| 6 | 1Gbps full | 10 | — | 10, 20, 30, 40, 100 | Unverified |
+| 7 | 1Gbps full | 10 | — | 10, 20, 30, 40, 100 | Unverified |
+| 8 | 1Gbps full | 10 | — | 10, 20, 30, 40, 100 | Unverified |
+
+These are the switch's **configured** VLAN memberships, not proof of each connected endpoint's VLAN behavior. VLAN 1 appears in the configuration table without populated membership details. Port 1's VLAN 100 setting is **not** proof that it is the gateway uplink.
+
+### Physical interface verification
+
+| Node | Active physical NIC | MAC | Link | Management configuration |
+|---|---|---|---|---|
+| HomeProx | `nic0` | `6c:3c:8c:11:df:b0` | 1Gbps full | `vmbr0.10` • `192.168.10.11/24` |
+| HomeProx2 | `nic0` | `7c:57:58:11:34:3d` | 1Gbps full | `vmbr0.10` • `192.168.10.12/24` |
+| HomeProx3 | `nic0` | `5c:60:ba:c7:78:57` | 1Gbps full | `vmbr0.10` • `192.168.10.13/24` |
+| HomeProx4 | `nic1` | `b0:26:28:18:a7:33` | 1Gbps full | `vmbr0` • `192.168.10.14/24` |
+
+HomeProx, HomeProx2 and HomeProx3 have VLAN-aware `vmbr0` bridges. HomeProx4's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. HomeProx4 is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to the switch **through a PoE injector**; its management address is reachable from HomeProx, but SSIDs remain pending credential recovery. A 15-second LLDP capture on HomeProx observed no advertisements, so exact switch ports cannot be assigned reliably from remote evidence.
+
 ## Physical Hardware Layout
 
 The following diagram inventories the physical platforms separately from the virtual service topology above.
@@ -67,18 +116,22 @@ flowchart TB
     end
     subgraph NETWORK_HW["Physical network equipment"]
         SWITCH_HW["TP-Link TL-SG108E v6.0 managed switch"]
+        INJECTOR["PoE injector"]
+        ACCESS["Grandstream GWN7660E access point"]
+        SWITCH_HW --> INJECTOR --> ACCESS
     end
     subgraph OTHER_HW["Other physical homelab equipment"]
         PI4["Graphy • Raspberry Pi 4 Model B<br/>8 GB • Grafana kiosk"]
         PRINTER["Creality Ender-3 V3 KE<br/>Fabrication equipment"]
     end
-    SWITCH_HW -. "logical network connectivity" .-> RACK
-    SWITCH_HW -. "logical network connectivity" .-> PI4
+    SWITCH_HW --- H1
+    SWITCH_HW --- H2
+    SWITCH_HW --- H3
+    SWITCH_HW --- R640
+    ACCESS -. "Wi-Fi; SSIDs unverified" .-> PI4
     classDef platform fill:#e5f0ff,color:#17365d,stroke:#77a5d6
-    class H1,H2,H3,R640,SWITCH_HW,PI4,PRINTER platform
+    class H1,H2,H3,R640,SWITCH_HW,INJECTOR,ACCESS,PI4,PRINTER platform
 ```
-
-
 
 ## Physical Hardware Inventory
 
@@ -91,8 +144,10 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 | **HomeProx** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
 | **HomeProx2** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
 | **HomeProx3** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
-| **HomeProx4** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (link status unverified); Windows Server and AI-Operations VMs |
-| **Managed switch** | TP-Link TL-SG108E v6.0 | 8-port VLAN-capable physical switch |
+| **HomeProx4** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server and AI-Operations VMs |
+| **Managed switch** | TP-Link TL-SG108E v6.0 | HomeLab_Switch; 192.168.10.5; seven active 1Gbps links; port 4 down; VLAN/PVID table above |
+| **Wireless access point** | Grandstream GWN7660E | 192.168.20.98 (VLAN 20); connected to TL-SG108E through a PoE injector; SSIDs and switch port pending verification |
+| **PoE injector** | Model unverified | Inline between managed switch and GWN7660E access point |
 | **Monitoring kiosk** | Raspberry Pi 4 Model B Rev 1.5 | 8 GB RAM; Graphy Grafana kiosk on trusted VLAN 20; Debian 13 (last reported) |
 | **Rack** | 19-inch rack with VEVOR 1U vented cantilever shelves | 10-inch-deep shelves; 12-24 threaded rack mounting hardware and washers |
 | **Micro-PC organizer** | Custom 3D-printed three-tier holder | Holds HomeProx, HomeProx2 and HomeProx3; M4 bolts and heat-set inserts |
@@ -128,4 +183,4 @@ Tailscale enables remote administrative access. Graphy is a Raspberry Pi 4 kiosk
 
 ## Scope and limitations
 
-This diagram does **not** assert verified switch-port assignments, redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. It intentionally omits private IPs, credentials, and firewall rule details. No hardware inspection details are included.
+This diagram does **not** assert verified switch-port assignments, redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
