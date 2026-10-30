@@ -18,7 +18,7 @@ flowchart TB
     V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
     CLUSTER --> P1["HomeProx<br/>Dell OptiPlex 3000 (SMBIOS)"]
-    CLUSTER --> P2["HomeProx2<br/>HP Elite Mini"]
+    CLUSTER --> P2["HomeProx2<br/>HP Elite Mini 600 G9"]
     CLUSTER --> P3["HomeProx3<br/>HP Elite Mini"]
     CLUSTER --> P4["HomeProx4<br/>Dell PowerEdge R640"]
     P1 --> DNS1["CT 101 • Primary Pi-hole"]
@@ -57,7 +57,7 @@ flowchart TB
         SHELVES["19-inch rack • VEVOR 1U shelves"]
         HOLDER["Custom 3D-printed three-tier holder"]
         H3["Top: HomeProx3 • HP Elite Mini 600 G9<br/>Intel Core i5-12500T (previously reported)"]
-        H2["Middle: HomeProx2 • HP Elite Mini 600 G9"]
+        H2["Middle: HomeProx2 • HP Elite Mini 600 G9<br/>i5-12500T • 32 GB DDR5 • 512 GB NVMe"]
         H1["Bottom: HomeProx • Dell OptiPlex 3000 (SMBIOS)"]
         R640["HomeProx4 • Dell PowerEdge R640<br/>2× Xeon Silver 4110 • ~754 GiB RAM reported"]
         SHELVES --> HOLDER
@@ -89,7 +89,7 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 | Node / device | Physical hardware | Known details / current use |
 |---|---|---|
 | **HomeProx** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
-| **HomeProx2** | HP Elite Mini 600 G9 | Proxmox node; middle tier; AMP CT102 and monitoring stack CT103; provides current off-node backup storage via NFS on its root filesystem |
+| **HomeProx2** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
 | **HomeProx3** | HP Elite Mini 600 G9 | Proxmox node; top tier; Intel Core i5-12500T previously reported; secondary Pi-hole CT105 and Vaultwarden CT104 |
 | **HomeProx4** | Dell PowerEdge R640 | Rack server; dual Intel Xeon Silver 4110 processors; approximately 754 GiB usable RAM previously reported; Samsung 870 EVO 500 GB SSD used for AI storage; Windows Server and AI-Operations VMs |
 | **Managed switch** | TP-Link TL-SG108E v6.0 | 8-port VLAN-capable physical switch |
