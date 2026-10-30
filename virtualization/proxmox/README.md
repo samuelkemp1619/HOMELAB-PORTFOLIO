@@ -6,6 +6,10 @@ Designed, deployed, and administer a four-node Proxmox VE environment supporting
 
 **Status:** Operational cluster. Some resilience and disaster-recovery improvements remain planned or paused.
 
+## Detailed Case Study
+
+[**Four-Node Cluster Operations and Recovery**](case-studies/four-node-cluster-operations.md) — Design decisions, workload placement, controlled power-loss exercise, DNS recovery, backup validation boundaries, and follow-up engineering priorities.
+
 ## Architecture
 
 | Public node alias | Hardware | Workload focus |
