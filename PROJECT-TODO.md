@@ -21,7 +21,7 @@ This is a status tracker, not a claim that paused projects have been resumed. En
 - [ ] Vaultwarden restore testing.
 - [ ] Modular 3D-printed desktop PC test bench (ATX/mATX/Mini-ITX and GPU support).
 - [ ] Exception-based homelab health reporting and centralized logging (Loki).
-- [ ] Backup and disaster recovery enhancements and restore validation.
+- [ ] Backup and disaster recovery enhancements and restore validation (runbook documented; live coverage reconciliation and restore execution pending).
 - [ ] Windows Server / Active Directory lab continuation.
 - [ ] Additional cybersecurity monitoring and detection.
 - [ ] Network segmentation and infrastructure enhancements.
