@@ -3,7 +3,7 @@
 This is a status tracker, not a claim that paused projects have been resumed. Entries reflect the latest confirmed user updates.
 
 ## Completed / Operational
-- [x] Four-node Proxmox VE cluster established (HomeProx, HomeProx2, HomeProx3, HomeProx4).
+- [x] Four-node Proxmox VE cluster established (public aliases: Node A–D).
 - [x] Three-tier 3D-printed micro-PC holder: design, printing, assembly, node installation and cable management (October 19).
 - [x] Rack shelf mounting with compatible 12-24 hardware and washers.
 - [x] Graphy Raspberry Pi 4 Grafana kiosk and rotating dashboards.
@@ -28,5 +28,4 @@ This is a status tracker, not a claim that paused projects have been resumed. En
 - [ ] Spotify Car Thing Stream Deck-style repurposing.
 
 ## Exclusions / Notes
-- Do not list hardware inspections in portfolio documentation.
 - Removed RFID / Raspberry Pi hardware-security projects are not current backlog items.
