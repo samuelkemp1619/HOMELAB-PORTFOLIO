@@ -1,10 +1,12 @@
 # Pi-hole DNS Filtering and Redundancy
 
+**Validation scope:** Two Pi-hole instances are deployed. Selected Linux resolver fallback was tested; automatic failover across all clients and complete DNS-bypass/DoH enforcement have not been verified.
+
 ## Overview
 
 This project documents a redundant, two-instance Pi-hole DNS filtering deployment for the Proxmox homelab. The design keeps DNS filtering available on a second Proxmox host and uses Nebula Sync to replicate supported Pi-hole configuration from the primary to the secondary.
 
-**Validation status (October 30, 2026):** Both DNS servers resolve independently, and HomeProx's Linux resolver successfully fell back to the secondary during a simulated unavailable-primary test. This does not prove failover for Windows or every DHCP client, or establish fully validated high availability.
+**Validation status (October 30, 2026):** Both DNS servers resolve independently, and Node A's Linux resolver successfully fell back to the secondary during a simulated unavailable-primary test. This does not prove failover for Windows or every DHCP client, or establish fully validated high availability.
 
 ## Technologies
 
@@ -19,9 +21,9 @@ This project documents a redundant, two-instance Pi-hole DNS filtering deploymen
 
 | Role | Proxmox host | LXC ID | Address |
 |---|---|---:|---|
-| Primary Pi-hole | HomeProx | CT 101 | `192.168.10.2` |
-| Secondary Pi-hole | HomeProx3 | CT 105 | `192.168.10.3` |
-| Nebula Sync | HomeProx2 | CT 103 (separate Docker container) | Synchronizes primary to secondary |
+| Primary Pi-hole | Node A | CT 101 | `192.168.10.XXX` |
+| Secondary Pi-hole | Node C | CT 105 | `192.168.10.XXX` |
+| Nebula Sync | Node B | CT 103 (separate Docker container) | Synchronizes primary to secondary |
 
 Both Pi-hole instances run independently in LXC containers. Nebula Sync runs as its own Docker container inside CT 103 alongside the existing Dashy, Grafana, Prometheus, PVE Exporter, and Pi-hole Stats containers. It is not installed inside the Dashy container.
 
@@ -34,7 +36,7 @@ OPNsense advertises both Pi-hole addresses through DHCP DNS option 6 on the conf
 - IOT / VLAN 30
 - GUEST / VLAN 40
 
-The advertised DNS servers are `192.168.10.2` and `192.168.10.3`. Proxmox host resolver settings were also updated to list both addresses.
+The advertised DNS servers are `192.168.10.XXX` and `192.168.10.XXX`. Proxmox host resolver settings were also updated to list both addresses.
 
 Clients may select or retry DNS servers according to their own resolver behavior. Providing two DNS addresses does not guarantee immediate or consistent failover for every client or application.
 
@@ -58,7 +60,7 @@ Full synchronization can replace the secondary's configuration with the primary'
 
 ## Validation Performed
 
-- Queried `google.com` directly against both `192.168.10.2` and `192.168.10.3`; both returned valid records.
+- Queried `google.com` directly against both `192.168.10.XXX` and `192.168.10.XXX`; both returned valid records.
 - Queried `doubleclick.net` directly against both instances; both returned the configured blocking response (`0.0.0.0` for A and `::` for AAAA).
 - Confirmed Windows receives both DNS addresses from OPNsense DHCP.
 - Confirmed all four Proxmox nodes are configured to use both DNS addresses.
@@ -67,14 +69,14 @@ Full synchronization can replace the secondary's configuration with the primary'
 
 ### Controlled Linux Resolver Failover — Passed (October 30, 2026)
 
-- Confirmed both `192.168.10.2` (CT101/HomeProx) and `192.168.10.3` (CT105/HomeProx3) returned DNS answers for `google.com`.
+- Confirmed both `192.168.10.XXX` (CT101/Node A) and `192.168.10.XXX` (CT105/Node C) returned DNS answers for `google.com`.
 - Confirmed `192.0.2.1` was unreachable on port 53 (`dig` timed out), making it a suitable simulated failed primary for this test.
-- Configured a temporary Linux resolver test with first server `192.0.2.1`, second server `192.168.10.3`, and `timeout:1 attempts:2`. `getent ahostsv4 example.com` returned valid IPv4 addresses, demonstrating fallback to the reachable secondary under these conditions.
-- **Test incident and recovery:** The mount namespace isolated the mount but not the underlying `/etc/resolv.conf` file contents; the test unintentionally replaced HomeProx's resolver configuration. Restored the original `search com`, `nameserver 192.168.10.2`, `nameserver 192.168.10.3` settings and verified the restored file contents. Follow-up direct queries to both Pi-holes and system `getent ahostsv4 google.com` all succeeded. Do not reuse that mount-bind test as a safe isolated method without a separate file/inode.
+- Configured a temporary Linux resolver test with first server `192.0.2.1`, second server `192.168.10.XXX`, and `timeout:1 attempts:2`. `getent ahostsv4 example.com` returned valid IPv4 addresses, demonstrating fallback to the reachable secondary under these conditions.
+- **Test incident and recovery:** The mount namespace isolated the mount but not the underlying `/etc/resolv.conf` file contents; the test unintentionally replaced Node A's resolver configuration. Restored the original `search com`, `nameserver 192.168.10.XXX`, `nameserver 192.168.10.XXX` settings and verified the restored file contents. Follow-up direct queries to both Pi-holes and system `getent ahostsv4 google.com` all succeeded. Do not reuse that mount-bind test as a safe isolated method without a separate file/inode.
 - Confirmed matching gravity domain data: **2,135,103** entries on each instance, with identical sorted-domain SHA256; each has six adlists with matching address/enabled configurations and no custom domainlist entries. DNS-related Pi-hole TOML settings matched in the compared configuration diff.
 - Confirmed all four Proxmox nodes previously listed both DNS servers and OPNsense Dnsmasq DHCP option 6 advertises both on LAN, TRUSTED, IOT, and GUEST.
 
-**Scope:** Successful simulated Linux resolver fallback is verified on HomeProx. Real Windows-client automatic failover remains unverified, as does a physical CT101 outage scenario for all clients. DHCP advertising two servers does not guarantee client-specific failover behavior.
+**Scope:** Successful simulated Linux resolver fallback is verified on Node A. Real Windows-client automatic failover remains unverified, as does a physical CT101 outage scenario for all clients. DHCP advertising two servers does not guarantee client-specific failover behavior.
 
 ### Earlier Windows Failover Limitation
 
@@ -89,7 +91,7 @@ Before future full synchronization or major configuration changes:
 2. Create a current backup of the secondary.
 3. Review Nebula Sync logs after the run.
 4. Test DNS resolution and blocking against both addresses.
-5. Distinguish the passed HomeProx Linux resolver failover test from unverified Windows and other client failover.
+5. Distinguish the passed Node A Linux resolver failover test from unverified Windows and other client failover.
 
 ## Security Considerations
 
@@ -127,7 +129,7 @@ OPNsense rules were added on LAN, TRUSTED, IOT, and GUEST to make the Pi-hole in
 
 ### Configured rules
 
-- Each interface has an allow rule for the `PiHole_DNS` alias, covering both `192.168.10.2` and `192.168.10.3` on TCP/UDP port 53.
+- Each interface has an allow rule for the `PiHole_DNS` alias, covering both `192.168.10.XXX` and `192.168.10.XXX` on TCP/UDP port 53.
 - Each interface has a block rule for other IPv4 TCP/UDP traffic to destination port 53.
 - Each interface has a block rule for IPv4 TCP traffic to destination port 853 (DNS-over-TLS).
 - On IOT and GUEST, the Pi-hole allow rule remains above the internal-network block, preserving the required DNS exception while retaining network isolation.
