@@ -10,6 +10,8 @@ Designed, deployed, and administer a four-node Proxmox VE environment supporting
 
 [**Four-Node Cluster Operations and Recovery**](case-studies/four-node-cluster-operations.md) — Design decisions, workload placement, controlled power-loss exercise, DNS recovery, backup validation boundaries, and follow-up engineering priorities.
 
+[**Power-Loss Recovery and Troubleshooting Incident**](case-studies/power-loss-recovery-incident.md) — Chronological incident timeline, observed failures, supported root-cause findings, corrective actions, and recovery-test gaps.
+
 ## Architecture
 
 | Public node alias | Hardware | Workload focus |
