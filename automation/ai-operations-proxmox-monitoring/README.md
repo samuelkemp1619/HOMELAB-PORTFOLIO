@@ -1,9 +1,9 @@
 # AI-Operations Proxmox Monitoring
 
-**Status:** Manually tested; notification workflow configuration complete; scheduled activation pending (October 22, 2026).
+**Status:** Paused prototype; alert classification and routing manually tested, but scheduled workflow unpublished and live production notification delivery unverified.
 
 ## Environment
-Debian VM on HomeProx4, Docker Compose, n8n, PostgreSQL, SearXNG, OpenAI GPT-5 mini. Four Proxmox nodes and nine guests monitored through Proxmox API.
+Debian VM on Node D, Docker Compose, n8n, PostgreSQL, SearXNG, OpenAI GPT-5 mini. Four Proxmox nodes and nine guests monitored through Proxmox API.
 
 ## Implementation
 - Combined node and VM/LXC health into structured JavaScript monitoring output.
@@ -19,7 +19,7 @@ Debian VM on HomeProx4, Docker Compose, n8n, PostgreSQL, SearXNG, OpenAI GPT-5 m
 - No alert for expected stopped guests or QEMU memory accounting alone.
 
 ## Validation
-Healthy data returned zero alerts and the False branch. A duplicate test workflow simulated HomeProx2 offline, produced one CRITICAL alert, and reached the True branch. Simulation code was removed afterward. AI node-name attribution was also corrected and retested.
+Healthy data returned zero alerts and the False branch. A duplicate test workflow simulated Node B offline, produced one CRITICAL alert, and reached the True branch. Simulation code was removed afterward. AI node-name attribution was also corrected and retested.
 
 ## Pending
 Publish the original workflow, verify live production notifications, enable the hourly schedule, and evaluate trend monitoring and alert deduplication. The workflow remains paused.
