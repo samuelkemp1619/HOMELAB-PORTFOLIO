@@ -1,5 +1,7 @@
 # Proxmox Backup & Recovery Improvements
 
+> **Historical case study:** This documents an earlier backup-coverage gap before additional scheduled jobs were configured. Restore validation remains pending; the earlier job inventory is not the current configuration.
+
 ## Project Overview
 
 During routine maintenance of my three-node Proxmox VE cluster, I reviewed the existing backup configuration before performing rolling host upgrades.
@@ -18,9 +20,9 @@ The Proxmox environment consists of three physical cluster nodes hosting network
 
 | Node | Primary Workloads |
 |------|-------------------|
-| HomeProx | OPNsense, Pi-hole, remote-access infrastructure |
-| HomeProx2 | AMP / Minecraft, backup storage |
-| HomeProx3 | Prometheus, Grafana, Dashy |
+| Node A | OPNsense, Pi-hole, remote-access infrastructure |
+| Node B | AMP / Minecraft, backup storage |
+| Node C | Prometheus, Grafana, Dashy |
 
 Proxmox `vzdump` is used to create compressed VM and LXC backups.
 
