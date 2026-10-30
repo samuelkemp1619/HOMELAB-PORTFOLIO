@@ -18,9 +18,9 @@ The homelab consists of a three-node Proxmox VE cluster and segmented networking
 
 | System | Role |
 |--------|------|
-| HomeProx | Proxmox host, primary infrastructure, Tailscale subnet router |
-| HomeProx2 | Proxmox application host |
-| HomeProx3 | Proxmox monitoring host |
+| Node A | Proxmox host, primary infrastructure, Tailscale subnet router |
+| Node B | Proxmox application host |
+| Node C | Proxmox monitoring host |
 | OPNsense | Router, firewall, and VLAN gateway |
 | Pi-hole | Internal DNS filtering |
 | Laptop | Remote administration endpoint |
@@ -73,7 +73,7 @@ Remote Laptop / Mobile Device
       Encrypted Tailscale
              |
              |
-       HomeProx
+       Node A
     Tailscale Node
              |
        Subnet Router
@@ -83,7 +83,7 @@ Remote Laptop / Mobile Device
              |
     ---------------------
     |         |         |
-HomeProx  HomeProx2  HomeProx3
+Node A  Node B  Node C
     |
  Internal Infrastructure
 ```
@@ -96,7 +96,7 @@ This allows remote administration without publishing internal management interfa
 
 Not every device on the management network needs to run Tailscale.
 
-HomeProx acts as a Tailscale subnet router.
+Node A acts as a Tailscale subnet router.
 
 The subnet router advertises the management network to authorized Tailscale clients.
 
@@ -109,7 +109,7 @@ Remote Administrator
 Tailscale Overlay Network
         |
         v
-HomeProx Subnet Router
+Node A Subnet Router
         |
         v
 Management VLAN
@@ -129,7 +129,7 @@ This architecture allows existing infrastructure to remain on the internal netwo
 
 # IP Forwarding
 
-Because HomeProx forwards traffic between the Tailscale overlay and the internal management network, IP forwarding must be enabled.
+Because Node A forwards traffic between the Tailscale overlay and the internal management network, IP forwarding must be enabled.
 
 The forwarding configuration is persisted using:
 
@@ -143,7 +143,7 @@ This ensures the required forwarding configuration survives a reboot.
 
 # Route Advertisement
 
-The HomeProx Tailscale node advertises the management subnet.
+The Node A Tailscale node advertises the management subnet.
 
 The advertised route must also be approved through Tailscale before clients are permitted to use it.
 
@@ -164,7 +164,7 @@ Tailscale Network
         |
         | Encrypted WireGuard Tunnel
         v
-HomeProx
+Node A
         |
         | Subnet Routing
         v
@@ -259,7 +259,7 @@ Remote access does not make every remote change safe.
 
 This became particularly important during a Proxmox cluster upgrade.
 
-HomeProx hosts:
+Node A hosts:
 
 - Active routing infrastructure
 - DNS
@@ -274,7 +274,7 @@ Rebooting this host remotely could simultaneously interrupt:
 
 If the host failed to return after maintenance, remote access could be lost.
 
-For that reason, disruptive maintenance on HomeProx was intentionally postponed until physical recovery access was available.
+For that reason, disruptive maintenance on Node A was intentionally postponed until physical recovery access was available.
 
 This demonstrates an important systems-administration principle:
 
@@ -284,9 +284,9 @@ This demonstrates an important systems-administration principle:
 
 # High-Availability Considerations
 
-The current subnet-router architecture introduces an availability dependency on HomeProx.
+The current subnet-router architecture introduces an availability dependency on Node A.
 
-If HomeProx is unavailable, remote subnet access may also become unavailable.
+If Node A is unavailable, remote subnet access may also become unavailable.
 
 Future improvements may evaluate:
 
@@ -438,7 +438,7 @@ Management subnet:
 Not reachable through remote-access path
 
 Recommended action:
-Verify Tailscale service and HomeProx connectivity.
+Verify Tailscale service and Node A connectivity.
 ```
 
 Normal connectivity should not generate unnecessary alerts.
@@ -524,7 +524,7 @@ This project demonstrates practical experience with:
 
 **Operational / Validation In Progress**
 
-Tailscale is deployed within the homelab, and HomeProx provides subnet routing for the management network.
+Tailscale is deployed within the homelab, and Node A provides subnet routing for the management network.
 
 Local connectivity testing has been performed.
 
