@@ -6,6 +6,7 @@ flowchart TB
     SWITCH --> V20["VLAN 20 • Trusted"]
     SWITCH --> V30["VLAN 30 • IoT"]
     SWITCH --> V40["VLAN 40 • Guest"]
+    V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
     CLUSTER --> P1["HomeProx<br/>Dell OptiPlex Micro"]
     CLUSTER --> P2["HomeProx2<br/>HP Elite Mini"]
@@ -30,4 +31,4 @@ flowchart TB
     classDef service fill:#e9f7f1,color:#174d36,stroke:#71b49a
     class FW,CLUSTER core
     class SWITCH,V10,V20,V30,V40 network
-    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI service
+    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI,SMART service
