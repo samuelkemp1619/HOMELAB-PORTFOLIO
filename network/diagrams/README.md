@@ -49,19 +49,21 @@ flowchart TB
 
 ## Physical Network Topology (verified October 30, 2026)
 
+**Public documentation convention:** Internal host IP addresses are partially masked (for example, `192.168.20.XXX`). Exact host addresses are intentionally not published here.
+
 Physical links below are confirmed at the **device level**, but exact TL-SG108E port assignments remain **unverified**. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Upstream gateway cabling and the AP's SSID-to-VLAN mapping remain unverified.
 
 ```mermaid
 flowchart TB
-    GW["Default gateway • 192.168.10.1<br/>Physical uplink/port not verified"]
-    SW["HomeLab_Switch • TP-Link TL-SG108E v6.0<br/>Management: 192.168.10.5<br/>7 × 1Gbps links up; port 4 down"]
+    GW["Default gateway • 192.168.10.XXX<br/>Physical uplink/port not verified"]
+    SW["HomeLab_Switch • TP-Link TL-SG108E v6.0<br/>Management: 192.168.10.XXX<br/>7 × 1Gbps links up; port 4 down"]
     GW -. "upstream physical path unverified" .-> SW
-    SW --- H1["HomeProx • Dell OptiPlex 3000<br/>nic0 • 1Gbps full duplex<br/>192.168.10.11"]
-    SW --- H2["HomeProx2 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.12"]
-    SW --- H3["HomeProx3 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.13"]
-    SW --- H4["HomeProx4 • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.14"]
+    SW --- H1["HomeProx • Dell OptiPlex 3000<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW --- H2["HomeProx2 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW --- H3["HomeProx3 • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW --- H4["HomeProx4 • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW --- POE["PoE injector<br/>Switch-facing port unverified"]
-    POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>192.168.20.98 • VLAN 20 management"]
+    POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>192.168.20.XXX • VLAN 20 management"]
     AP -. "Wi-Fi • SSIDs/VLAN mappings pending" .-> WIFI["Wireless clients / networks<br/>SSID details unverified"]
     H1 -. "OPNsense VM100 • virtual gateway" .-> GW
     classDef device fill:#e5f0ff,color:#17365d,stroke:#77a5d6
@@ -70,7 +72,7 @@ flowchart TB
 
 ### Managed switch: port state and VLAN configuration
 
-**Switch:** TP-Link TL-SG108E v6.0, device name `HomeLab_Switch`, management IP `192.168.10.5`, MAC `0C:EF:15:05:DA:07`, firmware `1.0.0 Build 20230218 Rel.50633`. 802.1Q VLAN is enabled. All eight ports are administratively enabled, configured for auto-negotiation with flow control off. Connected ports currently negotiate 1000 Mbps full duplex.
+**Switch:** TP-Link TL-SG108E v6.0, device name `HomeLab_Switch`, management IP `192.168.10.XXX`, MAC `0C:EF:15:05:DA:07`, firmware `1.0.0 Build 20230218 Rel.50633`. 802.1Q VLAN is enabled. All eight ports are administratively enabled, configured for auto-negotiation with flow control off. Connected ports currently negotiate 1000 Mbps full duplex.
 
 | Port | Observed link | PVID | Untagged VLAN | Tagged VLANs | Connected device |
 |---|---|---|---|---|---|
@@ -89,10 +91,10 @@ These are the switch's **configured** VLAN memberships, not proof of each connec
 
 | Node | Active physical NIC | MAC | Link | Management configuration |
 |---|---|---|---|---|
-| HomeProx | `nic0` | `6c:3c:8c:11:df:b0` | 1Gbps full | `vmbr0.10` • `192.168.10.11/24` |
-| HomeProx2 | `nic0` | `7c:57:58:11:34:3d` | 1Gbps full | `vmbr0.10` • `192.168.10.12/24` |
-| HomeProx3 | `nic0` | `5c:60:ba:c7:78:57` | 1Gbps full | `vmbr0.10` • `192.168.10.13/24` |
-| HomeProx4 | `nic1` | `b0:26:28:18:a7:33` | 1Gbps full | `vmbr0` • `192.168.10.14/24` |
+| HomeProx | `nic0` | `6c:3c:8c:11:df:b0` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
+| HomeProx2 | `nic0` | `7c:57:58:11:34:3d` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
+| HomeProx3 | `nic0` | `5c:60:ba:c7:78:57` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
+| HomeProx4 | `nic1` | `b0:26:28:18:a7:33` | 1Gbps full | `vmbr0` • `192.168.10.XXX/24` |
 
 HomeProx, HomeProx2 and HomeProx3 have VLAN-aware `vmbr0` bridges. HomeProx4's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. HomeProx4 is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to the switch **through a PoE injector**; its management address is reachable from HomeProx, but SSIDs remain pending credential recovery. A 15-second LLDP capture on HomeProx observed no advertisements, so exact switch ports cannot be assigned reliably from remote evidence.
 
@@ -145,8 +147,8 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 | **HomeProx2** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
 | **HomeProx3** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
 | **HomeProx4** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server and AI-Operations VMs |
-| **Managed switch** | TP-Link TL-SG108E v6.0 | HomeLab_Switch; 192.168.10.5; seven active 1Gbps links; port 4 down; VLAN/PVID table above |
-| **Wireless access point** | Grandstream GWN7660E | 192.168.20.98 (VLAN 20); connected to TL-SG108E through a PoE injector; SSIDs and switch port pending verification |
+| **Managed switch** | TP-Link TL-SG108E v6.0 | HomeLab_Switch; 192.168.10.XXX; seven active 1Gbps links; port 4 down; VLAN/PVID table above |
+| **Wireless access point** | Grandstream GWN7660E | 192.168.20.XXX (VLAN 20); connected to TL-SG108E through a PoE injector; SSIDs and switch port pending verification |
 | **PoE injector** | Model unverified | Inline between managed switch and GWN7660E access point |
 | **Monitoring kiosk** | Raspberry Pi 4 Model B Rev 1.5 | 8 GB RAM; Graphy Grafana kiosk on trusted VLAN 20; Debian 13 (last reported) |
 | **Rack** | 19-inch rack with VEVOR 1U vented cantilever shelves | 10-inch-deep shelves; 12-24 threaded rack mounting hardware and washers |
