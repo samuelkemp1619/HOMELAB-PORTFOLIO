@@ -13,13 +13,21 @@ Designed, iteratively prototyped, 3D printed, and assembled a freestanding three
 |---|---|---|
 | Top | HomeProx3 | HP Elite Mini 600 G9 |
 | Middle | HomeProx2 | HP Elite Mini 600 G9 |
-| Bottom | HomeProx | Dell OptiPlex 7020 Micro |
+| Bottom | HomeProx | Dell OptiPlex 3000 (SMBIOS-reported; chassis variant pending confirmation) |
 
 - **CAD:** OpenSCAD; printable STL parts
 - **3D printer:** Creality Ender-3 V3 KE
 - **Assembly:** M4 bolts and brass heat-set inserts
 - **Mounting:** Freestanding holder on a VEVOR 1U rack shelf
 - **Design:** Open front and rear, fixed horizontal supports
+
+## HomeProx hardware verification (October 30, 2026)
+
+- System SMBIOS: Dell Inc. / OptiPlex 3000 (supersedes the earlier 7020 Micro identification; form factor not independently confirmed)
+- CPU: Intel Core i5-12500T, 6 physical cores / 12 threads
+- RAM: 2 × 16 GB DDR4 at 3200 MT/s (approximately 31 GiB usable reported by Linux)
+- Disk: Samsung SSD 970 EVO Plus 1 TB NVMe (931.5 GiB reported by `lsblk`)
+- Network: Realtek RTL8111/8168-family PCIe Gigabit Ethernet
 
 ## Objectives
 
