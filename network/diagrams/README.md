@@ -1,6 +1,6 @@
 # Homelab Network Architecture
 
-**Updated:** October 31, 2026
+**Updated:** October 31, 2026 (switch VLAN configuration verified from operator screenshots)
 
 The first diagram is a **logical topology**; the physical section below includes the operator-confirmed eight-port cable map. It documents network segmentation, cluster placement, and service relationships. Physical uplinks and upstream WAN details are intentionally simplified. Dotted arrows indicate logical dependencies rather than physical cabling.
 
@@ -53,7 +53,7 @@ flowchart TB
 
 **Public documentation convention:** Internal host IP addresses are partially masked (for example, `192.168.20.XXX`), and physical MAC addresses are redacted. Exact host addresses and device-specific network identifiers are intentionally not published here.
 
-Physical port assignments below were supplied by the operator on October 31, 2026. These identify connected devices, not a new live link-status or VLAN configuration audit. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Port 1 connects to the ISP-provided box; its routing role beyond that physical connection has not been independently verified. VLAN 50 SSID mapping has been verified; other SSID mappings have not been fully audited.
+Physical port assignments were supplied by the operator on October 31, 2026. VLAN membership and PVID values were subsequently verified against screenshots of the TP-Link management interface; link speeds remain prior observations, not a new live status audit. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Port 1 connects to the ISP-provided box; its routing role beyond that physical connection has not been independently verified. VLAN 50 SSID mapping has been verified; other SSID mappings have not been fully audited.
 
 ```mermaid
 flowchart TB
@@ -88,7 +88,7 @@ flowchart TB
 | 7 | 1Gbps full (prior observation) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx2 (operator-confirmed) |
 | 8 | 1Gbps full (prior observation) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx (node 1; operator-confirmed) |
 
-These are the switch's **configured** VLAN memberships, not proof of each connected endpoint's VLAN behavior. VLAN 1 appears in the configuration table without populated membership details. Port 1 is confirmed connected to the ISP-provided box, but the VLAN 100 setting alone does not establish its precise routing role.
+These are the switch's **configured** VLAN memberships, verified from the 802.1Q VLAN Configuration and PVID Setting screenshots provided by the operator. 802.1Q VLAN is enabled. These settings do not by themselves prove each connected endpoint's VLAN behavior. VLAN 1 appears in the configuration table without populated membership details. Port 1 is confirmed connected to the ISP-provided box, but the VLAN 100 setting alone does not establish its precise routing role.
 
 ### Physical interface verification
 
@@ -162,7 +162,7 @@ A separate **Netgear GS105 switch** has been discussed for a future re-cabling p
 
 ## New wireless VLAN 50 case study
 
-[Unrestricted internet SSID deployment and DHCP troubleshooting](../opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) documents switch port 5 tagging, Proxmox-to-OPNsense forwarding, Dnsmasq DHCP recovery, Cloudflare DNS testing, and internal-service isolation. All eight switch-port device assignments were subsequently confirmed by the operator on October 31, 2026; live link states and VLAN settings have not been rechecked.
+[Unrestricted internet SSID deployment and DHCP troubleshooting](../opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) documents switch port 5 tagging, Proxmox-to-OPNsense forwarding, Dnsmasq DHCP recovery, Cloudflare DNS testing, and internal-service isolation. All eight switch-port device assignments were subsequently confirmed by the operator on October 31, 2026; VLAN memberships and PVIDs were rechecked from switch UI screenshots. Live link states were not rechecked.
 
 ## Segmentation and routing
 
@@ -193,4 +193,4 @@ Tailscale enables remote administrative access. Graphy is a Raspberry Pi 4 kiosk
 
 ## Scope and limitations
 
-This diagram records operator-confirmed physical switch-port assignments but does **not** assert freshly verified link states, redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
+This diagram records operator-confirmed physical switch-port assignments and screenshot-verified VLAN memberships/PVIDs but does **not** assert freshly verified link states, redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
