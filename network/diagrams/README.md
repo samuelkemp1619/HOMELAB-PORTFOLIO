@@ -171,7 +171,7 @@ A separate **Netgear GS105 switch** has been discussed for a future re-cabling p
 | VLAN 20 | Trusted clients, including Graphy | In use |
 | VLAN 30 | IoT segment; Smart devices grouped beneath VLAN 30 in the logical diagram | Configured; DNS enforcement client validation pending |
 | VLAN 40 | Guest segment | Configured; DNS enforcement client validation pending |
-| VLAN 50 | Dedicated unrestricted-internet Wi-Fi, Cloudflare DNS, internal IPv4 isolation | Operational; client tested; IPv6 audit pending |
+| VLAN 50 | Dedicated unrestricted-internet Wi-Fi, Cloudflare DNS, internal IPv4 isolation | Operational; validation confirmed complete by operator |
 
 OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but Node A Linux resolver fallback has passed a simulated unavailable-primary test; Windows and other client failover remain unverified. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
 
