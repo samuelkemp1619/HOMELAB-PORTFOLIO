@@ -18,7 +18,7 @@ A practical portfolio of **network administration, systems engineering, cybersec
 |---|---|---|
 | [Four-node Proxmox VE cluster](virtualization/proxmox/) | Linux administration, KVM/QEMU, LXC, cluster operations, backup scheduling | Operational |
 | [OPNsense and VLAN architecture](network/opnsense-vlan-architecture/) | Network segmentation, firewall policy, managed switching, DNS policy | Operational; additional policy validation pending |
-| [Unrestricted wireless VLAN 50](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) | 802.1Q wireless segmentation, OPNsense DHCP/firewall, packet-capture troubleshooting | Operational; IPv6 validation pending |
+| [Unrestricted wireless VLAN 50](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) | 802.1Q wireless segmentation, OPNsense DHCP/firewall, packet-capture troubleshooting | Operational; validation completed |
 | [Redundant Pi-hole DNS](network/pihole-dns/) | DNS filtering, service redundancy, DHCP integration, Nebula Sync, failure testing | Deployed; selected failover tests completed |
 | [Prometheus and Grafana monitoring](monitoring/prometheus-grafana/) | Metrics collection, observability, dashboards, service monitoring | Operational; reporting enhancements planned |
 | [Network architecture diagrams](network/diagrams/) | Logical and physical topology documentation, VLAN design | Documented; exact switch-port mapping unverified |
@@ -44,7 +44,7 @@ A practical portfolio of **network administration, systems engineering, cybersec
 ### Segmented network and DNS resilience
 
 - Configured VLAN-based separation for management, trusted, IoT, guest, and a dedicated unrestricted-internet wireless segment (VLAN 50), with OPNsense routing and firewall policies.
-- Deployed a Grandstream SSID on VLAN 50 using Cloudflare DNS instead of Pi-hole; resolved a Dnsmasq interface-selection DHCP failure using multi-point packet captures. Client internet access and inability to reach internal services were tested; IPv6 isolation remains unverified.
+- Deployed a Grandstream SSID on VLAN 50 using Cloudflare DNS instead of Pi-hole; resolved a Dnsmasq interface-selection DHCP failure using multi-point packet captures. Client internet access and internal-service isolation were tested; subsequent validation was confirmed complete by the operator.
 - Deployed two Pi-hole instances on separate Proxmox hosts and configured DHCP to advertise both DNS resolvers.
 - Configured hourly primary-to-secondary DNS configuration synchronization using Nebula Sync.
 - Verified independent DNS resolution and filtering; a controlled Linux resolver fallback test succeeded. Automatic failover for every client type has **not** been established.
