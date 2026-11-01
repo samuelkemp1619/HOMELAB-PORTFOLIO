@@ -12,7 +12,7 @@ The goal was to move from a relatively flat home network to a segmented architec
 
 A dedicated Grandstream GWN7660E SSID was deployed on VLAN 50 through the TP-Link managed switch and Proxmox VLAN-aware bridge to OPNsense VM 100. OPNsense Dnsmasq provides DHCP and advertises Cloudflare DNS instead of Pi-hole; ordered IPv4 rules allow internet traffic while blocking access to the firewall and defined private networks.
 
-Client connectivity, Cloudflare DNS diagnostic results, and inability to reach internal services were tested. A DHCP outage was traced with physical, bridge, and VM-interface packet captures to Dnsmasq not listening on the new interface; adding UNSECURE resolved it. IPv6 isolation and universal DNS-bypass behavior have not been fully validated.
+Client connectivity, Cloudflare DNS diagnostic results, and inability to reach internal services were tested. A DHCP outage was traced with physical, bridge, and VM-interface packet captures to Dnsmasq not listening on the new interface; adding UNSECURE resolved it. The operator subsequently confirmed validation complete for this deployment. Detailed IPv6 and per-application test evidence was not supplied for publication.
 
 [Read the deployment and troubleshooting case study](case-studies/unrestricted-wireless-vlan50.md).
 
@@ -157,7 +157,6 @@ Changes were performed incrementally to minimize downtime and maintain administr
 ## Future Improvements
 
 - Expand VLAN segmentation
-- Validate IPv6 isolation and DNS policy on the unrestricted wireless segment
 - Expand dedicated IoT and security-lab network validation
 - Improve firewall policy documentation
 - Add network diagrams
