@@ -53,7 +53,7 @@ flowchart TB
 
 **Public documentation convention:** Internal host IP addresses are partially masked (for example, `192.168.20.XXX`), and physical MAC addresses are redacted. Exact host addresses and device-specific network identifiers are intentionally not published here.
 
-Physical port assignments were supplied by the operator on October 31, 2026. VLAN membership and PVID values were subsequently verified against screenshots of the TP-Link management interface; link speeds remain prior observations, not a new live status audit. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Port 1 connects to the ISP-provided box; its routing role beyond that physical connection has not been independently verified. VLAN 50 SSID mapping has been verified; other SSID mappings have not been fully audited.
+Physical port assignments were supplied by the operator on October 31, 2026. VLAN membership and PVID values were subsequently verified against screenshots of the TP-Link management interface; port status and negotiated speeds were subsequently confirmed from the switch Port Setting screenshot. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Port 1 connects to the ISP-provided box; its routing role beyond that physical connection has not been independently verified. VLAN 50 SSID mapping has been verified; other SSID mappings have not been fully audited.
 
 ```mermaid
 flowchart TB
@@ -75,18 +75,18 @@ flowchart TB
 
 ### Managed switch: port state and VLAN configuration
 
-**Switch:** TP-Link TL-SG108E v6.0, management IP `192.168.10.XXX`, MAC masked, firmware `1.0.0 Build 20230218 Rel.50633`. 802.1Q VLAN is enabled. All eight ports are administratively enabled, configured for auto-negotiation with flow control off. Connected ports currently negotiate 1000 Mbps full duplex.
+**Switch:** TP-Link TL-SG108E v6.0, management IP `192.168.10.XXX`, MAC masked, firmware `1.0.0 Build 20230218 Rel.50633`. 802.1Q VLAN is enabled. All eight ports are administratively enabled, configured for auto-negotiation with flow control off. The latest Port Setting screenshot confirms ports 1–3 and 5–8 at 1000 Mbps full duplex (`1000MF`), with port 4 link down. All eight ports are administratively enabled, speed/duplex set to Auto, and configured and actual flow control Off.
 
 | Port | Observed link | PVID | Untagged VLAN | Tagged VLANs | Connected device |
 |---|---|---|---|---|---|
-| 1 | 1Gbps full (prior observation) | 100 | 100 | — | ISP-provided box (operator-confirmed) |
-| 2 | 1Gbps full (prior observation) | 10 | 10 | — | HomeProx4 • Dell PowerEdge R640 (operator-confirmed) |
-| 3 | 1Gbps full (prior observation) | 10 | 10 | — | Desktop PC (operator-confirmed) |
-| 4 | Down (prior observation) | 20 | 20 | — | Empty (operator-confirmed) |
-| 5 | Previously observed 1Gbps full | 20 | 20 | 30, 40, 50 | Grandstream GWN7660E via PoE injector (user-confirmed) |
-| 6 | 1Gbps full (prior observation) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx3 (operator-confirmed) |
-| 7 | 1Gbps full (prior observation) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx2 (operator-confirmed) |
-| 8 | 1Gbps full (prior observation) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx (node 1; operator-confirmed) |
+| 1 | 1Gbps full (verified) | 100 | 100 | — | ISP-provided box (operator-confirmed) |
+| 2 | 1Gbps full (verified) | 10 | 10 | — | HomeProx4 • Dell PowerEdge R640 (operator-confirmed) |
+| 3 | 1Gbps full (verified) | 10 | 10 | — | Desktop PC (operator-confirmed) |
+| 4 | Down (verified) | 20 | 20 | — | Empty (operator-confirmed) |
+| 5 | 1Gbps full (verified) | 20 | 20 | 30, 40, 50 | Grandstream GWN7660E via PoE injector (user-confirmed) |
+| 6 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx3 (operator-confirmed) |
+| 7 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx2 (operator-confirmed) |
+| 8 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx (node 1; operator-confirmed) |
 
 These are the switch's **configured** VLAN memberships, verified from the 802.1Q VLAN Configuration and PVID Setting screenshots provided by the operator. 802.1Q VLAN is enabled. These settings do not by themselves prove each connected endpoint's VLAN behavior. VLAN 1 appears in the configuration table without populated membership details. Port 1 is confirmed connected to the ISP-provided box, but the VLAN 100 setting alone does not establish its precise routing role.
 
@@ -100,6 +100,10 @@ These are the switch's **configured** VLAN memberships, verified from the 802.1Q
 | Node D | `nic1` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0` • `192.168.10.XXX/24` |
 
 Node A, Node B and Node C have VLAN-aware `vmbr0` bridges. Node D's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. Node D is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to switch port 5 **through a PoE injector**; the new VLAN 50 SSID has been deployed and tested, while mapping of other existing SSIDs is not fully audited. A 15-second LLDP capture on Node A observed no advertisements, so the physical port mapping relies on the operator's direct cable inventory rather than LLDP.
+
+### Switch verification summary
+
+Operator-provided switch screenshots confirm 802.1Q enabled, VLAN membership and PVID values, and live port settings. Seven ports (1–3 and 5–8) are up at 1000 Mbps full duplex; port 4 is down and physically empty. All ports are administratively enabled with auto-negotiation and flow control off. Physical device assignments were confirmed by the operator. This completes the switch port documentation audit, without claiming end-to-end VLAN or traffic tests beyond those already recorded.
 
 ## Physical Hardware Layout
 
@@ -162,7 +166,7 @@ A separate **Netgear GS105 switch** has been discussed for a future re-cabling p
 
 ## New wireless VLAN 50 case study
 
-[Unrestricted internet SSID deployment and DHCP troubleshooting](../opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) documents switch port 5 tagging, Proxmox-to-OPNsense forwarding, Dnsmasq DHCP recovery, Cloudflare DNS testing, and internal-service isolation. All eight switch-port device assignments were subsequently confirmed by the operator on October 31, 2026; VLAN memberships and PVIDs were rechecked from switch UI screenshots. Live link states were not rechecked.
+[Unrestricted internet SSID deployment and DHCP troubleshooting](../opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) documents switch port 5 tagging, Proxmox-to-OPNsense forwarding, Dnsmasq DHCP recovery, Cloudflare DNS testing, and internal-service isolation. All eight switch-port device assignments were subsequently confirmed by the operator on October 31, 2026; VLAN memberships and PVIDs were rechecked from switch UI screenshots. Live link states were also rechecked: ports 1–3 and 5–8 up at 1000 Mbps full duplex, port 4 down.
 
 ## Segmentation and routing
 
@@ -193,4 +197,4 @@ Tailscale enables remote administrative access. Graphy is a Raspberry Pi 4 kiosk
 
 ## Scope and limitations
 
-This diagram records operator-confirmed physical switch-port assignments and screenshot-verified VLAN memberships/PVIDs but does **not** assert freshly verified link states, redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
+This diagram records operator-confirmed physical switch-port assignments and screenshot-verified VLAN memberships/PVIDs but does **not** assert redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
