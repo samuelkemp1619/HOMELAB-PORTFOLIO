@@ -1,6 +1,6 @@
 # Homelab Network Architecture
 
-**Updated:** October 30, 2026
+**Updated:** October 31, 2026
 
 This is a **logical topology**, not a verified port-by-port cable map. It documents network segmentation, cluster placement, and service relationships. Physical uplinks and upstream WAN details are intentionally simplified. Dotted arrows indicate logical dependencies rather than physical cabling.
 
@@ -15,6 +15,8 @@ flowchart TB
     SWITCH --> V20["VLAN 20 • Trusted"]
     SWITCH --> V30["VLAN 30 • IoT"]
     SWITCH --> V40["VLAN 40 • Guest"]
+    SWITCH --> V50["VLAN 50 • Unrestricted internet Wi-Fi"]
+    V50 --> AP50["Grandstream GWN7660E<br/>dedicated SSID • Cloudflare DNS"]
     V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
     CLUSTER --> P1["Node A<br/>Dell OptiPlex 3000 (SMBIOS)"]
@@ -39,8 +41,8 @@ flowchart TB
     classDef network fill:#e5f0ff,color:#17365d,stroke:#77a5d6
     classDef service fill:#e9f7f1,color:#174d36,stroke:#71b49a
     class FW,CLUSTER core
-    class SWITCH,V10,V20,V30,V40 network
-    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI,SMART service
+    class SWITCH,V10,V20,V30,V40,V50 network
+    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI,SMART,AP50 service
 ```
 
 [Open standalone Mermaid source](homelab-network.mmd)
@@ -64,7 +66,7 @@ flowchart TB
     SW --- H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW --- POE["PoE injector<br/>Switch-facing port unverified"]
     POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>192.168.20.XXX • VLAN 20 management"]
-    AP -. "Wi-Fi • SSIDs/VLAN mappings pending" .-> WIFI["Wireless clients / networks<br/>SSID details unverified"]
+    AP -. "Wi-Fi • VLAN 50 verified" .-> WIFI["Skemp_UNSECURE clients<br/>unfiltered internet / internal isolation"]
     H1 -. "OPNsense VM100 • virtual gateway" .-> GW
     classDef device fill:#e5f0ff,color:#17365d,stroke:#77a5d6
     class SW,H1,H2,H3,H4,POE,AP device
@@ -80,10 +82,10 @@ flowchart TB
 | 2 | 1Gbps full | 10 | 10 | — | Unverified |
 | 3 | 1Gbps full | 10 | 10 | — | Unverified |
 | 4 | Down | 20 | 20 | — | None detected |
-| 5 | 1Gbps full | 20 | 20 | 30, 40 | Unverified |
-| 6 | 1Gbps full | 10 | — | 10, 20, 30, 40, 100 | Unverified |
-| 7 | 1Gbps full | 10 | — | 10, 20, 30, 40, 100 | Unverified |
-| 8 | 1Gbps full | 10 | — | 10, 20, 30, 40, 100 | Unverified |
+| 5 | Previously observed 1Gbps full | 20 | 20 | 30, 40, 50 | Grandstream GWN7660E via PoE injector (user-confirmed) |
+| 6 | 1Gbps full | 10 | — | 10, 20, 30, 40, 50, 100 | Unverified |
+| 7 | 1Gbps full | 10 | — | 10, 20, 30, 40, 50, 100 | Unverified |
+| 8 | 1Gbps full | 10 | — | 10, 20, 30, 40, 50, 100 | Unverified |
 
 These are the switch's **configured** VLAN memberships, not proof of each connected endpoint's VLAN behavior. VLAN 1 appears in the configuration table without populated membership details. Port 1's VLAN 100 setting is **not** proof that it is the gateway uplink.
 
@@ -96,7 +98,7 @@ These are the switch's **configured** VLAN memberships, not proof of each connec
 | Node C | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
 | Node D | `nic1` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0` • `192.168.10.XXX/24` |
 
-Node A, Node B and Node C have VLAN-aware `vmbr0` bridges. Node D's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. Node D is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to the switch **through a PoE injector**; its management address is reachable from Node A, but SSIDs remain pending credential recovery. A 15-second LLDP capture on Node A observed no advertisements, so exact switch ports cannot be assigned reliably from remote evidence.
+Node A, Node B and Node C have VLAN-aware `vmbr0` bridges. Node D's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. Node D is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to switch port 5 **through a PoE injector**; the new VLAN 50 SSID has been deployed and tested, while mapping of other existing SSIDs is not fully audited. A 15-second LLDP capture on Node A observed no advertisements, so exact switch ports cannot be assigned reliably from remote evidence.
 
 ## Physical Hardware Layout
 
@@ -120,7 +122,7 @@ flowchart TB
         SWITCH_HW["TP-Link TL-SG108E v6.0 managed switch"]
         INJECTOR["PoE injector"]
         ACCESS["Grandstream GWN7660E access point"]
-        SWITCH_HW --> INJECTOR --> ACCESS
+        SWITCH_HW -->|"port 5 • VLAN 50 tagged"| INJECTOR --> ACCESS
     end
     subgraph OTHER_HW["Other physical homelab equipment"]
         PI4["Graphy • Raspberry Pi 4 Model B<br/>8 GB • Grafana kiosk"]
@@ -130,7 +132,7 @@ flowchart TB
     SWITCH_HW --- H2
     SWITCH_HW --- H3
     SWITCH_HW --- R640
-    ACCESS -. "Wi-Fi; SSIDs unverified" .-> PI4
+    ACCESS -. "Wi-Fi; existing SSID mapping not fully audited" .-> PI4
     classDef platform fill:#e5f0ff,color:#17365d,stroke:#77a5d6
     class H1,H2,H3,R640,SWITCH_HW,INJECTOR,ACCESS,PI4,PRINTER platform
 ```
@@ -157,6 +159,10 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 
 A separate **Netgear GS105 switch** has been discussed for a future re-cabling project but is **not shown as installed**. The proposed backup-storage migration remains pending; the two currently detected Samsung 870 EVO SSDs do not establish that a dedicated backup disk has been provisioned.
 
+## New wireless VLAN 50 case study
+
+[Unrestricted internet SSID deployment and DHCP troubleshooting](../opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) documents switch port 5 tagging, Proxmox-to-OPNsense forwarding, Dnsmasq DHCP recovery, Cloudflare DNS testing, and internal-service isolation. Other switch-port device assignments remain unverified.
+
 ## Segmentation and routing
 
 | Network | Purpose | Documentation status |
@@ -165,6 +171,7 @@ A separate **Netgear GS105 switch** has been discussed for a future re-cabling p
 | VLAN 20 | Trusted clients, including Graphy | In use |
 | VLAN 30 | IoT segment; Smart devices grouped beneath VLAN 30 in the logical diagram | Configured; DNS enforcement client validation pending |
 | VLAN 40 | Guest segment | Configured; DNS enforcement client validation pending |
+| VLAN 50 | Dedicated unrestricted-internet Wi-Fi, Cloudflare DNS, internal IPv4 isolation | Operational; client tested; IPv6 audit pending |
 
 OPNsense handles inter-network policy. The primary and secondary Pi-hole instances are advertised as DNS resolvers; their independent operation and Nebula Sync synchronization have been tested, but Node A Linux resolver fallback has passed a simulated unavailable-primary test; Windows and other client failover remain unverified. Direct-DNS bypass rules were configured for four networks; comprehensive client testing and DNS-over-HTTPS controls remain outstanding.
 
