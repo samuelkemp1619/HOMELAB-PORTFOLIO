@@ -1,7 +1,7 @@
 # Unrestricted Internet Wireless VLAN — Deployment and DHCP Troubleshooting
 
 **Completed:** October 31, 2026  
-**Status:** Operational; IPv4 internet connectivity, Cloudflare DNS diagnostic, and client-tested internal-service isolation confirmed. IPv6 policy and universal DNS-bypass behavior remain unverified.
+**Status:** Operational; deployment validation confirmed complete by the operator on October 31, 2026. Packet captures and client diagnostic evidence are documented below; additional detailed test logs were not supplied.
 
 ## Objective
 
@@ -61,15 +61,13 @@ OPNsense automatic outbound Source NAT includes the UNSECURE network. Existing L
 | Cloudflare diagnostic: DNS over HTTPS | Yes |
 | Cloudflare resolver IPv4 reachability | 1.1.1.1 and 1.0.0.1 reachable |
 | Cloudflare resolver IPv6 reachability | Not reachable in test |
-| All applications/devices bypass Pi-hole | Not comprehensively tested |
-| IPv6 internal-network isolation | Not yet audited |
+| DNS policy validation | Operator confirms complete; exhaustive per-application evidence not supplied |
+| IPv6 internal-network isolation | Operator confirms deployment validation complete; specific IPv6 test evidence not provided |
 
 ## Skills demonstrated
 
 802.1Q trunk/access VLAN design; managed switch configuration; Proxmox VLAN-aware Linux bridges; VirtIO/TAP networking; packet capture at multiple OSI layers; DHCP failure diagnosis; OPNsense interface/firewall/NAT policy; DNS resolver policy separation; evidence-based network validation.
 
-## Follow-up checks
+## Validation closeout
 
-- Verify DHCP option 6 and resolver behavior on additional client devices; review Pi-hole query logs if definitive non-use evidence is required.
-- Audit IPv6 Router Advertisements, addressing, and firewall policy on the new SSID.
-- Revalidate `PRIVATE_NETWORKS` alias coverage and internal isolation if networks are added.
+The operator confirmed that the deployment's validation was completed after the initial documented tests. Specific additional commands and results were not provided, so this case study records that confirmation without inventing measurements. Revalidate firewall alias coverage if the network design changes.
