@@ -29,7 +29,6 @@ flowchart TB
     P3 --> VAULT["CT 104 • Vaultwarden"]
     P3 --> DNS2["CT 105 • Secondary Pi-hole"]
     P4 --> WIN["VM 400 • Windows Server 2025"]
-    P4 --> AI["AI-Operations / n8n<br/>scheduled alerting paused"]
     DNS1 <-. "config sync" .-> DNS2
     FW -. "DHCP advertises both resolvers" .-> DNS1
     FW -. "DHCP advertises both resolvers" .-> DNS2
@@ -42,7 +41,7 @@ flowchart TB
     classDef service fill:#e9f7f1,color:#174d36,stroke:#71b49a
     class FW,CLUSTER core
     class SWITCH,V10,V20,V30,V40,V50 network
-    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI,SMART,AP50 service
+    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,SMART,AP50 service
 ```
 
 [Open standalone Mermaid source](homelab-network.mmd)
@@ -153,7 +152,7 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 | **Node A** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
 | **Node B** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
 | **Node C** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
-| **Node D** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server and AI-Operations VMs |
+| **Node D** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server VM |
 | **Managed switch** | TP-Link TL-SG108E v6.0 | Managed Switch; 192.168.10.XXX; seven active 1Gbps links; port 4 down; VLAN/PVID table above |
 | **Wireless access point** | Grandstream GWN7660E | 192.168.20.XXX (VLAN 20); connected to TL-SG108E through a PoE injector; port 5 confirmed; VLAN 50 SSID verified; other SSIDs not fully audited |
 | **PoE injector** | Model unverified | Inline between managed switch and GWN7660E access point |
@@ -187,9 +186,8 @@ The **Smart devices** node is a logical grouping for IoT endpoints, not a verifi
 - **Node A:** OPNsense VM 100 and primary Pi-hole CT 101.
 - **Node B:** AMP CT 102 and monitoring/application stack CT 103 (Dashy, Prometheus, Grafana, exporters, Nebula Sync).
 - **Node C:** Vaultwarden CT 104 and secondary Pi-hole CT 105.
-- **Node D:** Windows Server 2025 VM 400 and AI-Operations tooling.
+- **Node D:** Windows Server 2025 VM 400.
 
-Proxmox scheduled backups use off-node storage. The n8n alert workflow has been configured and manually tested, but scheduled production execution remains unpublished/paused.
 
 ## Access and monitoring
 
