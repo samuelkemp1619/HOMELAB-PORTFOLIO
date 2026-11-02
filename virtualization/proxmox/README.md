@@ -21,7 +21,7 @@ Designed, deployed, and administer a four-node Proxmox VE environment supporting
 | Node A | Dell OptiPlex 3000 (SMBIOS-reported) | Virtual firewall and DNS infrastructure |
 | Node B | HP Elite Mini 600 G9 | Application hosting and monitoring |
 | Node C | HP Elite Mini 600 G9 | DNS, password management, and automation containers |
-| Node D | Dell PowerEdge R640 | Windows Server lab and AI-Operations virtual machine |
+| Node D | Dell PowerEdge R640 | Windows Server lab |
 
 Node aliases intentionally replace internal hostnames in public documentation. The exact chassis designation of Node A has not been independently confirmed.
 
@@ -37,8 +37,8 @@ The four-node cluster uses Corosync for membership and quorum. With four expecte
 |---|---|
 | Node A | OPNsense virtual firewall; primary Pi-hole DNS container |
 | Node B | AMP game-server management; Dashy, Prometheus, Grafana and exporters |
-| Node C | Vaultwarden; secondary Pi-hole DNS; Python-based Gmail organization container |
-| Node D | Windows Server 2025 VM; AI-Operations VM with Docker-based services |
+| Node C | Vaultwarden; secondary Pi-hole DNS |
+| Node D | Windows Server 2025 VM |
 
 Workload names are included for technical context; internal host addresses, MAC addresses, and VM management endpoints are omitted.
 
@@ -78,7 +78,6 @@ See the [network architecture documentation](../../network/diagrams/) for diagra
 ### Windows and automation
 
 - Installed and activated a Windows Server 2025 lab VM; further directory-services configuration is paused.
-- Deployed an AI-Operations VM hosting Docker, PostgreSQL, and n8n.
 - Configured and manually tested monitoring alert-routing logic; the original scheduled workflow remains **unpublished and paused**. This is not a claim of active scheduled alert delivery.
 
 ## Challenges and Lessons Learned
