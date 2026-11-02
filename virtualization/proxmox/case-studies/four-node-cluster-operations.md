@@ -27,7 +27,7 @@ The environment is operational, but the power-loss exercise exposed dependencies
 | Node A | Dell OptiPlex 3000 Micro (SMBIOS-reported designation) | Virtual firewall and primary DNS infrastructure |
 | Node B | HP Elite Mini 600 G9 | Monitoring and application services |
 | Node C | HP Elite Mini 600 G9 | Secondary DNS, password management, utility containers |
-| Node D | Dell PowerEdge R640 | Windows Server lab and AI-Operations VM |
+| Node D | Dell PowerEdge R640 | Windows Server lab |
 
 **Why mixed hardware?** Compact nodes provide a practical platform for always-on infrastructure and service isolation, while the rack server supports more resource-intensive lab workloads. The trade-off is nonuniform storage, networking, and host characteristics, which require explicit documentation rather than assumptions of interchangeability.
 
