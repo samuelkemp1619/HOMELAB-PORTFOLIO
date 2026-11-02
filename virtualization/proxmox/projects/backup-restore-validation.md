@@ -44,7 +44,6 @@ Before any changes, collect sanitized output from the Proxmox management interfa
 | Password-management service | Critical/sensitive | Verify | Verify | High |
 | Application/game management | Important | Verify | Verify | Medium |
 | Windows Server lab | Lab | Verify | Verify | Low |
-| AI-Operations lab | Lab | Verify | Verify | Low |
 | Email-organization utility | Important/sensitive | Verify | Verify | Medium |
 
 Do not publish real guest IDs, backup archive names, internal IP addresses, or application secrets in evidence screenshots.
