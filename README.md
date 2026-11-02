@@ -26,7 +26,6 @@ A practical portfolio of **network administration, systems engineering, cybersec
 | [Rack shelf and node installation](hardware/rack-shelf-installation/) | Rack mounting, cabling, physical infrastructure | Completed |
 | [Graphy Grafana kiosk](monitoring/graphy-grafana-kiosk/) | Raspberry Pi, Linux, kiosk deployment, dashboard presentation | Completed |
 | [Vaultwarden password audit](security/vaultwarden-password-audit/) | PowerShell, security hygiene analysis, reporting | Audit completed; findings not automatically remediated |
-| [AI-Operations monitoring prototype](automation/ai-operations-proxmox-monitoring/) | Workflow design, alert classification, notification testing | Prototype tested; scheduled workflow unpublished and paused |
 
 ## Featured Technical Case Studies
 
@@ -60,7 +59,6 @@ A practical portfolio of **network administration, systems engineering, cybersec
 
 - Deployed Prometheus/Grafana infrastructure dashboards and a Raspberry Pi-based Grafana kiosk.
 - Built and completed a PowerShell-based Vaultwarden audit covering **573 login entries**, producing aggregate security-hygiene findings without claiming password remediation.
-- Developed and tested alert-routing logic for an AI-Operations monitoring workflow. Its production schedule is **not published**, and the project remains paused.
 
 ## Infrastructure at a Glance
 
@@ -87,7 +85,6 @@ The following are **not presented as completed deployments**:
 - Expanded backup and disaster-recovery testing
 - Additional Windows Server and Active Directory lab work
 - Further network security validation and detection capabilities
-- Publication of the paused AI-Operations scheduled alert workflow
 
 ## Public Documentation and Security
 
