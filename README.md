@@ -2,7 +2,7 @@
 
 A practical portfolio of **network administration, systems engineering, cybersecurity, virtualization** projects. This lab provides hands-on experience designing segmented networks, operating virtualized services, validating controls, monitoring infrastructure, and documenting technical outcomes.
 
-> **Documentation approach:** Implemented features, validated behavior, and future work are distinguished throughout. Network addresses, device-specific identifiers, and credentials are omitted or masked in public examples.
+> **Documentation approach:** This portfolio showcases implemented projects and completed technical work. Validation limitations are documented explicitly, and unfinished projects are excluded from the featured project list. Network addresses, device-specific identifiers, and credentials are omitted or masked in public examples.
 
 ## Homelab Architecture Overview
 
@@ -17,15 +17,15 @@ A practical portfolio of **network administration, systems engineering, cybersec
 | Project | Demonstrated skills | Status |
 |---|---|---|
 | [Four-node Proxmox VE cluster](virtualization/proxmox/) | Linux administration, KVM/QEMU, LXC, cluster operations, backup scheduling, completed November 2026 cluster update | Completed |
-| [OPNsense and VLAN architecture](network/opnsense-vlan-architecture/) | VLAN segmentation, routing, firewall configuration, DNS policy | Deployed |
+| [OPNsense and VLAN architecture](network/opnsense-vlan-architecture/) | VLAN segmentation, routing, firewall configuration, DNS policy | Completed |
 | [Unrestricted wireless VLAN 50](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) | 802.1Q wireless segmentation, OPNsense DHCP/firewall, packet-capture troubleshooting | Completed |
-| [Redundant Pi-hole DNS](network/pihole-dns/) | DNS filtering, dual resolvers, DHCP integration, selected recovery testing | Deployed |
-| [Prometheus and Grafana monitoring](monitoring/prometheus-grafana/) | Metrics collection, dashboards, service monitoring | Deployed |
-| [Network architecture diagrams](network/diagrams/) | Logical and physical topology documentation | Documented |
+| [Redundant Pi-hole DNS](network/pihole-dns/) | DNS filtering, dual resolvers, DHCP integration, selected recovery testing | Completed |
+| [Prometheus and Grafana monitoring](monitoring/prometheus-grafana/) | Metrics collection, dashboards, service monitoring | Completed |
+| [Network architecture diagrams](network/diagrams/) | Logical and physical topology documentation | Completed |
 | [Custom three-tier micro-PC holder](hardware/micro-pc-rack/) | CAD iteration, 3D printing, hardware integration | Completed |
 | [Rack shelf and node installation](hardware/rack-shelf-installation/) | Rack mounting, cabling, physical infrastructure | Completed |
 | [Graphy Grafana kiosk](monitoring/graphy-grafana-kiosk/) | Raspberry Pi, Linux, kiosk deployment, dashboard presentation | Completed |
-| [Vaultwarden password audit](security/vaultwarden-password-audit/) | PowerShell, security hygiene analysis, reporting | Audit completed; findings not automatically remediated |
+| [Vaultwarden password audit](security/vaultwarden-password-audit/) | PowerShell, security hygiene analysis, reporting; audit findings not automatically remediated | Completed |
 
 ## Featured Technical Case Studies
 
@@ -68,7 +68,7 @@ A practical portfolio of **network administration, systems engineering, cybersec
 
 These aliases are used for public presentation rather than exposing internal hostnames. Node A's Dell OptiPlex 3000 model, processor, RAM, storage and Ethernet controller were verified directly on the host on November 5, 2026.
 
-**Technologies:** Proxmox VE · Debian/Linux · KVM/QEMU · LXC · OPNsense · VLANs · Pi-hole · Nebula Sync · Prometheus · Grafana · Tailscale · PowerShell · Python · Docker · PostgreSQL · Raspberry Pi
+**Technologies:** Proxmox VE · Debian/Linux · KVM/QEMU · LXC · OPNsense · VLANs · Pi-hole · Nebula Sync · Prometheus · Grafana · Tailscale · PowerShell · Python · Docker · Raspberry Pi
 
 ## Project Documentation
 
