@@ -85,7 +85,3 @@ Designed, iteratively prototyped, 3D printed, and assembled a freestanding three
 - Iterative troubleshooting and prototyping
 - Mechanical assembly and serviceability planning
 - Virtualization host hardware organization
-
-## Future Documentation
-
-Photographs of the completed holder, sanitized CAD source, and build diagrams may be added separately.
