@@ -118,15 +118,6 @@ Before future full synchronization or major configuration changes:
 - Backup and recovery planning
 - Controlled service validation
 
-## Next Steps
-
-- Complete controlled Windows and other client failover tests without disrupting production DNS.
-- Evaluate whether client resolver behavior meets availability requirements.
-- Consider a dedicated DNS VIP or another design only if needed and compatible with the network architecture.
-- Monitor Nebula Sync scheduled runs and verify synchronization remains healthy.
-- Add or verify scheduled backup coverage for secondary Pi-hole CT105.
-- Document recovery from a failed or unwanted full synchronization.
-
 ## DNS Bypass Enforcement (Paused)
 
 OPNsense rules were added on LAN, TRUSTED, IOT, and GUEST to make the Pi-hole instances the permitted conventional DNS resolvers and to block common direct-DNS bypass paths.
