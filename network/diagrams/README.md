@@ -62,7 +62,7 @@ flowchart TB
     SW ---|"port 8"| H1["Node A • Dell OptiPlex 3000<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 7"| H2["Node B • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 6"| H3["Node C • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
-    SW ---|"port unconfirmed"| H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW ---|"port 5"| H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 2"| POE["PoE injector<br/>Switch-facing port unverified"]
     POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>AP management address previously recorded on VLAN 20; current management path not revalidated"]
     AP -. "Wi-Fi • VLAN 50 tagged" .-> WIFI["Unrestricted SSID clients<br/>internet access / internal isolation"]
@@ -82,7 +82,7 @@ flowchart TB
 | 2 | 1Gbps full (historical) | 20 | 20 | 30, 40, 50, 100 | Grandstream GWN7660E via PoE injector (latest confirmation) |
 | 3 | 1Gbps full (verified) | 10 | 10 | — | Desktop PC (operator-confirmed) |
 | 4 | Down (historical) | 10 | 1 | — | Empty (operator-confirmed) |
-| 5 | 1Gbps full (historical) | 10 | 10 | 30, 40, 50 | Connected device not reconfirmed |
+| 5 | 1Gbps full (historical) | 10 | 10 | 30, 40, 50 | HomeProx4 • Dell PowerEdge R640 (operator-confirmed November 5) |
 | 6 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx3 (operator-confirmed) |
 | 7 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx2 (operator-confirmed) |
 | 8 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx (node 1; operator-confirmed) |
@@ -211,4 +211,4 @@ Tailscale enables remote administrative access. Graphy is a Raspberry Pi 4 kiosk
 This diagram records operator-confirmed physical switch-port assignments and screenshot-verified VLAN memberships/PVIDs but does **not** assert redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
 
 
-**November 5 correction:** The AP is connected to switch port 2, not port 5. The prior port 2 R640 assignment and port 5 AP assignment are superseded. Device placement on port 5 and the R640 uplink require reconfirmation; older illustrative diagram labels may reflect the previous inventory.
+**November 5 correction:** The AP is connected to switch port 2, not port 5. The prior port 2 R640 assignment and port 5 AP assignment are superseded: the operator confirmed the R640 on port 5 and the AP on port 2. Older illustrative diagram labels may reflect the previous inventory.
