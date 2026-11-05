@@ -1,6 +1,6 @@
 # Network & Cybersecurity Homelab Portfolio
 
-A practical portfolio of **network administration, systems engineering, cybersecurity, virtualization, and automation** projects. This lab provides hands-on experience designing segmented networks, operating virtualized services, validating controls, monitoring infrastructure, and documenting technical outcomes.
+A practical portfolio of **network administration, systems engineering, cybersecurity, virtualization** projects. This lab provides hands-on experience designing segmented networks, operating virtualized services, validating controls, monitoring infrastructure, and documenting technical outcomes.
 
 > **Documentation approach:** Implemented features, validated behavior, and future work are distinguished throughout. Network addresses, device-specific identifiers, and credentials are omitted or masked in public examples.
 
@@ -16,12 +16,12 @@ A practical portfolio of **network administration, systems engineering, cybersec
 
 | Project | Demonstrated skills | Status |
 |---|---|---|
-| [Four-node Proxmox VE cluster](virtualization/proxmox/) | Linux administration, KVM/QEMU, LXC, cluster operations, backup scheduling | Operational |
-| [OPNsense and VLAN architecture](network/opnsense-vlan-architecture/) | Network segmentation, firewall policy, managed switching, DNS policy | Operational; additional policy validation pending |
-| [Unrestricted wireless VLAN 50](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) | 802.1Q wireless segmentation, OPNsense DHCP/firewall, packet-capture troubleshooting | Operational; validation completed |
-| [Redundant Pi-hole DNS](network/pihole-dns/) | DNS filtering, service redundancy, DHCP integration, Nebula Sync, failure testing | Deployed; selected failover tests completed |
-| [Prometheus and Grafana monitoring](monitoring/prometheus-grafana/) | Metrics collection, observability, dashboards, service monitoring | Operational; reporting enhancements planned |
-| [Network architecture diagrams](network/diagrams/) | Logical and physical topology documentation, VLAN design | Documented; exact switch-port mapping unverified |
+| [Four-node Proxmox VE cluster](virtualization/proxmox/) | Linux administration, KVM/QEMU, LXC, cluster operations, backup scheduling, completed November 2026 cluster update | Completed |
+| [OPNsense and VLAN architecture](network/opnsense-vlan-architecture/) | VLAN segmentation, routing, firewall configuration, DNS policy | Deployed |
+| [Unrestricted wireless VLAN 50](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) | 802.1Q wireless segmentation, OPNsense DHCP/firewall, packet-capture troubleshooting | Completed |
+| [Redundant Pi-hole DNS](network/pihole-dns/) | DNS filtering, dual resolvers, DHCP integration, selected recovery testing | Deployed |
+| [Prometheus and Grafana monitoring](monitoring/prometheus-grafana/) | Metrics collection, dashboards, service monitoring | Deployed |
+| [Network architecture diagrams](network/diagrams/) | Logical and physical topology documentation | Documented |
 | [Custom three-tier micro-PC holder](hardware/micro-pc-rack/) | CAD iteration, 3D printing, hardware integration | Completed |
 | [Rack shelf and node installation](hardware/rack-shelf-installation/) | Rack mounting, cabling, physical infrastructure | Completed |
 | [Graphy Grafana kiosk](monitoring/graphy-grafana-kiosk/) | Raspberry Pi, Linux, kiosk deployment, dashboard presentation | Completed |
@@ -34,10 +34,6 @@ A practical portfolio of **network administration, systems engineering, cybersec
 - [Unrestricted Wireless VLAN 50 — Deployment and DHCP Troubleshooting](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md)
 - [Redundant Pi-hole DNS and Failover Testing](network/pihole-dns/case-studies/dns-redundancy-and-failover.md)
 
-## Recovery Validation Plan
-
-[Proxmox Backup Coverage and Isolated Restore Validation](virtualization/proxmox/projects/backup-restore-validation.md) — Documented test plan and evidence log. **Restore testing has not yet been performed.**
-
 ## Selected Accomplishments
 
 ### Segmented network and DNS resilience
@@ -46,13 +42,14 @@ A practical portfolio of **network administration, systems engineering, cybersec
 - Deployed a Grandstream SSID on VLAN 50 using Cloudflare DNS instead of Pi-hole; resolved a Dnsmasq interface-selection DHCP failure using multi-point packet captures. Client internet access and internal-service isolation were tested; subsequent validation was confirmed complete by the operator.
 - Deployed two Pi-hole instances on separate Proxmox hosts and configured DHCP to advertise both DNS resolvers.
 - Configured hourly primary-to-secondary DNS configuration synchronization using Nebula Sync.
-- Verified independent DNS resolution and filtering; a controlled Linux resolver fallback test succeeded. Automatic failover for every client type has **not** been established.
-- Configured rules intended to block direct DNS and DNS-over-TLS bypass on four networks. LAN-path validation was performed; complete client coverage and DNS-over-HTTPS enforcement remain **unverified**.
+- Verified independent DNS resolution and filtering, including a controlled Linux resolver fallback test.
+
 
 ### Virtualization and infrastructure
 
 - Operate a four-node Proxmox VE environment with Linux containers and virtual machines.
-- Maintain scheduled backups with retention policies and failure notifications; broader disaster-recovery validation remains future work.
+- Completed the November 5, 2026 cluster maintenance campaign: all four nodes updated to Proxmox Manager 9.2.25 and kernel 7.0.14-28-pve, rebooted and verified quorate; OPNsense and Pi-hole confirmed running.
+- Configured scheduled backups with retention policies and failure notifications.
 - Designed, printed, and assembled a three-tier micro-PC holder and integrated it with rack shelves and cable management.
 
 ### Monitoring and security engineering
@@ -67,7 +64,7 @@ A practical portfolio of **network administration, systems engineering, cybersec
 | Node A | Dell OptiPlex 3000 (SMBIOS-reported) | Proxmox infrastructure and virtual firewall services |
 | Node B | HP Elite Mini 600 G9 | Applications and monitoring |
 | Node C | HP Elite Mini 600 G9 | Containers and DNS services |
-| Node D | Dell PowerEdge R640 | Windows Server lab and automation workloads |
+| Node D | Dell PowerEdge R640 | Windows Server lab and lab workloads |
 
 These aliases are used for public presentation rather than exposing internal hostnames. The exact chassis designation of Node A is documented as SMBIOS-reported rather than independently confirmed.
 
@@ -76,15 +73,6 @@ These aliases are used for public presentation rather than exposing internal hos
 ## Project Documentation
 
 Each linked project page provides implementation context and, where available, architecture, testing, troubleshooting, security considerations, and lessons learned. The [network diagrams](network/diagrams/) distinguish logical relationships from verified physical connections.
-
-## Current and Future Work
-
-The following are **not presented as completed deployments**:
-
-- Exception-based health reporting and centralized log analysis
-- Expanded backup and disaster-recovery testing
-- Additional Windows Server and Active Directory lab work
-- Further network security validation and detection capabilities
 
 ## Public Documentation and Security
 
