@@ -12,7 +12,7 @@ Provide a dedicated wireless SSID for selected devices requiring ordinary, unfil
 ## Components and topology
 
 - **Wireless:** Grandstream GWN7660E; dedicated SSID `Skemp_UNSECURE`, bridged client IP assignment, IEEE 802.1Q VLAN 50, 2.4 GHz and 5 GHz.
-- **Switching:** TP-Link TL-SG108E v6.0; AP connected at switch port 5, with VLAN 50 tagged on port 5 and the tagged Proxmox-facing uplinks.
+- **Switching:** TP-Link TL-SG108E v6.0; AP connected at switch port 2, with VLAN 50 tagged on port 2 and the tagged Proxmox-facing uplinks.
 - **Hypervisor:** Proxmox VE, Node A; VLAN-aware Linux bridge `vmbr0` with physical `nic0`.
 - **Firewall/router:** OPNsense VM 100; added sixth VirtIO adapter `net5`, Proxmox `tag=50`, appearing in OPNsense as `vtnet5` / interface `UNSECURE`.
 - **Addressing:** IPv4 subnet `192.168.50.0/24` (public documentation of network prefix only), OPNsense gateway `192.168.50.1`, DHCP pool `192.168.50.100–200`.
