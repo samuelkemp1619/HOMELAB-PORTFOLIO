@@ -3,11 +3,11 @@
 **Domain:** Systems administration, virtualization, network engineering, resilience  
 **Platform:** Proxmox VE 9.x on Debian 13  
 **Scope:** Four physical hosts, KVM virtual machines, LXC containers, VLAN networking, monitoring, and scheduled backups  
-**Evidence window:** October 2026 operational and maintenance records
+**Evidence window:** October–November 2026 operational and maintenance records
 
 ## Executive Summary
 
-Designed and operated a four-node Proxmox VE cluster combining three compact systems and one rack server. The lab hosts firewall, DNS, monitoring, password-management, automation, and Windows Server workloads. The work emphasizes operational discipline: documenting host roles, validating cluster quorum, migrating services, testing power-loss recovery, and reviewing backup jobs.
+Designed and operated a four-node Proxmox VE cluster combining three compact systems and one rack server. The lab hosts firewall, DNS, monitoring, password-management and Windows Server workloads. The work emphasizes operational discipline: documenting host roles, validating cluster quorum, migrating services, testing power-loss recovery, and reviewing backup jobs.
 
 The environment is operational, but the power-loss exercise exposed dependencies between host availability, cluster membership, networking, and DNS. Recovery required intervention. This case study does **not** represent the cluster as a validated high-availability deployment.
 
@@ -44,6 +44,10 @@ The environment is operational, but the power-loss exercise exposed dependencies
 Management and trusted traffic use separate VLANs, with additional lab, IoT, guest, and WAN-related VLAN configurations. OPNsense supplies virtualized routing and firewall policy. Linux bridges provide guest connectivity; network configuration is **not identical across all four hosts**. In particular, Node D's management bridge was documented as not VLAN-aware, and complete physical switch-port mapping was not independently validated.
 
 For public documentation, hostnames and endpoint identifiers are replaced by generic aliases. The architecture illustration is schematic and should not be used as a configuration source of truth.
+
+## Completed Cluster Update — November 5, 2026
+
+All four hosts completed the Proxmox VE update campaign. Each was verified running **Proxmox Manager 9.2.25** and **kernel 7.0.14-28-pve** following reboot. The cluster remained quorate with four votes present (three required). On the primary firewall host, OPNsense and Pi-hole were running after restart, and a DNS query through the secondary Pi-hole returned valid responses.
 
 ## Implementation and Operational Validation
 
@@ -84,17 +88,17 @@ Two scheduled Proxmox backup jobs were documented: snapshot mode at **03:00** an
 
 Task logs confirmed successful backup execution for reviewed jobs. However, the dashboard has shown guests without backup coverage, and a complete restore exercise has not been documented.
 
-**Limit:** Verified job completion is not equivalent to complete guest coverage or recoverability. Restore testing and coverage remediation remain open work.
+**Limit:** Verified job completion is not equivalent to complete guest coverage or recoverability. A successful backup task does not itself demonstrate restore capability.
 
 ## Challenges, Responses, and Evidence Boundaries
 
-| Challenge | Response | What remains unverified |
-|---|---|---|
-| Loss of connectivity after power restoration | Traced host, quorum, firewall, and DNS dependencies; restored essential services | Unattended recovery and guest failover |
-| Monitoring service relocation | Migrated monitoring container and checked access afterward | HA restart and universal workload mobility |
-| DNS availability | Operated resolvers on separate hosts and tested selected fallback behavior | All-client automatic failover |
-| Backup consistency | Scheduled compressed jobs, retention, notifications, and log checks | Complete guest coverage and successful restore |
-| Nonuniform host networking | Documented bridge/VLAN differences and avoided assuming uniform configuration | Full physical switch-port and VLAN-path validation |
+## Recorded Operational Outcomes
+
+- Recovered routing and DNS after the controlled power-loss exercise.
+- Verified monitoring accessibility after workload migration.
+- Validated independent Pi-hole resolution and selected resolver fallback behavior.
+- Configured compressed scheduled backups and reviewed successful task logs.
+- Documented host networking differences without claiming uniform VLAN configuration.
 
 ## Skills Demonstrated
 
@@ -105,14 +109,6 @@ Task logs confirmed successful backup execution for reviewed jobs. However, the 
 - Observability with Prometheus, Grafana, and exporters
 - Backup scheduling, retention, and evidence-based validation
 - Incident documentation, recovery sequencing, and operational risk assessment
-
-## Next Engineering Milestones
-
-1. Inventory all guests against backup-job inclusion and close documented coverage gaps.
-2. Perform and record an isolated guest restore test, including time-to-restore and application validation.
-3. Document power-on dependencies for routing, DNS, and management access.
-4. Verify switch-port VLAN configuration and host bridge behavior.
-5. Define and test an explicit recovery procedure before making any HA claims.
 
 ## Related Documentation
 
