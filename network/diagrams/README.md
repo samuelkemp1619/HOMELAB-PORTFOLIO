@@ -1,6 +1,6 @@
 # Homelab Network Architecture
 
-**Updated:** November 5, 2026 (SSID and switch VLAN mapping verified from operator screenshots)
+**Updated:** November 5, 2026 (SSID mappings and physical port 2/5 assignments confirmed)
 
 The first diagram is a **logical topology**; the physical section below includes the operator-confirmed eight-port cable map. It documents network segmentation, cluster placement, and service relationships. Physical uplinks and upstream WAN details are intentionally simplified. Dotted arrows indicate logical dependencies rather than physical cabling.
 
@@ -16,7 +16,10 @@ flowchart TB
     SWITCH --> V30["VLAN 30 • IoT"]
     SWITCH --> V40["VLAN 40 • Guest"]
     SWITCH --> V50["VLAN 50 • Unrestricted internet Wi-Fi"]
-    V50 --> AP50["Grandstream GWN7660E<br/>dedicated SSID • Cloudflare DNS"]
+    V50 --> AP50["Grandstream GWN7660E<br/>unrestricted SSID • Cloudflare DNS"]
+    V20 --> PRIMARY["Primary Wi-Fi SSID<br/>untagged on AP uplink port 2"]
+    V30 --> IOTWIFI["IoT Wi-Fi SSID<br/>tagged VLAN 30"]
+    V40 --> GUESTWIFI["Guest Wi-Fi SSID<br/>tagged VLAN 40"]
     V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
     CLUSTER --> P1["Node A<br/>Dell OptiPlex 3000 (SMBIOS)"]
@@ -41,7 +44,7 @@ flowchart TB
     classDef service fill:#e9f7f1,color:#174d36,stroke:#71b49a
     class FW,CLUSTER core
     class SWITCH,V10,V20,V30,V40,V50 network
-    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,SMART,AP50 service
+    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,SMART,AP50,PRIMARY,IOTWIFI,GUESTWIFI service
 ```
 
 [Open standalone Mermaid source](homelab-network.mmd)
@@ -65,7 +68,10 @@ flowchart TB
     SW ---|"port 5"| H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 2"| POE["PoE injector<br/>Switch-facing port unverified"]
     POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>AP management address previously recorded on VLAN 20; current management path not revalidated"]
-    AP -. "Wi-Fi • VLAN 50 tagged" .-> WIFI["Unrestricted SSID clients<br/>internet access / internal isolation"]
+    AP -. "untagged • VLAN 20" .-> PRIMARYCLIENT["Primary Wi-Fi • Trusted clients"]
+    AP -. "tagged • VLAN 30" .-> IOTCLIENT["IoT Wi-Fi clients"]
+    AP -. "tagged • VLAN 40" .-> GUESTCLIENT["Guest Wi-Fi clients"]
+    AP -. "tagged • VLAN 50" .-> WIFI["Unrestricted Wi-Fi clients<br/>internet access / internal isolation"]
     SW ---|"port 3"| DESKTOP["Desktop PC"]
     H1 -. "OPNsense VM100 • virtual routing" .-> GW
     classDef device fill:#e5f0ff,color:#17365d,stroke:#77a5d6
@@ -93,7 +99,7 @@ These are the switch's **configured** VLAN memberships, verified from the 802.1Q
 
 The Grandstream GWN7660E SSID configuration and TP-Link TL-SG108E v6.0 VLAN/PVID screenshots establish the following configured mappings. SSID names are represented by public-facing aliases.
 
-| Public SSID alias | VLAN | AP tagging | Switch port 5 membership | Purpose |
+| Public SSID alias | VLAN | AP tagging | Switch port 2 membership | Purpose |
 |---|---|---|---|---|
 | Primary Wi-Fi | 20 | Untagged (no SSID VLAN ID) | Untagged; PVID 20 | Trusted network |
 | IoT Wi-Fi | 30 | Tagged | Tagged | IoT |
@@ -148,7 +154,7 @@ flowchart TB
     SWITCH_HW ---|"port 8"| H1
     SWITCH_HW ---|"port 7"| H2
     SWITCH_HW ---|"port 6"| H3
-    SWITCH_HW ---|"port 2"| R640
+    SWITCH_HW ---|"port 5 • VLAN 10 untagged"| R640
     ACCESS -. "Wi-Fi; client association not revalidated" .-> PI4
     classDef platform fill:#e5f0ff,color:#17365d,stroke:#77a5d6
     class H1,H2,H3,R640,SWITCH_HW,INJECTOR,ACCESS,PI4,PRINTER platform
@@ -178,7 +184,7 @@ A separate **Netgear GS105 switch** has been discussed for a future re-cabling p
 
 ## New wireless VLAN 50 case study
 
-[Unrestricted internet SSID deployment and DHCP troubleshooting](../opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) documents switch port 5 tagging, Proxmox-to-OPNsense forwarding, Dnsmasq DHCP recovery, Cloudflare DNS testing, and internal-service isolation. All eight switch-port device assignments were subsequently confirmed by the operator on October 31, 2026; VLAN memberships and PVIDs were rechecked from switch UI screenshots. Live link states were also rechecked: ports 1–3 and 5–8 up at 1000 Mbps full duplex, port 4 down.
+[Unrestricted internet SSID deployment and DHCP troubleshooting](../opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) documents VLAN 50 tagging, Proxmox-to-OPNsense forwarding, Dnsmasq DHCP recovery, Cloudflare DNS testing, and internal-service isolation. All eight switch-port device assignments were subsequently confirmed by the operator on October 31, 2026; VLAN memberships and PVIDs were rechecked from switch UI screenshots. Live link states were also rechecked: ports 1–3 and 5–8 up at 1000 Mbps full duplex, port 4 down.
 
 ## Segmentation and routing
 
@@ -211,4 +217,4 @@ Tailscale enables remote administrative access. Graphy is a Raspberry Pi 4 kiosk
 This diagram records operator-confirmed physical switch-port assignments and screenshot-verified VLAN memberships/PVIDs but does **not** assert redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
 
 
-**November 5 correction:** The AP is connected to switch port 2, not port 5. The prior port 2 R640 assignment and port 5 AP assignment are superseded: the operator confirmed the R640 on port 5 and the AP on port 2. Older illustrative diagram labels may reflect the previous inventory.
+**November 5 physical topology confirmation:** AP on switch port 2 (via PoE injector); Dell PowerEdge R640 on switch port 5. Both the physical network and hardware layout diagrams above reflect these assignments.
