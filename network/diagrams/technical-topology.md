@@ -12,84 +12,77 @@ The diagram is intentionally sanitized for public documentation and does not exp
 
 ```mermaid
 flowchart TB
-
     INTERNET((Internet))
-
     REMOTE["Remote Admin Device<br/>Laptop / Mobile"]
     TS["Tailscale<br/>Encrypted Overlay"]
 
-    subgraph CLUSTER["3-Node Proxmox VE Cluster"]
-
-        subgraph HP1["Node A — Dell OptiPlex 3000 (SMBIOS-reported)"]
+    subgraph CLUSTER["4-Node Proxmox VE Cluster"]
+        subgraph HP1["Node A — Dell OptiPlex 3000"]
             OPNSENSE["OPNsense VM<br/>Active Router / Firewall"]
-            PIHOLE["Pi-hole LXC<br/>DNS Filtering"]
+            PIHOLE["Primary Pi-hole LXC<br/>DNS Filtering"]
             TSR["Tailscale<br/>Subnet Router"]
         end
 
         subgraph HP2["Node B — HP Elite Mini 600 G9"]
             AMP["AMP / Minecraft LXC"]
             BACKUP["NFS Backup Storage"]
-            OPNSENSE2["Standby OPNsense VM<br/>Not Automatic Failover"]
-        end
-
-        subgraph HP3["Node C — HP Elite Mini 600 G9"]
             MON["Monitoring LXC"]
             PROM["Prometheus"]
             GRAF["Grafana"]
             DASH["Dashy"]
-            OPNSENSE3["Standby OPNsense VM<br/>Not Automatic Failover"]
-
+            OPNSENSE2["Standby OPNsense VM<br/>Not Automatic Failover"]
             MON --> PROM
             MON --> GRAF
             MON --> DASH
         end
 
+        subgraph HP3["Node C — HP Elite Mini 600 G9"]
+            PIHOLE2["Secondary Pi-hole LXC<br/>DNS Filtering"]
+            OPNSENSE3["Standby OPNsense VM<br/>Not Automatic Failover"]
+        end
+
+        subgraph HP4["Node D — Dell PowerEdge R640"]
+            WIN["Windows Server 2025 VM<br/>Lab Workloads"]
+        end
     end
 
     SWITCH["Managed Ethernet Switch"]
-
-    subgraph VLAN10["VLAN 10 — Infrastructure Management"]
-        MGMT["Proxmox & Infrastructure Management"]
+    subgraph VLANS["Deployed VLAN Segments"]
+        VLAN10["VLAN 10 — Management"]
+        VLAN20["VLAN 20 — Trusted"]
+        VLAN30["VLAN 30 — IoT / Guest Segmentation"]
+        VLAN40["VLAN 40 — Guest / IoT Segmentation"]
+        VLAN50["VLAN 50 — Unrestricted Internet Wi-Fi"]
+        VLAN100["VLAN 100 — Infrastructure Network"]
     end
-
-    subgraph VLAN20["VLAN 20 — Trusted Devices"]
-        TRUSTED["Trusted Client Devices"]
-    end
-
-    FUTURE["Future Segmented Networks<br/>IoT / Servers / Security Lab / Guest"]
 
     DISPLAY["Raspberry Pi<br/>Monitoring Kiosk"]
 
     INTERNET --> OPNSENSE
-
     OPNSENSE --> SWITCH
-
     SWITCH --> VLAN10
     SWITCH --> VLAN20
-    SWITCH -.-> FUTURE
-
-    VLAN10 --> MGMT
-    VLAN20 --> TRUSTED
-
+    SWITCH --> VLAN30
+    SWITCH --> VLAN40
+    SWITCH --> VLAN50
+    SWITCH --> VLAN100
     SWITCH <-->|"802.1Q VLAN Traffic"| HP1
     SWITCH <-->|"802.1Q VLAN Traffic"| HP2
     SWITCH <-->|"802.1Q VLAN Traffic"| HP3
-
-    OPNSENSE -->|"Routing / Firewall Policy"| VLAN10
-    OPNSENSE -->|"Routing / Firewall Policy"| VLAN20
-
+    SWITCH <-->|"802.1Q VLAN Traffic"| HP4
+    OPNSENSE -->|"Routing / Firewall Policy"| VLANS
     VLAN10 --> PIHOLE
+    VLAN10 --> PIHOLE2
     VLAN10 --> MON
-
-    TRUSTED -->|"DNS Queries"| PIHOLE
+    VLAN20 -->|"DNS Queries"| PIHOLE
+    VLAN20 -.->|"Alternate Resolver"| PIHOLE2
     PIHOLE -->|"Permitted DNS Queries"| INTERNET
-
+    PIHOLE2 -->|"Permitted DNS Queries"| INTERNET
+    VLAN50 -->|"External DNS / Internet"| INTERNET
     REMOTE --> TS
     TS --> TSR
     TSR -->|"Subnet Routing"| VLAN10
-
     DISPLAY -.->|"Dashboard Display"| GRAF
-
     BACKUP -.->|"Infrastructure Backups"| HP1
 ```
 
@@ -97,15 +90,18 @@ flowchart TB
 
 # Physical Infrastructure
 
-The core environment consists of three mini-PC Proxmox nodes connected to a managed Ethernet switch.
+The homelab consists of four Proxmox VE nodes connected through managed Ethernet switching.
 
-| Node | Hardware | Primary Role |
+| Public alias | Hardware | Primary role |
 |---|---|---|
-| Node A | Dell OptiPlex 3000 (SMBIOS-reported) | Core network infrastructure |
-| Node B | HP Elite Mini 600 G9 | Applications and backup services |
-| Node C | HP Elite Mini 600 G9 | Monitoring and observability |
+| Node A | Dell OptiPlex 3000 | Core infrastructure, active OPNsense firewall, and primary Pi-hole |
+| Node B | HP Elite Mini 600 G9 | Applications, monitoring, and NFS backup storage |
+| Node C | HP Elite Mini 600 G9 | Infrastructure containers and secondary Pi-hole |
+| Node D | Dell PowerEdge R640 | Windows Server lab and additional virtualization workloads |
 
-The nodes form a three-member Proxmox VE cluster using Corosync.
+All four nodes participate in the Proxmox VE cluster using Corosync.
+
+The three mini-PC nodes are installed in a custom 3D-printed holder, while the PowerEdge R640 provides additional rack-mounted compute capacity.
 
 ---
 
@@ -169,30 +165,35 @@ Communication between the trusted network and infrastructure networks can be con
 
 # DNS Architecture
 
-Pi-hole provides centralized DNS filtering.
+Two Pi-hole instances provide DNS filtering on separate Proxmox nodes:
+
+- **Node A:** Primary Pi-hole
+- **Node C:** Secondary Pi-hole
 
 The general DNS path is:
 
 ```text
 Client
    |
-   v
-Pi-hole
+   +----> Primary Pi-hole (Node A)
    |
-   v
-Upstream DNS
-   |
-   v
-Internet
+   +----> Secondary Pi-hole (Node C)
+                 |
+                 v
+           Upstream DNS
 ```
 
-This provides centralized DNS policy and visibility into DNS activity.
+The Pi-hole instances provide DNS filtering and separate resolver availability. Independent resolution and selected resolver-fallback behavior have been verified.
+
+Automatic DNS failover for every client platform has not been established.
+
+The dedicated unrestricted wireless VLAN 50 uses external DNS rather than Pi-hole filtering.
 
 ---
 
 # Monitoring Architecture
 
-A dedicated LXC container on Node C hosts the primary monitoring environment.
+A dedicated LXC container on Node B hosts the primary monitoring environment.
 
 The monitoring stack includes:
 
@@ -238,13 +239,19 @@ This allows authorized remote devices to reach internal management services with
 
 # Backup Architecture
 
-Node B provides NFS-based backup storage for infrastructure backups.
+Node B provides NFS-based backup storage for the Proxmox environment.
 
-Proxmox `vzdump` is used to create compressed VM and LXC recovery archives.
+Scheduled Proxmox backup jobs use `vzdump` to create VM and LXC backup archives with configured retention policies.
 
-The backup architecture is being expanded to provide consistent automated off-node protection for important workloads.
+Successful backup tasks and a separate manual monitoring-container backup have been documented.
 
-Restore testing and backup-health monitoring are also planned.
+**Validation limitations:**
+
+- Successful backup creation does not establish successful restoration.
+- Complete scheduled backup coverage for every workload has not been verified.
+- Backup storage capacity remains an operational consideration.
+
+The documented backup infrastructure is operational, while comprehensive recovery validation remains outstanding.
 
 ---
 
@@ -300,46 +307,6 @@ Not Automatic Failover
 ```
 
 They should not be considered a high-availability firewall solution until failover behavior has been explicitly configured and tested.
-
----
-
-# Future Segmentation
-
-The architecture is designed to support additional network segments.
-
-Potential future networks include:
-
-- IoT devices
-- Servers
-- Security-testing systems
-- Guest devices
-- Self-hosted services
-
-Each network can receive its own firewall policy based on its purpose and trust level.
-
----
-
-# Future Observability
-
-The monitoring environment is planned to expand beyond metrics collection.
-
-Future architecture may include:
-
-```text
-Infrastructure
-      |
-      +-------- Metrics --------> Prometheus
-      |
-      +-------- Logs -----------> Grafana Loki
-                                      |
-                                      v
-                                   Grafana
-                                      |
-                                      v
-                          Exception-Based Reporting
-```
-
-The goal is to identify conditions requiring attention rather than continuously reporting normal infrastructure behavior.
 
 ---
 
@@ -408,17 +375,25 @@ This architecture demonstrates practical experience with:
 
 # Project Status
 
-**Operational / Expanding**
+**Completed — Deployed Four-Node Infrastructure**
 
-The core architecture is operational with:
+The documented homelab architecture includes:
 
-- Three-node Proxmox cluster
-- OPNsense routing and firewalling
-- Management VLAN
-- Trusted VLAN
-- Pi-hole DNS
-- Prometheus/Grafana monitoring
-- Tailscale remote-access infrastructure
-- Proxmox backup infrastructure
+- Four-node Proxmox VE cluster
+- Active OPNsense routing and firewall services
+- Management, trusted, IoT, guest, and unrestricted-internet VLAN segmentation
+- Redundant Pi-hole DNS services
+- Prometheus, Grafana, and Dashy monitoring
+- Raspberry Pi monitoring kiosk
+- Tailscale remote administration
+- Scheduled Proxmox backup infrastructure
+- Windows Server 2025 lab environment
 
-Additional segmentation, centralized logging, backup improvements, firewall resiliency, and security-monitoring capabilities remain planned.
+**Validation limitations:**
+
+- Standby OPNsense virtual machines do not constitute verified automatic firewall failover.
+- Backup restoration remains unverified.
+- DNS resolver failover has not been validated across every client platform.
+- Monitoring coverage and advanced alerting are not claimed to be comprehensive.
+
+The documented architecture represents deployed infrastructure and completed technical work rather than proposed future capabilities.
