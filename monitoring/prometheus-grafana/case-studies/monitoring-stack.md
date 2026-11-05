@@ -2,13 +2,13 @@
 
 ## Executive Summary
 
-This case study documents the deployment of a centralized monitoring environment for my Proxmox homelab.
+This case study documents the completed deployment of a centralized monitoring environment for a four-node Proxmox VE homelab.
 
-A dedicated Linux container hosts Prometheus, Grafana, and Dashy, providing a centralized platform for infrastructure monitoring, visualization, and service access.
+A dedicated Linux container on Node B hosts Prometheus, Grafana, and Dashy. Prometheus collects infrastructure metrics, Grafana provides visualization, and Dashy provides centralized access to homelab services.
 
-The monitoring environment is designed around a larger objective: move away from manually checking individual systems and toward centralized, exception-based infrastructure monitoring.
+A Raspberry Pi operates as a dedicated Grafana monitoring display.
 
-The current implementation provides the foundation for future centralized logging, automated health reporting, anomaly detection, and critical-service alerting.
+The completed implementation provides centralized metrics collection, dashboard visualization, and service access. Automated exception reporting, centralized log aggregation, and advanced alerting are not demonstrated capabilities of this deployment.
 
 ---
 
@@ -27,14 +27,7 @@ The monitoring environment runs as a dedicated LXC container within a four-node 
 
 The monitoring container is hosted on Node B.
 
-Separating monitoring into its own container allows the monitoring environment to be independently:
-
-- Updated
-- Backed up
-- Restarted
-- Troubleshot
-- Restored
-- Expanded
+Separating monitoring into its own container supports independent updates, backups, restarts, troubleshooting, and maintenance. A successful manual backup was documented, but restoration has not been demonstrated.
 
 ---
 
@@ -215,142 +208,15 @@ This provides a persistent infrastructure-status display without dedicating a fu
 
 ---
 
-# Monitoring Philosophy
+# Monitoring Design Principles
 
-A major design goal is to avoid creating monitoring that generates excessive noise.
+The monitoring environment was designed to improve infrastructure visibility without requiring administrators to access each system individually.
 
-For example, continuously reporting:
+Prometheus and Grafana provide access to metrics and dashboards that support troubleshooting and operational reviews.
 
-```text
-CPU: 14%
-Memory: 37%
-Disk: 42%
-```
+An important distinction is between **visibility**, which provides information for investigation, and **alerting**, which actively notifies an administrator when intervention may be required.
 
-provides little operational value when those values are normal.
-
-Instead, routine monitoring should emphasize exceptions.
-
-Examples include:
-
-```text
-CPU usage above expected threshold for an extended period
-
-Memory pressure affecting a service
-
-Storage approaching capacity
-
-Unexpected service outage
-
-DNS resolution failures
-
-Backup failure
-
-Cluster quorum problem
-
-Abnormal network latency
-```
-
-This creates a distinction between:
-
-**visibility** — information available when investigating a system
-
-and:
-
-**attention** — conditions that should actively be surfaced to an administrator.
-
----
-
-# Exception-Based Monitoring
-
-The long-term monitoring architecture will focus on conditions that deviate from normal operation.
-
-An abnormal resource condition should consider both:
-
-- Magnitude
-- Duration
-
-For example, a short CPU spike may be normal.
-
-Sustained high CPU utilization may require investigation.
-
-Similarly:
-
-```text
-CPU 95% for 3 seconds
-```
-
-may not justify an alert, while:
-
-```text
-CPU 95% for 20 minutes
-```
-
-could indicate a problem.
-
-This approach helps reduce alert fatigue.
-
----
-
-# Monitoring Categories
-
-The environment is being designed to monitor several infrastructure categories.
-
-## Proxmox
-
-Potential checks include:
-
-- Node availability
-- Cluster membership
-- Quorum
-- VM/container state
-- Storage availability
-- Abnormal resource utilization
-
-## Network
-
-Potential checks include:
-
-- Gateway availability
-- Packet loss
-- Latency
-- Critical interface state
-- Network-service availability
-
-## DNS
-
-Potential checks include:
-
-- Pi-hole availability
-- DNS resolution
-- Upstream resolver failures
-- Abnormal DNS behavior
-
-## Remote Access
-
-Potential checks include:
-
-- Tailscale service availability
-- Subnet-router availability
-- Management-network reachability
-
-## Backups
-
-Potential checks include:
-
-- Backup failures
-- Missing expected recovery points
-- Backup age
-- Backup repository availability
-- Backup storage capacity
-
-## Applications
-
-Potential checks include:
-
-- Service availability
-- Unexpected service termination
-- Application-specific health indicators
+This deployment demonstrates centralized visibility. Automated exception-based alerting and anomaly detection have not been implemented or validated as part of this case study.
 
 ---
 
@@ -409,265 +275,6 @@ apt list --upgradable
 was used to confirm that the host had no remaining package updates.
 
 This demonstrated that monitoring infrastructure should itself be included in change-management and recovery planning.
-
----
-
-# Centralized Logging — Planned
-
-Metrics provide only part of the information required to understand infrastructure behavior.
-
-A system may report normal CPU, memory, and storage utilization while its logs contain important warnings or failures.
-
-For that reason, centralized logging is planned as the next major observability component.
-
-Grafana Loki is the preferred platform being considered.
-
-The proposed architecture is:
-
-```text
-Proxmox --------\
-Linux -----------\
-OPNsense ----------> Centralized Logs
-Pi-hole ----------/         |
-Services --------/          v
-                           Loki
-                             |
-                             v
-                          Grafana
-```
-
-This would allow metrics and logs to be investigated through the same general observability environment.
-
----
-
-# Log Analysis — Planned
-
-The objective is not simply to collect every log entry.
-
-The system should identify noteworthy events and reduce repetitive noise.
-
-Potential event classifications include:
-
-- Critical
-- Warning
-- Security
-- Network
-- Service
-- Backup
-- Hardware
-
-For example, hundreds of identical low-priority warnings should not overwhelm a health report.
-
-Instead, they could be summarized:
-
-```text
-WARNING
-
-Repeated service warning detected
-Occurrences: 347
-Systems affected: 1
-First observed: 02:14
-Last observed: 07:51
-
-Recommended action:
-Review service configuration.
-```
-
----
-
-# Automated Health Reporting — Planned
-
-A future reporting service is planned for the monitoring container.
-
-The reporting system will combine:
-
-```text
-Prometheus Metrics
-        +
-Centralized Logs
-        |
-        v
-Health Analysis
-        |
-        v
-HTML Email Report
-```
-
-The report should answer:
-
-> What happened in the homelab that requires attention?
-
-rather than:
-
-> What are all of the current metrics?
-
----
-
-# Planned Health Report
-
-Potential report sections include:
-
-```text
-HOMELAB HEALTH REPORT
-
-Overall Status
-
-Proxmox Cluster
-Network
-Critical Services
-DNS
-Remote Access
-Backups
-Resource Anomalies
-Log Anomalies
-Security Events
-Recommended Attention
-```
-
-Normal metrics should generally be omitted unless they provide useful context.
-
----
-
-# Example Exception Report
-
-A future report might contain:
-
-```text
-OVERALL STATUS: WARNING
-
-PROXMOX
-All cluster nodes online.
-Quorum healthy.
-
-NETWORK
-No critical gateway failures detected.
-
-DNS
-Pi-hole operational.
-
-BACKUPS
-WARNING:
-Expected backup missing for one workload.
-
-RESOURCE ANOMALIES
-No sustained abnormal resource conditions detected.
-
-LOG EVENTS
-WARNING:
-Repeated service errors detected on one system.
-
-RECOMMENDED ATTENTION
-
-1. Investigate missing backup.
-2. Review repeated service errors.
-```
-
-This provides significantly more operational value than emailing a large collection of normal graphs.
-
----
-
-# Immediate Alerting — Planned
-
-Some events should not wait for a scheduled report.
-
-Potential immediate alerts include:
-
-- Loss of Proxmox quorum
-- Gateway failure
-- DNS outage
-- Critical service failure
-- Backup infrastructure failure
-- Storage critically full
-- Serious security event
-
-Lower-severity events can remain in the scheduled report.
-
----
-
-# Baseline & Anomaly Detection — Future
-
-Static thresholds cannot identify every unusual condition.
-
-Future monitoring may establish baseline behavior and identify deviations from normal operation.
-
-For example:
-
-```text
-Normal DNS Queries:
-10,000–15,000 per day
-
-Observed:
-85,000 queries
-
-Status:
-Anomalous
-```
-
-or:
-
-```text
-Normal Backup Duration:
-4–6 minutes
-
-Observed:
-38 minutes
-
-Status:
-Investigate
-```
-
-This would allow the monitoring environment to become more context-aware over time.
-
----
-
-# Security Monitoring
-
-The observability platform can also support cybersecurity projects.
-
-Future security-related monitoring may include:
-
-- Authentication failures
-- Unusual DNS activity
-- Unexpected network connections
-- Firewall events
-- IDS/IPS alerts
-- Honeypot activity
-- Repeated service failures
-- Unauthorized access attempts
-
-This allows the monitoring platform to support both systems administration and cybersecurity experimentation.
-
----
-
-# Monitoring Architecture Roadmap
-
-The long-term architecture is:
-
-```text
-                  Homelab Infrastructure
-                          |
-             ---------------------------
-             |                         |
-          Metrics                     Logs
-             |                         |
-             v                         v
-        Prometheus                   Loki
-             |                         |
-             -----------+-------------
-                        |
-                        v
-                     Grafana
-                        |
-              -------------------
-              |                 |
-              v                 v
-          Dashboards      Health Analysis
-                                |
-                    ------------------------
-                    |                      |
-                    v                      v
-             Scheduled Report       Critical Alert
-```
 
 ---
 
@@ -734,56 +341,39 @@ Centralized metrics and logs provide useful data for both infrastructure adminis
 
 This project demonstrates practical experience with:
 
-- Prometheus
-- Grafana
-- Dashy
-- Proxmox VE
-- Linux
-- LXC
+- Prometheus metrics collection
+- Grafana dashboard administration
+- Dashy service dashboard configuration
+- Proxmox VE and LXC administration
+- Linux service management
 - Infrastructure monitoring
-- Time-series metrics
-- Dashboard administration
-- Service monitoring
-- Backup validation
+- Time-series metrics visualization
+- Monitoring architecture documentation
+- Raspberry Pi kiosk deployment
+- Backup coverage review
+- Manual backup verification
+- Post-maintenance service validation
 - Change management
-- Observability architecture
-- Alert design
-- Log-management planning
-- Anomaly-detection concepts
-- Network monitoring
-- Security monitoring
-- Technical documentation
+- Technical troubleshooting and documentation
 
----
-
-# Future Improvements
-
-Planned improvements include:
-
-- Deploy Grafana Loki
-- Centralize infrastructure logs
-- Expand Prometheus monitoring coverage
-- Monitor Proxmox quorum
-- Monitor backup health
-- Monitor Pi-hole/DNS health
-- Monitor Tailscale availability
-- Add network latency and packet-loss monitoring
-- Implement exception-based health reporting
-- Generate scheduled HTML email reports
-- Implement immediate critical alerts
-- Develop baseline-based anomaly detection
-- Add security-event monitoring
-- Perform monitoring-container restore testing
-- Add sanitized Grafana screenshots to the portfolio
+These skills reflect completed deployment, maintenance, and validation activities rather than planned monitoring capabilities.
 
 ---
 
 # Project Status
 
-**Operational / Expanding**
+**Completed — Deployed Monitoring Stack**
 
-Prometheus, Grafana, and Dashy are operational on the dedicated monitoring container.
+Prometheus, Grafana, and Dashy were deployed within a dedicated Proxmox LXC container on Node B.
 
-The current environment provides centralized monitoring and dashboard capabilities.
+The environment provides centralized infrastructure metrics, dashboard visualization, and access to homelab services. A Raspberry Pi provides a dedicated monitoring display.
 
-Centralized logging, exception-based reporting, advanced alerting, and anomaly detection remain planned improvements and are intentionally documented as future work rather than completed capabilities.
+The monitoring container was included in a successful manual backup after a scheduled-backup coverage gap was identified.
+
+**Validation limitations:**
+
+- Successful backup creation was verified; restoration was not tested.
+- Comprehensive monitoring coverage across all infrastructure components has not been established.
+- Automated exception reporting, centralized logging, advanced alerting, and anomaly detection are not claimed as deployed capabilities.
+
+The documented monitoring deployment is complete within this defined scope.
