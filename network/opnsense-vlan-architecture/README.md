@@ -57,16 +57,16 @@ A separate trusted VLAN provides connectivity for trusted client devices while k
 
 ## Verified Wireless SSID Segmentation
 
-On November 5, 2026, the Grandstream GWN7660E SSID configuration and TP-Link TL-SG108E switch port 5 VLAN membership were checked together.
+On November 5, 2026, the Grandstream GWN7660E SSID configuration and TP-Link TL-SG108E switch port 2 VLAN membership were checked together.
 
 | Wireless network (public alias) | VLAN | AP/switch tagging |
 |---|---|---|
-| Primary Wi-Fi | 10 (management) | Untagged; switch port 5 PVID 10 |
+| Primary Wi-Fi | 20 (trusted) | Untagged; switch port 2 PVID 20 |
 | IoT Wi-Fi | 30 | Tagged |
 | Guest Wi-Fi | 40 | Tagged |
 | Unrestricted Wi-Fi | 50 | Tagged |
 
-The primary Wi-Fi network uses the management VLAN rather than VLAN 20 (trusted). VLAN 20 is not a member of the AP's switch port. This records the configured mapping without asserting that management-service access has been tested from wireless clients.
+The primary Wi-Fi network uses VLAN 20 (trusted). A Wi-Fi client received an address ending .20.79 and gateway ending .20.1, consistent with this configuration. The operator confirmed the AP is connected to switch port 2.
 
 ## Firewalling
 
