@@ -106,7 +106,7 @@ The Grandstream GWN7660E SSID configuration and TP-Link TL-SG108E v6.0 VLAN/PVID
 | Guest Wi-Fi | 40 | Tagged | Tagged | Guest |
 | Unrestricted Wi-Fi | 50 | Tagged | Tagged | Internet without Pi-hole filtering |
 
-All four SSIDs are enabled on 2.4 GHz and 5 GHz, with bridge client IP assignment. The primary Wi-Fi SSID uses the trusted VLAN; switch VLAN settings alone do not establish client-to-service firewall reachability. VLAN 20 is untagged on switch port 2. A Skemp2 client received an address ending .20.79 and gateway ending .20.1. These observations describe configuration, not a new end-to-end client traffic test.
+All four SSIDs are enabled on 2.4 GHz and 5 GHz, with bridge client IP assignment. The primary Wi-Fi SSID uses the trusted VLAN; switch VLAN settings alone do not establish client-to-service firewall reachability. VLAN 20 is untagged on switch port 2. A trusted Wi-Fi client received an address in VLAN 20 and the corresponding gateway. These observations describe configuration, not a new end-to-end client traffic test.
 
 ### Physical interface verification
 
