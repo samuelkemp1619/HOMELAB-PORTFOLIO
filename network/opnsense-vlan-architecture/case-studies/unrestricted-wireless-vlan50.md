@@ -15,7 +15,7 @@ Provide a dedicated wireless SSID for selected devices requiring ordinary, unfil
 - **Switching:** TP-Link TL-SG108E v6.0; AP connected at switch port 2, with VLAN 50 tagged on port 2 and the tagged Proxmox-facing uplinks.
 - **Hypervisor:** Proxmox VE, Node A; VLAN-aware Linux bridge `vmbr0` with physical `nic0`.
 - **Firewall/router:** OPNsense VM 100; added sixth VirtIO adapter `net5`, Proxmox `tag=50`, appearing in OPNsense as `vtnet5` / interface `UNSECURE`.
-- **Addressing:** IPv4 subnet `192.168.50.0/24` (public documentation of network prefix only), OPNsense gateway `192.168.50.1`, DHCP pool `192.168.50.100–200`.
+- **Addressing:** Dedicated private IPv4 subnet for VLAN 50, with OPNsense providing the gateway and DHCP address allocation.
 - **DHCP:** OPNsense Dnsmasq; `UNSECURE` explicitly selected in its interface list.
 - **Client DNS policy:** DHCP option 6 advertises Cloudflare `1.1.1.1` and `1.0.0.1`, rather than Pi-hole.
 
