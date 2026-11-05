@@ -55,6 +55,19 @@ A dedicated management VLAN provides connectivity for infrastructure such as:
 
 A separate trusted VLAN provides connectivity for trusted client devices while keeping infrastructure management logically separated.
 
+## Verified Wireless SSID Segmentation
+
+On November 5, 2026, the Grandstream GWN7660E SSID configuration and TP-Link TL-SG108E switch port 5 VLAN membership were checked together.
+
+| Wireless network (public alias) | VLAN | AP/switch tagging |
+|---|---|---|
+| Primary Wi-Fi | 10 (management) | Untagged; switch port 5 PVID 10 |
+| IoT Wi-Fi | 30 | Tagged |
+| Guest Wi-Fi | 40 | Tagged |
+| Unrestricted Wi-Fi | 50 | Tagged |
+
+The primary Wi-Fi network uses the management VLAN rather than VLAN 20 (trusted). VLAN 20 is not a member of the AP's switch port. This records the configured mapping without asserting that management-service access has been tested from wireless clients.
+
 ## Firewalling
 
 OPNsense provides inter-VLAN routing and firewall enforcement.
