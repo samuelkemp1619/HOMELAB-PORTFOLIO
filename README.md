@@ -62,11 +62,11 @@ A practical portfolio of **network administration, systems engineering, cybersec
 | Public alias | Hardware platform | Primary role |
 |---|---|---|
 | Node A | Dell OptiPlex 3000; i5-12500T (6C/12T), 32 GB DDR4-3200, 1 TB Samsung 970 EVO Plus NVMe | Proxmox infrastructure and virtual firewall services |
-| Node B | HP Elite Mini 600 G9 | Applications and monitoring |
-| Node C | HP Elite Mini 600 G9 | Containers and DNS services |
-| Node D | Dell PowerEdge R640 | Windows Server lab and lab workloads |
+| Node B | HP Elite Mini 600 G9; Intel Core i5-12500T (6C/12T), 32 GB DDR5, 512 GB Samsung PM9A1 NVMe | Applications, monitoring, and backup storage |
+| Node C | HP Elite Mini 600 G9; Intel Core i5-12500T (6C/12T), 16 GB DDR5, 500 GB Samsung 980 NVMe | Containers and secondary DNS services |
+| Node D | Dell PowerEdge R640; dual Intel Xeon Silver 4110 (8C/16T each; 16C/32T total) | Windows Server lab and lab workloads |
 
-These aliases are used for public presentation rather than exposing internal hostnames. Node A's Dell OptiPlex 3000 model, processor, RAM, storage and Ethernet controller were verified directly on the host on November 5, 2026.
+These aliases are used for public presentation rather than exposing internal hostnames. Node A's Dell OptiPlex 3000 model, processor, RAM, storage and Ethernet controller were verified directly on the host on November 5, 2026. Node B–D specifications reflect previously recorded hardware details; Node D memory and storage are omitted because their capacities have not been confirmed for this summary.
 
 **Technologies:** Proxmox VE · Debian/Linux · KVM/QEMU · LXC · OPNsense · VLANs · Pi-hole · Nebula Sync · Prometheus · Grafana · Tailscale · PowerShell · Python · Docker · Raspberry Pi
 
