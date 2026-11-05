@@ -61,12 +61,12 @@ A practical portfolio of **network administration, systems engineering, cybersec
 
 | Public alias | Hardware platform | Primary role |
 |---|---|---|
-| Node A | Dell OptiPlex 3000 (SMBIOS-reported) | Proxmox infrastructure and virtual firewall services |
+| Node A | Dell OptiPlex 3000; i5-12500T (6C/12T), 32 GB DDR4-3200, 1 TB Samsung 970 EVO Plus NVMe | Proxmox infrastructure and virtual firewall services |
 | Node B | HP Elite Mini 600 G9 | Applications and monitoring |
 | Node C | HP Elite Mini 600 G9 | Containers and DNS services |
 | Node D | Dell PowerEdge R640 | Windows Server lab and lab workloads |
 
-These aliases are used for public presentation rather than exposing internal hostnames. The exact chassis designation of Node A is documented as SMBIOS-reported rather than independently confirmed.
+These aliases are used for public presentation rather than exposing internal hostnames. Node A's Dell OptiPlex 3000 model, processor, RAM, storage and Ethernet controller were verified directly on the host on November 5, 2026.
 
 **Technologies:** Proxmox VE · Debian/Linux · KVM/QEMU · LXC · OPNsense · VLANs · Pi-hole · Nebula Sync · Prometheus · Grafana · Tailscale · PowerShell · Python · Docker · PostgreSQL · Raspberry Pi
 
