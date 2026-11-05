@@ -1,12 +1,12 @@
 # OPNsense & VLAN Network Architecture
 
-**Status:** VLAN and firewall architecture deployed; some cross-VLAN DNS-bypass policy tests and DoH controls remain pending.
+**Status:** Deployed network segmentation and VLAN 50 wireless deployment.
 
 ## Overview
 
 This project documents the redesign of my homelab network around OPNsense, VLAN segmentation, and a dedicated management network.
 
-The goal was to move from a relatively flat home network to a segmented architecture that provides better security, management, monitoring, and room for future lab environments.
+The goal was to move from a relatively flat home network to a segmented architecture that provides better security, management, monitoring, and separation between trust zones.
 
 ## Completed deployment: Unrestricted internet Wi-Fi (VLAN 50)
 
@@ -55,21 +55,13 @@ A dedicated management VLAN provides connectivity for infrastructure such as:
 
 A separate trusted VLAN provides connectivity for trusted client devices while keeping infrastructure management logically separated.
 
-Additional VLANs are reserved or planned for workloads such as:
-
-- Servers and self-hosted services
-- IoT devices
-- Security testing
-- Lab environments
-- Guest/untrusted devices
-
 ## Firewalling
 
 OPNsense provides inter-VLAN routing and firewall enforcement.
 
 The design follows the principle that communication between network segments should be explicitly permitted when required rather than allowing unrestricted communication between all VLANs.
 
-This provides a foundation for increasingly granular access-control policies as additional services and security labs are deployed.
+This provides a foundation for access-control policies between network segments.
 
 ## DNS
 
@@ -77,7 +69,7 @@ Pi-hole provides network DNS filtering.
 
 The DNS architecture allows centralized filtering and visibility while OPNsense remains responsible for routing and firewall enforcement.
 
-Future improvements include additional DNS resiliency and monitoring.
+
 
 ## Remote Administration
 
@@ -91,20 +83,9 @@ Access-control policies and network segmentation remain part of the remote-acces
 
 Prometheus and Grafana provide infrastructure monitoring.
 
-Network monitoring is being expanded to include:
-
-- Gateway availability
-- Service availability
-- DNS health
-- Network latency
-- Packet loss
-- Interface status
-- Abnormal resource conditions
-- Centralized log analysis
-
 ## Resiliency
 
-The Proxmox cluster contains additional OPNsense virtual machines intended for disaster recovery and future failover capabilities.
+The active OPNsense VM provides routing and firewall services.
 
 The current environment does not assume automatic router failover. Maintenance involving the active router is therefore planned carefully to prevent unexpected network outages.
 
@@ -119,7 +100,7 @@ The architecture is designed around:
 - DNS filtering
 - Secure remote administration
 - Centralized monitoring
-- Logging and future anomaly detection
+- Logging
 
 ## Troubleshooting & Validation
 
@@ -154,40 +135,3 @@ Changes were performed incrementally to minimize downtime and maintain administr
 - Network troubleshooting
 - Change management
 
-## Future Improvements
-
-- Expand VLAN segmentation
-- Expand dedicated IoT and security-lab network validation
-- Improve firewall policy documentation
-- Add network diagrams
-- Expand network telemetry
-- Centralize firewall and system logs
-- Test OPNsense disaster recovery
-- Evaluate automated gateway failover
-- Implement exception-based health reporting
-
-## DNS Bypass Enforcement (Paused)
-
-A staged DNS-enforcement change set was configured on the LAN, TRUSTED, IOT, and GUEST interfaces.
-
-- An allow rule on each interface permits TCP/UDP DNS on port 53 to the `PiHole_DNS` alias, covering both Pi-hole instances.
-- A following block rule denies other IPv4 TCP/UDP traffic to destination port 53.
-- A following block rule denies IPv4 TCP traffic to destination port 853, commonly used for DNS-over-TLS.
-- IOT and GUEST retain their internal-network restrictions, with the Pi-hole DNS exception placed before those restrictions.
-- A `PiHole_Upstreams` alias contains Cloudflare DNS addresses `1.1.1.1` and `1.0.0.1`; an upstream allow exception was added on LAN for the Pi-hole servers.
-
-### Test results
-
-From a Windows client on LAN:
-
-- Direct DNS queries to both Pi-hole addresses succeeded.
-- A direct query to `8.8.8.8` timed out, consistent with the port 53 block.
-- A TCP connection test to `1.1.1.1:853` failed, consistent with DNS-over-TLS being unreachable from that client. This test alone does not establish which device blocked the connection.
-
-The tested Windows Ethernet adapter had no IPv6 DNS server or non-link-local IPv6 address, and the OPNsense LAN IPv6 configuration type was set to `None`.
-
-### Current status and limits
-
-This work is **paused and partially validated**, not complete network-wide proof of DNS enforcement. Rules are configured and their order was reviewed, but there were no client devices available to test TRUSTED, IOT, or GUEST enforcement. DNS-over-HTTPS on port 443 has not been addressed, and IPv6 settings on the other client networks have not been fully audited.
-
-Blocking ports 53 and 853 alone does not prevent all encrypted DNS. Further work should be tested incrementally to avoid disrupting legitimate connectivity or local name resolution.
