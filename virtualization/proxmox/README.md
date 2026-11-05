@@ -17,12 +17,12 @@ Designed, deployed, and administer a four-node Proxmox VE environment supporting
 
 | Public node alias | Hardware | Workload focus |
 |---|---|---|
-| Node A | Dell OptiPlex 3000 (SMBIOS-reported) | Virtual firewall and DNS infrastructure |
+| Node A | Dell OptiPlex 3000 (`dmidecode` verified); i5-12500T (6C/12T), 32 GB DDR4-3200, Samsung 970 EVO Plus 1 TB NVMe, Realtek Gigabit Ethernet | Virtual firewall and DNS infrastructure |
 | Node B | HP Elite Mini 600 G9 | Application hosting and monitoring |
 | Node C | HP Elite Mini 600 G9 | DNS and password-management containers |
 | Node D | Dell PowerEdge R640 | Windows Server lab |
 
-Node aliases intentionally replace internal hostnames in public documentation. The exact chassis designation of Node A has not been independently confirmed.
+Node aliases intentionally replace internal hostnames in public documentation. Node A's system model and hardware specifications were verified from the host on November 5, 2026; the chassis form factor remains unspecified.
 
 ### Core technologies
 
