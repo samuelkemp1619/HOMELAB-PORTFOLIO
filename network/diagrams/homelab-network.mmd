@@ -6,10 +6,15 @@ flowchart TB
     SWITCH --> V20["VLAN 20 • Trusted"]
     SWITCH --> V30["VLAN 30 • IoT"]
     SWITCH --> V40["VLAN 40 • Guest"]
+    SWITCH --> V50["VLAN 50 • Unrestricted internet Wi-Fi"]
+    V50 --> AP50["Grandstream GWN7660E<br/>unrestricted SSID • Cloudflare DNS"]
+    V20 --> PRIMARY["Primary Wi-Fi SSID<br/>untagged on AP uplink port 2"]
+    V30 --> IOTWIFI["IoT Wi-Fi SSID<br/>tagged VLAN 30"]
+    V40 --> GUESTWIFI["Guest Wi-Fi SSID<br/>tagged VLAN 40"]
     V30 --> SMART["Smart devices<br/>IoT endpoints (grouped)"]
     V10 --> CLUSTER["Proxmox VE • four-node cluster"]
-    CLUSTER --> P1["Node A<br/>Dell OptiPlex Micro"]
-    CLUSTER --> P2["Node B<br/>HP Elite Mini"]
+    CLUSTER --> P1["Node A<br/>Dell OptiPlex 3000 (SMBIOS)"]
+    CLUSTER --> P2["Node B<br/>HP Elite Mini 600 G9"]
     CLUSTER --> P3["Node C<br/>HP Elite Mini"]
     CLUSTER --> P4["Node D<br/>Dell PowerEdge R640"]
     P1 --> DNS1["CT 101 • Primary Pi-hole"]
@@ -18,7 +23,6 @@ flowchart TB
     P3 --> VAULT["CT 104 • Vaultwarden"]
     P3 --> DNS2["CT 105 • Secondary Pi-hole"]
     P4 --> WIN["VM 400 • Windows Server 2025"]
-    P4 --> AI["AI-Operations / n8n<br/>scheduled alerting paused"]
     DNS1 <-. "config sync" .-> DNS2
     FW -. "DHCP advertises both resolvers" .-> DNS1
     FW -. "DHCP advertises both resolvers" .-> DNS2
@@ -30,5 +34,5 @@ flowchart TB
     classDef network fill:#e5f0ff,color:#17365d,stroke:#77a5d6
     classDef service fill:#e9f7f1,color:#174d36,stroke:#71b49a
     class FW,CLUSTER core
-    class SWITCH,V10,V20,V30,V40 network
-    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,AI,SMART service
+    class SWITCH,V10,V20,V30,V40,V50 network
+    class DNS1,DNS2,OBS,VAULT,GRAPHY,APP,WIN,SMART,AP50,PRIMARY,IOTWIFI,GUESTWIFI service
