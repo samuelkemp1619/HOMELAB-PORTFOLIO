@@ -2,17 +2,16 @@
 
 ## Project Overview
 
-Designed, deployed, and administer a four-node Proxmox VE environment supporting virtualized networking, DNS filtering, monitoring, password management, Windows Server experimentation, and automation. The project demonstrates practical Linux systems administration, virtualization operations, network segmentation, service recovery, and backup management.
+Designed, deployed, and administer a four-node Proxmox VE environment supporting virtualized networking, DNS filtering, monitoring, password management and Windows Server experimentation. The project demonstrates practical Linux systems administration, virtualization operations, network segmentation, service recovery, and backup management.
 
-**Status:** Operational cluster. Some resilience and disaster-recovery improvements remain planned or paused.
+**Status:** Deployed and operational; four-node kernel and Proxmox update completed November 5, 2026.
 
 ## Detailed Case Study
 
-[**Four-Node Cluster Operations and Recovery**](case-studies/four-node-cluster-operations.md) — Design decisions, workload placement, controlled power-loss exercise, DNS recovery, backup validation boundaries, and follow-up engineering priorities.
+[**Four-Node Cluster Operations and Recovery**](case-studies/four-node-cluster-operations.md) — Design decisions, workload placement, controlled power-loss exercise, DNS recovery, backup validation boundaries and documented operational results.
 
-[**Power-Loss Recovery and Troubleshooting Incident**](case-studies/power-loss-recovery-incident.md) — Chronological incident timeline, observed failures, supported root-cause findings, corrective actions, and recovery-test gaps.
+[**Power-Loss Recovery and Troubleshooting Incident**](case-studies/power-loss-recovery-incident.md) — Chronological incident timeline, observed failures, supported root-cause findings, corrective actions and recovery observations.
 
-[**Backup Coverage and Isolated Restore Validation Runbook**](projects/backup-restore-validation.md) — Inventory audit, isolated restore procedure, and pending recovery tests.
 
 ## Architecture
 
@@ -20,7 +19,7 @@ Designed, deployed, and administer a four-node Proxmox VE environment supporting
 |---|---|---|
 | Node A | Dell OptiPlex 3000 (SMBIOS-reported) | Virtual firewall and DNS infrastructure |
 | Node B | HP Elite Mini 600 G9 | Application hosting and monitoring |
-| Node C | HP Elite Mini 600 G9 | DNS, password management, and automation containers |
+| Node C | HP Elite Mini 600 G9 | DNS and password-management containers |
 | Node D | Dell PowerEdge R640 | Windows Server lab |
 
 Node aliases intentionally replace internal hostnames in public documentation. The exact chassis designation of Node A has not been independently confirmed.
@@ -56,6 +55,7 @@ See the [network architecture documentation](../../network/diagrams/) for diagra
 ### Cluster administration
 
 - Confirmed four-node cluster quorum during October 2026 maintenance.
+- Completed the November 5, 2026 update campaign across all four nodes: Proxmox Manager 9.2.25, running kernel 7.0.14-28-pve, successful reboots, and healthy four-node quorum. Confirmed OPNsense and Pi-hole service operation after the final reboot.
 - Migrated the monitoring/application container to Node B and verified dashboard and network access afterward.
 - Managed virtual machines, Linux containers, storage volumes, networking, and service startup behavior.
 - Completed a controlled power-loss simulation and investigated subsequent network, quorum, and DNS recovery issues. Recovery work restored DNS resolution and routing; the test should **not** be presented as evidence of seamless high availability.
@@ -64,7 +64,6 @@ See the [network architecture documentation](../../network/diagrams/) for diagra
 
 - Operate primary and secondary Pi-hole containers on different Proxmox hosts.
 - Validated independent DNS resolution and filtering, with a controlled Linux resolver fallback test.
-- Other client-side failover behavior remains unverified.
 
 ### Backups
 
@@ -73,12 +72,10 @@ See the [network architecture documentation](../../network/diagrams/) for diagra
 - Applied retention targets of **3 latest, 7 daily, 4 weekly, and 3 monthly** backups.
 - Reviewed successful backup-task logs and failure notification configuration.
 
-**Validation boundary:** Successful backup creation does not establish recoverability. A complete documented restore test remains pending; backup coverage should not be described as comprehensive.
 
-### Windows and automation
+### Windows Server
 
-- Installed and activated a Windows Server 2025 lab VM; further directory-services configuration is paused.
-- Configured and manually tested monitoring alert-routing logic; the original scheduled workflow remains **unpublished and paused**. This is not a claim of active scheduled alert delivery.
+- Installed and activated a Windows Server 2025 lab VM.
 
 ## Challenges and Lessons Learned
 
@@ -99,14 +96,6 @@ See the [network architecture documentation](../../network/diagrams/) for diagra
 - VM/container migration and operational validation
 - Monitoring with Prometheus and Grafana
 - Recovery troubleshooting and evidence-based technical documentation
-
-## Planned / Paused Work
-
-- Documented restore and disaster-recovery testing
-- Expanded backup coverage and alerting
-- Centralized log collection and exception-based reporting
-- Further Windows Server / Active Directory lab configuration
-- Additional security monitoring and network validation
 
 ## Security and Documentation Scope
 
