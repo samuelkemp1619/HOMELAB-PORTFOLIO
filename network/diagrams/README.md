@@ -66,7 +66,7 @@ flowchart TB
     SW ---|"port 7"| H2["Node B • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 6"| H3["Node C • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 5"| H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
-    SW ---|"port 2"| POE["PoE injector<br/>Switch-facing port unverified"]
+    SW ---|"port 2"| POE["PoE injector"]
     POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>AP management address previously recorded on VLAN 20; current management path not revalidated"]
     AP -. "untagged • VLAN 20" .-> PRIMARYCLIENT["Primary Wi-Fi • Trusted clients"]
     AP -. "tagged • VLAN 30" .-> IOTCLIENT["IoT Wi-Fi clients"]
@@ -179,8 +179,6 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 | **Rack** | 19-inch rack with VEVOR 1U vented cantilever shelves | 10-inch-deep shelves; 12-24 threaded rack mounting hardware and washers |
 | **Micro-PC organizer** | Custom 3D-printed three-tier holder | Holds Node A, Node B and Node C; M4 bolts and heat-set inserts |
 | **3D printer** | Creality Ender-3 V3 KE | Used to fabricate the custom holder and other lab components; fabrication equipment, not a confirmed VLAN endpoint |
-
-A separate **Netgear GS105 switch** has been discussed for a future re-cabling project but is **not shown as installed**. The proposed backup-storage migration remains pending; the two currently detected Samsung 870 EVO SSDs do not establish that a dedicated backup disk has been provisioned.
 
 ## New wireless VLAN 50 case study
 
