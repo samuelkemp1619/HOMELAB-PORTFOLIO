@@ -134,7 +134,7 @@ flowchart TB
         HOLDER["Custom 3D-printed three-tier holder"]
         H3["Top: Node C • HP Elite Mini 600 G9<br/>i5-12500T • 16 GB DDR5 • 500 GB NVMe"]
         H2["Middle: Node B • HP Elite Mini 600 G9<br/>i5-12500T • 32 GB DDR5 • 512 GB NVMe"]
-        H1["Bottom: Node A • Dell OptiPlex 3000 (SMBIOS)"]
+        H1["Bottom: Node A • Dell OptiPlex 3000<br/>i5-12500T • 32 GB DDR4-3200 • 1 TB NVMe"]
         R640["Node D • Dell PowerEdge R640<br/>2× Xeon Silver 4110 • 768 GB RAM<br/>2× Samsung 870 EVO 500 GB SSD"]
         SHELVES --> HOLDER
         HOLDER --> H3
@@ -162,13 +162,13 @@ flowchart TB
 
 ## Physical Hardware Inventory
 
-**Model correction:** The latest `dmidecode` output from Node A identifies it as **Dell OptiPlex 3000**, not the earlier documented 7020 Micro. Chassis form factor remains to be confirmed separately.
+**Model verification (November 5, 2026):** Node A reports **Dell OptiPlex 3000** via `dmidecode`. CPU, RAM, NVMe drive, and Ethernet controller were checked directly on the Proxmox host. The chassis form factor was not separately identified by this command.
 
 This inventory documents **known, currently used** homelab hardware. Hardware specifications not confirmed from current records are deliberately left unspecified. The inventory is distinct from the logical network diagram; connections below do not assert verified switch-port assignments.
 
 | Node / device | Physical hardware | Known details / current use |
 |---|---|---|
-| **Node A** | Dell OptiPlex 3000 (SMBIOS-reported) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200; Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
+| **Node A** | Dell OptiPlex 3000 (`dmidecode` verified) | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB DDR4-3200 (32 GB installed); Samsung 970 EVO Plus 1 TB NVMe; Realtek RTL8111/8168-family Gigabit Ethernet; Proxmox LVM-thin pool ~794 GiB; bottom tier; primary Pi-hole CT101 and OPNsense VM100 |
 | **Node B** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 2 × 16 GB Micron DDR5-5600 running at 4800 MT/s; Samsung PM9A1 512 GB NVMe; Intel I219-LM Gigabit Ethernet; middle tier; AMP CT102 and monitoring CT103; NFS backup storage on root filesystem |
 | **Node C** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
 | **Node D** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server VM |
