@@ -14,19 +14,20 @@ The current architecture uses a Proxmox host as a Tailscale subnet router, allow
 
 # Environment
 
-The homelab consists of a three-node Proxmox VE cluster and segmented networking managed by OPNsense.
+The homelab consists of a four-node Proxmox VE cluster with segmented networking managed by OPNsense.
 
 | System | Role |
-|--------|------|
-| Node A | Proxmox host, primary infrastructure, Tailscale subnet router |
-| Node B | Proxmox application host |
-| Node C | Proxmox monitoring host |
+|---|---|
+| Node A | Dell OptiPlex 3000; primary infrastructure and Tailscale subnet router |
+| Node B | HP Elite Mini 600 G9; applications and monitoring |
+| Node C | HP Elite Mini 600 G9; infrastructure containers and secondary DNS |
+| Node D | Dell PowerEdge R640; Windows Server lab and virtualization workloads |
 | OPNsense | Router, firewall, and VLAN gateway |
-| Pi-hole | Internal DNS filtering |
-| Laptop | Remote administration endpoint |
-| iPhone | Mobile remote administration endpoint |
+| Pi-hole | Internal DNS filtering through two instances |
+| Laptop | Verified remote administration endpoint |
+| iPhone | Verified mobile remote administration endpoint |
 
-The environment separates management infrastructure from other network traffic using VLANs and firewall policies.
+The environment separates infrastructure management from other network traffic using VLANs and firewall policies.
 
 ---
 
@@ -67,24 +68,22 @@ Authorized devices join the private Tailscale network and communicate through en
 The basic architecture is:
 
 ```text
-Remote Laptop / Mobile Device
-             |
-             |
-      Encrypted Tailscale
-             |
-             |
-       Node A
-    Tailscale Node
-             |
-       Subnet Router
-             |
-             |
-     Management Network
-             |
-    ---------------------
-    |         |         |
-Node A  Node B  Node C
-    |
+Remote Laptop / iPhone
+          |
+          v
+    Tailscale Overlay
+          |
+          v
+    Node A Subnet Router
+          |
+          v
+     Management VLAN
+          |
+    +-----+-----+-----+
+    |     |     |     |
+ Node A Node B Node C Node D
+          |
+          v
  Internal Infrastructure
 ```
 
@@ -226,30 +225,23 @@ Remote access should provide only the network access required for administration
 
 # Administrative Endpoints
 
-The remote-access design is intended to support administration from devices such as:
+Tailscale remote administration has been verified from both a laptop and an iPhone.
 
-### Laptop
+## Laptop
 
-Primary remote systems-administration workstation.
+The laptop provides access to homelab infrastructure while away from the local network.
 
-Potential administrative tasks include:
+Remote connectivity was confirmed operational.
 
-- Proxmox management
-- SSH administration
-- Monitoring access
-- Infrastructure troubleshooting
+## iPhone
 
-### iPhone
+The iPhone provides mobile access to internal homelab services through Tailscale.
 
-Provides mobile access for checking infrastructure while away from the network.
+Initial mobile connectivity problems were resolved, and access was subsequently confirmed working.
 
-Potential uses include:
+These tests establish successful remote connectivity from both endpoint types. They do not establish that every internal service or recovery scenario has been tested.
 
-- Checking dashboards
-- Reviewing service status
-- Performing limited emergency administration
-
-High-risk infrastructure changes should still be performed only when an appropriate recovery path exists.
+High-risk infrastructure changes still require an appropriate recovery path.
 
 ---
 
@@ -282,21 +274,15 @@ This demonstrates an important systems-administration principle:
 
 ---
 
-# High-Availability Considerations
+# Availability Considerations
 
-The current subnet-router architecture introduces an availability dependency on Node A.
+Node A operates as the documented Tailscale subnet router for the management network.
 
-If Node A is unavailable, remote subnet access may also become unavailable.
+This creates an availability dependency: if Node A becomes unavailable, access to internal systems through that subnet route may also be interrupted.
 
-Future improvements may evaluate:
+The deployed configuration is not documented as a redundant or automatically failing-over subnet-router architecture.
 
-- Additional subnet routers
-- Tailscale high-availability routing
-- Alternative always-on subnet-router placement
-- Integration with the firewall architecture
-- Improved recovery procedures
-
-Any redundant configuration must be tested before being relied upon during maintenance.
+Remote maintenance must account for this dependency and the possibility of losing administrative connectivity.
 
 ---
 
@@ -406,59 +392,7 @@ Remote access should follow the principle of least privilege wherever practical.
 
 ---
 
-# Monitoring
 
-Tailscale availability is planned for inclusion in the centralized homelab monitoring environment.
-
-Potential monitoring checks include:
-
-- Tailscale service availability
-- Subnet-router availability
-- Route availability
-- Remote management reachability
-- Unexpected node disconnections
-- DNS availability through remote access
-
----
-
-# Exception-Based Health Reporting
-
-The future automated health-reporting system should report Tailscale problems when they affect administrative availability.
-
-Example:
-
-```text
-REMOTE ACCESS
-Status: WARNING
-
-Tailscale subnet router:
-Unavailable
-
-Management subnet:
-Not reachable through remote-access path
-
-Recommended action:
-Verify Tailscale service and Node A connectivity.
-```
-
-Normal connectivity should not generate unnecessary alerts.
-
----
-
-# Future Improvements
-
-Planned improvements include:
-
-- Complete remote testing from an external network
-- Validate laptop access away from home Wi-Fi
-- Validate iPhone access over cellular
-- Verify internal DNS resolution remotely
-- Review Tailscale access-control policies
-- Evaluate redundant subnet routing
-- Monitor subnet-router availability
-- Integrate Tailscale status into Grafana
-- Integrate remote-access failures into health reports
-- Document emergency remote-access procedures
 
 ---
 
@@ -500,34 +434,40 @@ Tailscale complements rather than replaces:
 
 This project demonstrates practical experience with:
 
-- Tailscale
-- WireGuard-based networking
+- Tailscale deployment
+- WireGuard-based overlay networking
 - Secure remote administration
 - Linux networking
 - IP forwarding
-- Subnet routing
-- Route advertisement
+- Subnet routing and route advertisement
 - VLAN networking
-- OPNsense
-- DNS troubleshooting
-- Network troubleshooting
-- Remote systems administration
-- Access-control planning
+- OPNsense integration
+- DNS and connectivity troubleshooting
+- Laptop and mobile remote-access validation
 - Network segmentation
-- Risk assessment
-- Infrastructure monitoring
+- Remote-maintenance risk assessment
 - Technical documentation
+
+These skills reflect the deployed remote-access environment and documented troubleshooting rather than unimplemented monitoring or redundancy capabilities.
 
 ---
 
 # Project Status
 
-**Operational / Validation In Progress**
+**Completed — Tailscale Remote Administration Deployment**
 
-Tailscale is deployed within the homelab, and Node A provides subnet routing for the management network.
+Tailscale provides encrypted remote administrative connectivity to the homelab.
 
-Local connectivity testing has been performed.
+Node A operates as the documented subnet router for the management network.
 
-Additional validation from external networks, including laptop and mobile-device testing, remains part of the project before the remote-access architecture is considered fully validated.
+Remote connectivity has been confirmed from both a laptop and an iPhone.
 
-The documentation will be updated as testing, access-control improvements, monitoring, and redundancy are completed.
+The deployment provides remote access without requiring direct public exposure of Proxmox administrative interfaces.
+
+**Validation limitations:**
+
+- Automatic redundant subnet-router failover has not been demonstrated.
+- Not every internal service or network path has been individually validated.
+- Successful remote access does not eliminate the risks of disruptive infrastructure maintenance.
+
+The documented remote-access deployment is complete within this defined scope.
