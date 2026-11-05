@@ -52,7 +52,7 @@ flowchart TB
 
 **Public documentation convention:** Internal host IP addresses are partially masked (for example, `192.168.20.XXX`), and physical MAC addresses are redacted. Exact host addresses and device-specific network identifiers are intentionally not published here.
 
-Physical port assignments were supplied by the operator on October 31, 2026. VLAN membership and PVID values were subsequently verified against screenshots of the TP-Link management interface; port status and negotiated speeds were subsequently confirmed from the switch Port Setting screenshot. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Port 1 connects to the ISP-provided box; its routing role beyond that physical connection has not been independently verified. All four SSID-to-VLAN mappings were verified from the AP SSID list and switch port 5 configuration on November 5, 2026.
+Physical port assignments were supplied by the operator on October 31, 2026. VLAN membership and PVID values were subsequently verified against screenshots of the TP-Link management interface; port status and negotiated speeds were subsequently confirmed from the switch Port Setting screenshot. The PoE injector is inline between the switch and wireless AP. Dotted connections are Wi-Fi or logical associations, not additional Ethernet cables. Port 1 connects to the ISP-provided box; its routing role beyond that physical connection has not been independently verified. All four SSID-to-VLAN mappings were verified from the AP SSID list and switch port 2 configuration on November 5, 2026.
 
 ```mermaid
 flowchart TB
@@ -62,8 +62,8 @@ flowchart TB
     SW ---|"port 8"| H1["Node A • Dell OptiPlex 3000<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 7"| H2["Node B • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
     SW ---|"port 6"| H3["Node C • HP Elite Mini 600 G9<br/>nic0 • 1Gbps full duplex<br/>192.168.10.XXX"]
-    SW ---|"port 2"| H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
-    SW ---|"port 5"| POE["PoE injector<br/>Switch-facing port unverified"]
+    SW ---|"port unconfirmed"| H4["Node D • Dell PowerEdge R640<br/>nic1 • 1Gbps full duplex<br/>192.168.10.XXX"]
+    SW ---|"port 2"| POE["PoE injector<br/>Switch-facing port unverified"]
     POE --- AP["Grandstream GWN7660E • Wi-Fi 6 AP<br/>AP management address previously recorded on VLAN 20; current management path not revalidated"]
     AP -. "Wi-Fi • VLAN 50 tagged" .-> WIFI["Unrestricted SSID clients<br/>internet access / internal isolation"]
     SW ---|"port 3"| DESKTOP["Desktop PC"]
@@ -79,10 +79,10 @@ flowchart TB
 | Port | Observed link | PVID | Untagged VLAN | Tagged VLANs | Connected device |
 |---|---|---|---|---|---|
 | 1 | 1Gbps full (verified) | 100 | 100 | — | ISP-provided box (operator-confirmed) |
-| 2 | 1Gbps full (historical) | 20 | 20 | 30, 40, 50, 100 | HomeProx4 • Dell PowerEdge R640 (operator-confirmed) |
+| 2 | 1Gbps full (historical) | 20 | 20 | 30, 40, 50, 100 | Grandstream GWN7660E via PoE injector (latest confirmation) |
 | 3 | 1Gbps full (verified) | 10 | 10 | — | Desktop PC (operator-confirmed) |
 | 4 | Down (historical) | 10 | 1 | — | Empty (operator-confirmed) |
-| 5 | 1Gbps full (historical) | 10 | 10 | 30, 40, 50 | Grandstream GWN7660E via PoE injector (user-confirmed) |
+| 5 | 1Gbps full (historical) | 10 | 10 | 30, 40, 50 | Connected device not reconfirmed |
 | 6 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx3 (operator-confirmed) |
 | 7 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx2 (operator-confirmed) |
 | 8 | 1Gbps full (verified) | 10 | — | 10, 20, 30, 40, 50, 100 | HomeProx (node 1; operator-confirmed) |
@@ -95,12 +95,12 @@ The Grandstream GWN7660E SSID configuration and TP-Link TL-SG108E v6.0 VLAN/PVID
 
 | Public SSID alias | VLAN | AP tagging | Switch port 5 membership | Purpose |
 |---|---|---|---|---|
-| Primary Wi-Fi | 10 | Untagged (no SSID VLAN ID) | Untagged; PVID 10 | Management network |
+| Primary Wi-Fi | 20 | Untagged (no SSID VLAN ID) | Untagged; PVID 20 | Trusted network |
 | IoT Wi-Fi | 30 | Tagged | Tagged | IoT |
 | Guest Wi-Fi | 40 | Tagged | Tagged | Guest |
 | Unrestricted Wi-Fi | 50 | Tagged | Tagged | Internet without Pi-hole filtering |
 
-All four SSIDs are enabled on 2.4 GHz and 5 GHz, with bridge client IP assignment. The primary Wi-Fi SSID's untagged mapping to the management VLAN is a documented segmentation consideration; switch VLAN settings alone do not establish client-to-service firewall reachability. VLAN 20 is not a member of switch port 5. These observations describe configuration, not a new end-to-end client traffic test.
+All four SSIDs are enabled on 2.4 GHz and 5 GHz, with bridge client IP assignment. The primary Wi-Fi SSID uses the trusted VLAN; switch VLAN settings alone do not establish client-to-service firewall reachability. VLAN 20 is untagged on switch port 2. A Skemp2 client received an address ending .20.79 and gateway ending .20.1. These observations describe configuration, not a new end-to-end client traffic test.
 
 ### Physical interface verification
 
@@ -111,7 +111,7 @@ All four SSIDs are enabled on 2.4 GHz and 5 GHz, with bridge client IP assignmen
 | Node C | `nic0` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0.10` • `192.168.10.XXX/24` |
 | Node D | `nic1` | `XX:XX:XX:XX:XX:XX` | 1Gbps full | `vmbr0` • `192.168.10.XXX/24` |
 
-Node A, Node B and Node C have VLAN-aware `vmbr0` bridges. Node D's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. Node D is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to switch port 5 **through a PoE injector**; the VLAN 50 SSID has been deployed and tested, and all four SSID VLAN assignments were checked against the AP and switch configuration on November 5, 2026. A 15-second LLDP capture on Node A observed no advertisements, so the physical port mapping relies on the operator's direct cable inventory rather than LLDP.
+Node A, Node B and Node C have VLAN-aware `vmbr0` bridges. Node D's `vmbr0` is **not** configured as VLAN-aware in `/etc/network/interfaces`; its other three physical interfaces have no detected link. Node D is directly connected to the TL-SG108E, as confirmed by the operator. The AP is connected to switch port 2 **through a PoE injector**; the VLAN 50 SSID has been deployed and tested, and all four SSID VLAN assignments were checked against the AP and switch configuration on November 5, 2026. A 15-second LLDP capture on Node A observed no advertisements, so the physical port mapping relies on the operator's direct cable inventory rather than LLDP.
 
 ### Switch verification summary
 
@@ -139,7 +139,7 @@ flowchart TB
         SWITCH_HW["TP-Link TL-SG108E v6.0 managed switch"]
         INJECTOR["PoE injector"]
         ACCESS["Grandstream GWN7660E access point"]
-        SWITCH_HW -->|"port 5 • VLAN 50 tagged"| INJECTOR --> ACCESS
+        SWITCH_HW -->|"port 2 • VLAN 20 untagged; 30/40/50 tagged"| INJECTOR --> ACCESS
     end
     subgraph OTHER_HW["Other physical homelab equipment"]
         PI4["Graphy • Raspberry Pi 4 Model B<br/>8 GB • Grafana kiosk"]
@@ -167,7 +167,7 @@ This inventory documents **known, currently used** homelab hardware. Hardware sp
 | **Node C** | HP Elite Mini 600 G9 Desktop PC | Intel Core i5-12500T (6 cores / 12 threads); 8 GB Samsung + 8 GB SK Hynix DDR5-4800; Samsung SSD 980 500 GB NVMe; Intel I219-LM Gigabit Ethernet; top tier; secondary Pi-hole CT105 and Vaultwarden CT104 |
 | **Node D** | Dell PowerEdge R640 | 2 × Intel Xeon Silver 4110 (16 cores / 32 threads total); 24 × 32 GB registered ECC DDR4-2666 operating at 2400 MT/s (768 GB installed, ~754 GiB Linux-reported); 2 × Samsung 870 EVO 500 GB SATA SSDs; 2 × Broadcom BCM5720 Gigabit Ethernet and 2 × BCM57412 10GbE ports (three of four physical interfaces have no link; nic1 active at 1Gbps); Windows Server VM |
 | **Managed switch** | TP-Link TL-SG108E v6.0 | Managed Switch; 192.168.10.XXX; seven active 1Gbps links; port 4 down; VLAN/PVID table above |
-| **Wireless access point** | Grandstream GWN7660E | 192.168.20.XXX (VLAN 20); connected to TL-SG108E through a PoE injector; port 5 confirmed; four SSID VLAN mappings verified from AP and switch screenshots |
+| **Wireless access point** | Grandstream GWN7660E | 192.168.20.XXX (VLAN 20); connected to TL-SG108E through a PoE injector; port 2 confirmed; four SSID VLAN mappings verified from AP and switch screenshots |
 | **PoE injector** | Model unverified | Inline between managed switch and GWN7660E access point |
 | **Monitoring kiosk** | Raspberry Pi 4 Model B Rev 1.5 | 8 GB RAM; Graphy Grafana kiosk on trusted VLAN 20; Debian 13 (last reported) |
 | **Rack** | 19-inch rack with VEVOR 1U vented cantilever shelves | 10-inch-deep shelves; 12-24 threaded rack mounting hardware and washers |
@@ -209,3 +209,6 @@ Tailscale enables remote administrative access. Graphy is a Raspberry Pi 4 kiosk
 ## Scope and limitations
 
 This diagram records operator-confirmed physical switch-port assignments and screenshot-verified VLAN memberships/PVIDs but does **not** assert redundant physical network paths, OPNsense HA, DNS client failover, or completed Windows Active Directory deployment. Management IPs are included for topology documentation; credentials and firewall rule details are omitted.
+
+
+**November 5 correction:** The AP is connected to switch port 2, not port 5. The prior port 2 R640 assignment and port 5 AP assignment are superseded. Device placement on port 5 and the R640 uplink require reconfirmation; older illustrative diagram labels may reflect the previous inventory.
