@@ -31,7 +31,7 @@ The environment included:
 - Virtual machines and containers
 - Segmented homelab networking
 
-Tailscale was being evaluated and deployed as part of the secure remote-administration architecture.
+This case study covers the earlier evaluation and deployment stage of the secure remote-administration architecture.
 
 ---
 
@@ -544,13 +544,13 @@ This prevents successful IP routing from being confused with successful DNS oper
 
 # Current Architecture
 
-The current homelab design uses Tailscale as part of the secure remote-administration architecture.
+Tailscale is deployed for secure remote administration of the four-node Proxmox homelab.
 
-A Proxmox host provides subnet routing for the management network.
+Node A provides subnet routing for the management network, allowing authorized devices to reach internal infrastructure without requiring a separate Tailscale installation on every workload.
 
-This avoids requiring every infrastructure workload to operate as an independent Tailscale endpoint.
+Remote connectivity has been confirmed from both a laptop and an iPhone. The historical DNS and LXC TUN-device troubleshooting remains relevant to this deployed architecture.
 
-Remote-access validation and resiliency improvements remain ongoing.
+**Validation limitations:** Automatic redundant subnet-router failover has not been demonstrated, and every internal service and recovery scenario has not been individually tested.
 
 ---
 
@@ -635,29 +635,24 @@ This troubleshooting project demonstrates experience with:
 
 ---
 
-# Future Improvements
 
-Planned improvements include:
-
-- Complete remote validation from external networks
-- Validate mobile access over cellular
-- Validate laptop access away from the home network
-- Verify internal DNS resolution remotely
-- Review Tailscale access policies
-- Monitor Tailscale service health
-- Monitor subnet-router availability
-- Evaluate subnet-router redundancy
-- Document emergency remote-access recovery
-- Integrate remote-access health into centralized monitoring
 
 ---
 
 # Project Status
 
-**Operational / Additional Validation Planned**
+**Completed — Tailscale Troubleshooting and Remote-Access Deployment**
 
 The original DNS issue was corrected by restoring functional DNS resolution.
 
-The LXC troubleshooting identified TUN-device access as a separate virtualization-related requirement for Tailscale deployments inside containers.
+The LXC investigation identified TUN-device access as a separate virtualization-related requirement for Tailscale deployments inside containers.
 
-The current remote-access architecture uses Tailscale subnet routing, while additional external-network validation and resiliency work remain planned.
+The deployed architecture uses Node A as a Tailscale subnet router for management-network access. Remote connectivity has been verified from a laptop and an iPhone.
+
+**Validation limitations:**
+
+- Automatic subnet-router failover has not been verified.
+- Not every internal service or remote-recovery scenario has been individually validated.
+- The documented LXC investigation does not establish that a Tailscale-in-LXC deployment is the current production subnet router.
+
+This case study preserves the original troubleshooting findings and distinguishes them from the verified remote-access deployment.
