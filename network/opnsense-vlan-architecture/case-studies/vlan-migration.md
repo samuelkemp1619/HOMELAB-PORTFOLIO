@@ -4,7 +4,7 @@
 
 This case study documents the migration of my homelab from a largely flat network into a segmented architecture using OPNsense, IEEE 802.1Q VLANs, a managed Ethernet switch, and VLAN-aware Proxmox networking.
 
-The objective was to create a scalable network architecture that separates infrastructure management from trusted client traffic while establishing a foundation for future IoT, server, guest, and cybersecurity-lab networks.
+The original objective was to separate infrastructure management from trusted client traffic and establish a scalable foundation for additional network segmentation. Subsequent deployments expanded that architecture to IoT/guest networks and a dedicated unrestricted-internet wireless VLAN.
 
 The project required coordinating configuration across multiple layers:
 
@@ -24,23 +24,22 @@ The migration was completed incrementally to minimize the risk of losing access 
 
 # Environment
 
-The environment consists of a three-node Proxmox VE cluster connected through a managed Ethernet switch.
+The current environment consists of a four-node Proxmox VE cluster connected through managed Ethernet switching.
 
 | Component | Role |
 |---|---|
-| OPNsense | Router, firewall, VLAN gateway, DHCP |
-| Proxmox VE | Virtualization platform |
+| OPNsense | Router, firewall, VLAN gateway, and DHCP services |
+| Proxmox VE | Virtualization and cluster platform |
 | Managed Switch | Layer 2 VLAN switching |
-| Pi-hole | DNS filtering |
-| Node A | Proxmox cluster node |
-| Node B | Proxmox cluster node |
-| Node C | Proxmox cluster node |
+| Pi-hole | Redundant DNS filtering |
+| Node A | Dell OptiPlex 3000 |
+| Node B | HP Elite Mini 600 G9 |
+| Node C | HP Elite Mini 600 G9 |
+| Node D | Dell PowerEdge R640 |
 
-The physical cluster consists of:
+The original migration was performed during an earlier stage of the homelab's development. The environment subsequently expanded to four Proxmox nodes.
 
-- Dell OptiPlex 3000 (SMBIOS-reported)
-- Two HP Elite Mini 600 G9 systems
-
+Public node aliases are used instead of internal hostnames.
 ---
 
 # Original Network
@@ -54,7 +53,7 @@ While functional, this design provided limited segmentation between:
 - Hypervisor management
 - Infrastructure services
 - Trusted clients
-- Future IoT devices
+- IoT and other client-device categories
 - Security-testing systems
 - Self-hosted services
 
@@ -94,23 +93,22 @@ Perform the migration incrementally to reduce the possibility of losing administ
 
 # VLAN Architecture
 
-The first production VLANs implemented were:
+The original migration established two primary network segments:
 
 | VLAN | Purpose |
 |---|---|
-| VLAN 10 | Infrastructure Management |
-| VLAN 20 | Trusted Devices |
+| VLAN 10 | Infrastructure management |
+| VLAN 20 | Trusted client devices |
 
-Additional VLAN IDs are reserved or planned for future segmentation.
+The architecture was subsequently expanded to support additional segmented networks.
 
-Potential future networks include:
+The current configuration includes VLANs 10, 20, 30, 40, 50, and 100.
 
-- Servers
-- IoT devices
-- Guest devices
-- Security-testing systems
-- Self-hosted services
+These VLANs support management, trusted devices, IoT/guest segmentation, an unrestricted-internet wireless network, and additional infrastructure connectivity.
 
+VLAN 50 provides internet access without Pi-hole filtering and restricts access to internal private networks.
+
+The initial VLAN migration and the later VLAN 50 deployment are documented as separate implementation milestones.
 ---
 
 # OPNsense Deployment
@@ -284,17 +282,22 @@ After migration, cluster membership was verified to ensure:
 
 # DHCP
 
-OPNsense provides DHCP services for applicable network segments.
+OPNsense provides DHCP services using **DNSMasq**.
 
-After the management VLAN was created, DHCP was used to provide addresses to appropriate clients while infrastructure systems requiring predictable addressing continued to use controlled addressing.
+DHCP configuration is associated with the applicable network interfaces and VLAN segments.
 
-DHCP functionality was validated by confirming that clients received:
+Validation includes confirming that clients receive:
 
 - An address from the correct network
-- The correct subnet mask
-- The correct default gateway
-- Required DNS information
+- The expected subnet mask
+- The appropriate default gateway
+- The configured DNS resolvers
 
+Infrastructure systems requiring predictable addressing use controlled addressing configurations.
+
+During the later VLAN 50 deployment, DNSMasq interface selection was identified as a cause of DHCP failure. Correcting the configuration restored successful client address assignment.
+
+That troubleshooting incident is documented separately in the unrestricted wireless VLAN 50 case study.
 ---
 
 # Trusted VLAN
@@ -319,7 +322,7 @@ Trusted devices therefore do not need to share the same Layer 2 management netwo
 
 OPNsense acts as the policy enforcement point between VLANs.
 
-The long-term design follows a least-privilege model:
+The deployed architecture uses OPNsense to enforce firewall policies between VLANs:
 
 ```text
 Source Network
@@ -341,27 +344,20 @@ This provides a stronger security model than allowing unrestricted communication
 
 # DNS Integration
 
-Pi-hole provides centralized DNS filtering within the environment.
+Two Pi-hole instances provide DNS filtering on separate Proxmox nodes.
 
-The VLAN design must therefore allow authorized networks to reach DNS while still restricting unnecessary inter-VLAN communication.
+- **Node A:** Primary Pi-hole
+- **Node C:** Secondary Pi-hole
 
-The logical flow is:
+OPNsense DHCP configuration advertises the appropriate DNS resolver addresses to applicable client networks.
 
-```text
-Client
-   |
-   v
-Network / VLAN
-   |
-   v
-Pi-hole
-   |
-   v
-Upstream DNS
-```
+Independent DNS resolution and selected resolver-fallback behavior have been verified.
 
-DNS availability is especially important because routing may be working correctly while applications appear unavailable because hostname resolution is failing.
+The dedicated unrestricted wireless VLAN 50 uses external DNS resolvers rather than Pi-hole.
 
+DNS availability remains an important operational consideration because a DNS failure can resemble a broader network connectivity failure.
+
+Automatic resolver failover has not been verified across every client platform.
 ---
 
 # Migration Strategy
@@ -464,7 +460,7 @@ The migration successfully established:
 - Functional Proxmox cluster communication
 - Working Corosync communication
 - Pi-hole DNS integration
-- Foundation for additional network segmentation
+- Foundation that supported subsequent deployments of additional segmented networks, including VLAN 50
 
 The Proxmox nodes now operate on the dedicated management network while trusted client devices can operate on a separate VLAN.
 
@@ -486,9 +482,15 @@ Traffic crossing VLAN boundaries can be inspected and controlled by OPNsense.
 
 Systems can be grouped according to their role and trust level.
 
-## Future Isolation
+## Additional Network Isolation
 
-IoT, guest, security-lab, and server networks can be added without placing them directly on the management network.
+The VLAN architecture has been extended beyond the original management and trusted networks.
+
+Additional segmentation supports IoT and guest networks, while VLAN 50 provides unrestricted internet access without permitting normal access to internal private networks.
+
+Firewall rules on OPNsense control communication across these network boundaries.
+
+The documented VLAN 50 deployment includes successful internet connectivity and internal-network isolation testing.
 
 ## Better Monitoring
 
@@ -538,24 +540,6 @@ This allows remote management without exposing Proxmox administrative interfaces
 
 ---
 
-# Future Improvements
-
-Planned improvements include:
-
-- Expand network segmentation
-- Add dedicated IoT VLAN
-- Add security-lab VLAN
-- Review server-network segmentation
-- Tighten inter-VLAN firewall policy
-- Improve network monitoring
-- Add IDS/IPS experimentation
-- Add centralized logging
-- Test OPNsense recovery procedures
-- Evaluate firewall high availability
-- Document switch configuration
-- Add detailed topology diagrams
-- Add sanitized configuration examples
-- Perform documented disaster-recovery testing
 
 ---
 
@@ -637,8 +621,18 @@ This project demonstrates practical experience with:
 
 # Project Status
 
-**Operational**
+**Completed — VLAN Migration and Segmented Network Deployment**
 
-The management and trusted VLANs are operational, the Proxmox cluster is functioning on the segmented architecture, and OPNsense provides routing and firewall services.
+The original migration successfully established dedicated management and trusted-client VLANs, OPNsense routing and firewall enforcement, VLAN-aware Proxmox networking, and functional Corosync cluster communication.
 
-Additional segmentation, security controls, monitoring, and resiliency improvements remain planned as the homelab continues to evolve.
+The homelab subsequently expanded to a four-node Proxmox VE cluster with additional VLAN segmentation, including the dedicated unrestricted-internet wireless VLAN 50.
+
+The deployed architecture includes DNSMasq DHCP services, redundant Pi-hole DNS filtering, and Tailscale remote administration.
+
+**Validation limitations:**
+
+- Automatic OPNsense firewall failover has not been configured and verified as a completed high-availability capability.
+- DNS resolver failover has not been validated across every client platform.
+- Comprehensive validation of every inter-VLAN firewall rule and client-isolation scenario is not claimed.
+
+The case study documents completed migration work and subsequent deployed network improvements, not unfinished infrastructure plans.
