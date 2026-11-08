@@ -25,7 +25,8 @@ A practical portfolio of **network administration, systems engineering, cybersec
 | [Custom three-tier micro-PC holder](hardware/micro-pc-rack/) | CAD iteration, 3D printing, hardware integration | Completed |
 | [Rack shelf and node installation](hardware/rack-shelf-installation/) | Rack mounting, cabling, physical infrastructure | Completed |
 | [Graphy Grafana kiosk](monitoring/graphy-grafana-kiosk/) | Raspberry Pi, Linux, kiosk deployment, dashboard presentation | Completed |
-| [Vaultwarden password audit](security/vaultwarden-password-audit/) | PowerShell, security hygiene analysis, reporting; audit findings not automatically remediated | Completed |
+| [Vaultwarden password audit](security/vaultwarden-password-audit/) | PowerShell, security hygiene analysis, reporting; historical audit findings | Completed |
+| [Homelab credential rotation and MFA rollout](security/vaultwarden-password-audit/#november-2026-homelab-credential-hardening) | Credential rotation, TOTP enrollment, authentication testing, recovery planning | Completed |
 
 ## Featured Technical Case Studies
 
@@ -55,7 +56,9 @@ A practical portfolio of **network administration, systems engineering, cybersec
 ### Monitoring and security engineering
 
 - Deployed Prometheus/Grafana infrastructure dashboards and a Raspberry Pi-based Grafana kiosk.
-- Built and completed a PowerShell-based Vaultwarden audit covering **573 login entries**, producing aggregate security-hygiene findings without claiming password remediation.
+- Built and completed a PowerShell-based Vaultwarden audit covering **573 login entries**, producing aggregate security-hygiene findings.
+- Completed a separate November 2026 homelab credential-hardening effort: rotated administrator passwords to unique values across the four Proxmox nodes and other homelab systems, as reported by the operator. Verified `root@pam` TOTP login through the Proxmox cluster, tested OPNsense local TOTP authentication and web login, and confirmed Vaultwarden two-step login and independently stored recovery information. The OPNsense login test required a TOTP-code-first credential format.
+- Updated CubeCoders AMP management tools and the running ADS instance to version 2.8.0.10, corrected the container's UTF-8 locale, enabled its scheduled task timer, and verified the web interface returned HTTP 200.
 
 ## Infrastructure at a Glance
 
