@@ -46,4 +46,27 @@ PowerShell scripting, security hygiene assessment, structured data analysis, CSV
 
 ## Scope Boundary
 
-Optional password-grouping enhancements were removed from the project backlog. Actual credential remediation is a separate activity and is not claimed as completed here.
+Optional password-grouping enhancements were removed from the project backlog. Actual credential remediation was a separate activity from this October audit; see the November 2026 hardening record below. The October audit results remain a historical baseline, not a verified post-rotation audit.
+
+## November 2026 Homelab Credential Hardening
+
+**Status:** Completed based on operator confirmation; individual application coverage was not independently audited.  
+**Scope:** Homelab management accounts, not every entry in the 573-entry Vaultwarden audit.
+
+### Completed activities
+
+- Rotated root passwords individually on all four Proxmox hosts, using unique credentials; the first host's fresh web login was explicitly verified during the work, and the operator subsequently confirmed completion on all nodes.
+- Rotated other homelab account passwords, including hardware-management credentials, according to operator confirmation.
+- Enrolled Proxmox `root@pam` in TOTP MFA and verified a fresh login. The Proxmox user authentication configuration is cluster-wide.
+- Generated and securely retained Proxmox recovery codes.
+- Configured an OPNsense local TOTP authentication server, confirmed the underlying local-password test, verified TOTP authentication, and tested a successful web login after enabling MFA. In this configuration the working combined input was **TOTP code followed by password**.
+- Confirmed Vaultwarden two-step login and a recovery code stored independently of the vault.
+- Reviewed iDRAC9 separately: its password was rotated, but native TOTP MFA was **not** verified or claimed.
+
+### Validation and limitations
+
+This activity is separate from the October 2026 audit of 573 entries. No new full-vault scan was performed to establish that every historical reuse finding was resolved. MFA availability and coverage for every ancillary application were not individually validated. No secrets, OTP seeds, recovery codes, account-specific credentials, or internal network addresses are included in this public record.
+
+### Skills demonstrated
+
+Privileged account management, credential rotation, TOTP enrollment and troubleshooting, authentication-server testing, recovery planning, change sequencing, and access validation.
