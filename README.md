@@ -16,6 +16,7 @@ A practical portfolio of **network administration, systems engineering, cybersec
 
 | Project | Demonstrated skills | Status |
 |---|---|---|
+| [Windows Server 2025 Active Directory lab](virtualization/proxmox/case-studies/windows-active-directory-lab.md) | AD DS, Windows DNS, Windows 11 domain join, standard-user authentication | Authentication validated; GPO paused |
 | [Four-node Proxmox VE cluster](virtualization/proxmox/) | Linux administration, KVM/QEMU, LXC, cluster operations, backup scheduling, completed November 2026 cluster update | Completed |
 | [OPNsense and VLAN architecture](network/opnsense-vlan-architecture/) | VLAN segmentation, routing, firewall configuration, DNS policy | Completed |
 | [Unrestricted wireless VLAN 50](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md) | 802.1Q wireless segmentation, OPNsense DHCP/firewall, packet-capture troubleshooting | Completed |
@@ -35,6 +36,8 @@ A practical portfolio of **network administration, systems engineering, cybersec
 - [Unrestricted Wireless VLAN 50 — Deployment and DHCP Troubleshooting](network/opnsense-vlan-architecture/case-studies/unrestricted-wireless-vlan50.md)
 - [Redundant Pi-hole DNS and Failover Testing](network/pihole-dns/case-studies/dns-redundancy-and-failover.md)
 
+- [Windows Server 2025 Active Directory Deployment and Domain Authentication](virtualization/proxmox/case-studies/windows-active-directory-lab.md)
+
 ## Selected Accomplishments
 
 ### Segmented network and DNS resilience
@@ -52,6 +55,11 @@ A practical portfolio of **network administration, systems engineering, cybersec
 - Completed the November 5, 2026 cluster maintenance campaign: all four nodes updated to Proxmox Manager 9.2.25 and kernel 7.0.14-28-pve, rebooted and verified quorate; OPNsense and Pi-hole confirmed running.
 - Configured scheduled backups with retention policies and failure notifications.
 - Designed, printed, and assembled a three-tier micro-PC holder and integrated it with rack shelves and cable management.
+
+### Windows domain services and authentication
+
+- Deployed a Windows Server 2025 Active Directory domain controller with integrated DNS, joined a Windows 11 Pro test workstation, and verified standard-user domain authentication through the VM console.
+- Documented DNS registration and virtual network troubleshooting; Group Policy testing remains paused.
 
 ### Monitoring and security engineering
 
